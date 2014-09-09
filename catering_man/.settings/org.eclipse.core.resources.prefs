@@ -2,6 +2,7 @@ eclipse.preferences.version=1
 encoding//app/CAppManager.py=utf-8
 encoding//app/UI/CMainScreen.py=utf-8
 encoding//app/UI/desktop/CMainFrame.py=utf-8
+encoding//app/UI/dining_room/CAreaSetting.py=utf-8
 encoding//app/UI/dining_room/CDiningTable.py=utf-8
 encoding//app/UI/dishes/CDishesPublish.py=utf-8
 encoding//app/UI/employee/CDutyTable.py=utf-8

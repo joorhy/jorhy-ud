@@ -13,6 +13,7 @@ import wx.xrc
 import wx.dataview
 from app.CAppManager import CAppManager
 from app.logic.desktop.CDataMainFrame import CDataMainFrame
+from app.UI.dining_room.CAreaSetting import CAreaSetting
 
 ###########################################################################
 ## Class CDiningTable
@@ -176,6 +177,9 @@ class CDiningTable ( wx.Panel ):
     
     def OnAreaSetting( self, event ):
         event.Skip()
+        
+        self.popArea = CAreaSetting(self)
+        self.popArea.ShowModal()
     
     def OnRefresh( self, event ):
         event.Skip()
