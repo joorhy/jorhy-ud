@@ -1,0 +1,17 @@
+eclipse.preferences.version=1
+encoding//app/CAppManager.py=utf-8
+encoding//app/UI/CMainScreen.py=utf-8
+encoding//app/UI/desktop/CMainFrame.py=utf-8
+encoding//app/UI/dining_room/CDiningTable.py=utf-8
+encoding//app/UI/dishes/CDishesPublish.py=utf-8
+encoding//app/UI/employee/CDutyTable.py=utf-8
+encoding//app/UI/employee/CEmployee.py=utf-8
+encoding//app/UI/login/CLogin.py=utf-8
+encoding//app/logic/CEnumEvent.py=utf-8
+encoding//app/logic/desktop/CDataMainFrame.py=utf-8
+encoding//app/logic/login/CDataLogin.py=utf-8
+encoding//framework/CEvent.py=utf-8
+encoding//framework/CEvtManager.py=utf-8
+encoding//framework/CSingleton.py=utf-8
+encoding//service/CSqlManager.py=utf-8
+encoding/CMain.py=utf-8
