@@ -18,9 +18,13 @@ class CEvtManager(CSingleton):
             list_tmp.append(win)
             evt_map_tmp = {evt_id:list_tmp}
             evt_map.update(evt_map_tmp)
+            
+    @staticmethod
+    def RemoveListenner(win, evt_id, func):
+        pass
     
     @staticmethod
-    def DispatchEvent(evt_id, evt_data):
+    def DispatchEvent(evt_id, evt_data = ""):
         if evt_map.has_key(evt_id):
             for item in evt_map[evt_id]:
                 wx.PostEvent(item, CEvent(evt_id, evt_data))

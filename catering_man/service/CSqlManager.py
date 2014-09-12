@@ -1,15 +1,13 @@
-
-#_*_ encoding=utf-8 _*_
 #!/usr/bin/env python
-import framework.CSingleton as Singleton
-from sqlalchemy.orm import mapper
-from sqlalchemy import Table, MetaData, Column, Integer, String  
+#_*_ encoding=utf-8 _*_
+
+from sqlalchemy import MetaData
 from sqlalchemy.engine import create_engine 
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from framework.CSingleton import CSingleton
 
-class CUnit(object):pass
-
-class CSqlManager(Singleton.CSingleton):
+class CSqlManager(CSingleton):
     db_config = {
              'host' : '127.0.0.1',
              'user' : 'root',
@@ -23,42 +21,34 @@ class CSqlManager(Singleton.CSingleton):
                                                      db_config['db'],
                                                      db_config['charset']), echo=True)
     
+    metadata = MetaData()
+    
     Session = sessionmaker()  
     Session.configure(bind=engine) 
     session = Session()
     
+    base_model = declarative_base()
+    
     @staticmethod
     def Initailize():
-        metadata = MetaData()
-        unit = Table( #unit  
-                'unit', metadata,  
+        CSqlManager.base_model.metadata.create_all(CSqlManager.engine)
+        '''# map table_info_area to class CDbTableInfoArea
+        table_area_info = Table( #table_info_area  
+                'table_info_area', CSqlManager.metadata,  
                 Column('num_id', Integer, primary_key=True),  
-                Column('vch_name', String(16), unique=True, nullable=False),  
+                Column('vch_name', String(16), unique=True, nullable=True),  
                 )
-        
-        mapper(CUnit, unit)
-        metadata.create_all(CSqlManager.engine)
+        mapper(CDbTableInfoArea, table_area_info)'''
     
     @staticmethod
     def Uninitailize():
-        pass
+        CSqlManager.base_model.metadata.drop_all(CSqlManager.engine)
     
 if __name__ == '__main__':
     CSqlManager.Initailize()
     
-    #print (CSqlManager.session.query(CUnit).all())
-    ret = CSqlManager.session.query(CUnit).all()
+    from service.data_base.CDbTableInfoArea import CDbTableInfoArea
+    ret = CSqlManager.session.query(CDbTableInfoArea).all()
     for item in ret:
         print item.vch_name
-    '''unit = CUnit()
-    #print unit.vch_name
-    unit.num_id = 2
-    unit.vch_name = 'affaf'
-    
-    Session = sessionmaker()  
-    Session.configure(bind=CSqlManager.engine) 
-    session = Session()  
-    session.add(unit)
-    session.flush()  
-    session.commit()'''
     

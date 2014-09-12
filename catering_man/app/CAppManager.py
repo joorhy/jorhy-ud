@@ -3,7 +3,7 @@
 import wx
 from framework.CSingleton import CSingleton
 from Tkconstants import BOTH
-from app.UI.CMainScreen import CMainScreen
+from app.UI.CScnMain import CScnMain
 
 class CAppManager(CSingleton):
     mainScreen = None
@@ -12,7 +12,7 @@ class CAppManager(CSingleton):
     @staticmethod
     def Initailize():
         if CAppManager.mainScreen == None:
-            CAppManager.mainScreen = CMainScreen(None)
+            CAppManager.mainScreen = CScnMain(None)
             CAppManager.mainScreen.Show(True)
             CAppManager.mainScreen.Center()
     
@@ -23,14 +23,14 @@ class CAppManager(CSingleton):
             CAppManager.panel = None
                      
         if app == 'Login':
-            from app.UI.login.CLogin import CLogin
-            CAppManager.panel = CLogin(CAppManager.mainScreen) 
+            from app.UI.login.CWgtLogin import CWgtLogin
+            CAppManager.panel = CWgtLogin(CAppManager.mainScreen) 
         elif app == 'MainFrame':
-            from app.UI.desktop.CMainFrame import CMainFrame
-            CAppManager.panel = CMainFrame(CAppManager.mainScreen)
+            from app.UI.desktop.CWgtDeskTop import CWgtDeskTop
+            CAppManager.panel = CWgtDeskTop(CAppManager.mainScreen)
         elif app == 'DiningTable':
-            from app.UI.dining_room.CDiningTable import CDiningTable
-            CAppManager.panel = CDiningTable(CAppManager.mainScreen)
+            from app.UI.dining_room.CWgtDiningTable import CWgtDiningTable
+            CAppManager.panel = CWgtDiningTable(CAppManager.mainScreen)
         elif app == 'DishesPublish':
             from app.UI.dishes.CDishesPublish import CDishesPublish
             CAppManager.panel = CDishesPublish(CAppManager.mainScreen)

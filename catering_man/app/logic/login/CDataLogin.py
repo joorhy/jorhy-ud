@@ -18,7 +18,7 @@ class CDataLogin(CSingleton):
         if strUser == '0000' and strPasswd == '0000':
             self.chechResult = True
             
-        CEvtManager.DispatchEvent(CEnumEvent.EVT_LOGIN, "")
+        CEvtManager.DispatchEvent(CEnumEvent.EVT_LOGIN)
         
     def GetResult(self):
         return self.chechResult

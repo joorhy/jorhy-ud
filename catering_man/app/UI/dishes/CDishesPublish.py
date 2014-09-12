@@ -11,7 +11,7 @@
 import wx
 import wx.xrc
 import wx.dataview
-from app.logic.desktop.CDataMainFrame import CDataMainFrame
+from app.logic.desktop.CDataDeskTop import CDataDeskTop
 from app.CAppManager import CAppManager
 
 ###########################################################################
@@ -133,7 +133,7 @@ class CDishesPublish ( wx.Panel ):
         pass
     
     def Initailize(self):
-        x, y = CDataMainFrame.GetFrameSize()
+        x, y = CDataDeskTop.GetFrameSize()        
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
