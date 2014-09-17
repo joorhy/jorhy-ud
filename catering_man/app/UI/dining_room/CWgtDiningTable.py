@@ -305,7 +305,7 @@ class CWgtDiningTable ( wx.Panel ):
     
     def OnExit( self, event ):
         event.Skip()
-        CAppManager.SwitchToApplication('MainFrame')
+        CAppManager.SwitchToApplication('DeskTop')
     
 if __name__ == '__main__':
     app = wx.PySimpleApp()

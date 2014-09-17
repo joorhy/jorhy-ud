@@ -291,7 +291,7 @@ class CWgtLogin ( wx.Panel ):
         
     def OnEvtLogin(self, event):
         if CDataLogin().GetResult() == True:
-            CAppManager.SwitchToApplication('MainFrame')
+            CAppManager.SwitchToApplication('DeskTop')
         else:
             dlg = wx.MessageDialog(self, u"用户名或密码错误", caption = u"登陆")
             dlg.ShowModal()

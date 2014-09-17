@@ -71,6 +71,9 @@ class CWgtDeskTop ( wx.Panel ):
         self.m_btnStaffMan = wx.Button( self.m_selectorPanel, wx.ID_ANY, u"员工管理", wx.DefaultPosition, wx.DefaultSize, 0 )
         m_selectorBottomSizer.Add( self.m_btnStaffMan, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
         
+        self.m_btnPrinter = wx.Button( self.m_selectorPanel, wx.ID_ANY, u"打印设置", wx.DefaultPosition, wx.DefaultSize, 0 )
+        m_selectorBottomSizer.Add( self.m_btnPrinter, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+        
         self.m_btnReportForms = wx.Button( self.m_selectorPanel, wx.ID_ANY, u"报表中心", wx.DefaultPosition, wx.DefaultSize, 0 )
         m_selectorBottomSizer.Add( self.m_btnReportForms, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
         
@@ -151,6 +154,7 @@ class CWgtDeskTop ( wx.Panel ):
         self.m_btnDiningRoomSetting.Bind( wx.EVT_LEFT_DOWN, self.OnDiningRoonSetting )
         self.m_btnDishesPublishing.Bind( wx.EVT_LEFT_DOWN, self.OnDishesPublishing )
         self.m_btnStaffMan.Bind( wx.EVT_LEFT_DOWN, self.OnStaffManager )
+        self.m_btnPrinter.Bind( wx.EVT_LEFT_DOWN, self.OnPrinter )
         self.m_btnReportForms.Bind( wx.EVT_LEFT_DOWN, self.OnReportForms )
         self.m_btnSysSetting.Bind( wx.EVT_LEFT_DOWN, self.OnSystemSetting )
         self.m_btnStockMan.Bind( wx.EVT_LEFT_DOWN, self.OnStockManager )
@@ -176,6 +180,8 @@ class CWgtDeskTop ( wx.Panel ):
             self.ShowDishesPublishing()
         elif select_item == "staff_manager":
             self.ShowStaffManager()
+        elif select_item == "printer":
+            self.ShowPrinter()
         elif select_item == "report_forms":
             self.ShowReportForms()
         elif select_item == "system_setting":
@@ -211,6 +217,11 @@ class CWgtDeskTop ( wx.Panel ):
         event.Skip()
         CDataDeskTop.SetSelectedItem("staff_manager")
         self.ShowStaffManager()
+        
+    def OnPrinter( self, event ):
+        event.Skip()
+        CDataDeskTop.SetSelectedItem("printer")
+        self.ShowPrinter()
     
     def OnReportForms( self, event ):
         event.Skip()
@@ -299,6 +310,19 @@ class CWgtDeskTop ( wx.Panel ):
         self.m_btnFunc_1.Label = u"员工管理"
         self.m_btnFunc_2.Show()
         self.m_btnFunc_2.Label = u"员工排班"
+        self.m_btnFunc_3.Show()
+        self.m_btnFunc_3.Label = u"权限管理"
+        self.SetFramTile()
+        self.ShowFuncBtns()
+        
+    def ShowPrinter(self):
+        self.EnableAllSelector()
+        self.HideAllFuncBtn()
+        self.m_btnPrinter.Enabled = False;
+        self.m_btnFunc_1.Show()
+        self.m_btnFunc_1.Label = u"厨打方案"
+        self.m_btnFunc_2.Show()
+        self.m_btnFunc_2.Label = u"菜品关联"
         self.SetFramTile()
         self.ShowFuncBtns()
     
@@ -324,13 +348,11 @@ class CWgtDeskTop ( wx.Panel ):
         self.HideAllFuncBtn()
         self.m_btnSysSetting.Enabled = False;
         self.m_btnFunc_1.Show()
-        self.m_btnFunc_1.Label = u"打印机设置"
+        self.m_btnFunc_1.Label = u"数据备份"
         self.m_btnFunc_2.Show()
-        self.m_btnFunc_2.Label = u"数据备份"
+        self.m_btnFunc_2.Label = u"公司信息"
         self.m_btnFunc_3.Show()
-        self.m_btnFunc_3.Label = u"公司信息"
-        self.m_btnFunc_4.Show()
-        self.m_btnFunc_4.Label = u"注册"
+        self.m_btnFunc_3.Label = u"注册"
         self.SetFramTile()
         self.ShowFuncBtns()
     
@@ -349,6 +371,7 @@ class CWgtDeskTop ( wx.Panel ):
         self.m_btnDiningRoomSetting.Enabled = True
         self.m_btnDishesPublishing.Enabled = True
         self.m_btnStaffMan.Enabled = True
+        self.m_btnPrinter.Enabled = True
         self.m_btnReportForms.Enabled = True
         self.m_btnSysSetting.Enabled = True
         self.m_btnStockMan.Enabled = True
@@ -369,11 +392,13 @@ class CWgtDeskTop ( wx.Panel ):
         elif select_item == "dishes_publishing":
             self.func_num = 1
         elif select_item == "staff_manager":
+            self.func_num = 3
+        elif select_item == "printer":
             self.func_num = 2
         elif select_item == "report_forms":
             self.func_num = 5
         elif select_item == "system_setting":
-            self.func_num = 4
+            self.func_num = 3
         elif select_item == "stock_manager":
             self.func_num = 2   
             
@@ -392,6 +417,8 @@ class CWgtDeskTop ( wx.Panel ):
             self.GetParent().SetTitle(u"菜品发布")
         elif select_item == "staff_manager":
             self.GetParent().SetTitle(u"员工管理")
+        elif select_item == "printer":
+            self.GetParent().SetTitle(u"打印设置")
         elif select_item == "report_forms":
             self.GetParent().SetTitle(u"报表中心")
         elif select_item == "system_setting":

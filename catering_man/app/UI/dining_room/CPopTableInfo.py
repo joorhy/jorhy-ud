@@ -10,9 +10,7 @@
 
 import wx
 import wx.xrc
-from app.logic.dining_room.CDataArea import CDataArea
 from app.logic.dining_room.CDataArea import CDataAreaInfo
-from app.logic.dining_room.CDataType import CDataType
 from app.logic.dining_room.CDataType import CDataTypeInfo
 from app.logic.dining_room.CDataTable import CDataTable, CDataTableInfo
 from app.logic.dining_room.CDataMinexpense import CDataMinexpenseInfo
@@ -223,7 +221,6 @@ class CPopTableInfo ( wx.Dialog ):
     
     def OnBtnSave( self, event ):
         event.Skip()
-        
         area = self.m_cbxArea.GetClientData(self.m_cbxArea.GetSelection())
         type = self.m_cbxType.GetClientData(self.m_cbxType.GetSelection())
         min_expense = self.m_cbxMinExpense.GetClientData(self.m_cbxMinExpense.GetSelection())

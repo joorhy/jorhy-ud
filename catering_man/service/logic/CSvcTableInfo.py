@@ -3,9 +3,6 @@
 from framework.CSingleton import CSingleton
 from service.data_base.CDbTableInfo import CDbTableInfo
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbTableInfoArea import CDbTableInfoArea
-from service.data_base.CDbTableInfoType import CDbTableInfoType
-from service.data_base.CDbTableInfoMinexpense import CDbTableInfoMinexpense
 
 class CSvcTableInfo(CSingleton):
     def __repr__(self):
@@ -17,7 +14,16 @@ class CSvcTableInfo(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbTableInfo.num_id, 
+        result = session.query(CDbTableInfo).all()   
+                               
+        index = 0
+        data = list()
+        for item in result:
+            data.append([index, int(item.num_id), item.vch_name, item.table_info_type.vch_name, 
+                         item.table_info_area.vch_name, int(item.num_people_amount), item.table_info_minexpense.vch_name])
+            index += 1
+                 
+        '''result = session.query(CDbTableInfo.num_id, 
                                CDbTableInfo.vch_name, 
                                CDbTableInfo.num_people_amount, 
                                CDbTableInfoMinexpense.vch_name, 
@@ -33,7 +39,7 @@ class CSvcTableInfo(CSingleton):
         data = list()
         for item in result:
             data.append([index, int(item[0]), item[1], item[5], item[4], int(item[2]), item[3]])
-            index += 1
+            index += 1'''
             
         return data
     

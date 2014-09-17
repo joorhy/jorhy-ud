@@ -25,21 +25,21 @@ class CAppManager(CSingleton):
         if app == 'Login':
             from app.UI.login.CWgtLogin import CWgtLogin
             CAppManager.panel = CWgtLogin(CAppManager.mainScreen) 
-        elif app == 'MainFrame':
+        elif app == 'DeskTop':
             from app.UI.desktop.CWgtDeskTop import CWgtDeskTop
             CAppManager.panel = CWgtDeskTop(CAppManager.mainScreen)
         elif app == 'DiningTable':
             from app.UI.dining_room.CWgtDiningTable import CWgtDiningTable
             CAppManager.panel = CWgtDiningTable(CAppManager.mainScreen)
         elif app == 'DishesPublish':
-            from app.UI.dishes.CDishesPublish import CDishesPublish
-            CAppManager.panel = CDishesPublish(CAppManager.mainScreen)
+            from app.UI.dishes.CWgtDishesPublish import CWgtDishesPublish
+            CAppManager.panel = CWgtDishesPublish(CAppManager.mainScreen)
         elif app == 'Employee':
-            from app.UI.employee.CEmployee import CEmployee
-            CAppManager.panel = CEmployee(CAppManager.mainScreen)
+            from app.UI.employee.CWgtEmployee import CWgtEmployee
+            CAppManager.panel = CWgtEmployee(CAppManager.mainScreen)
         elif app == 'DutyTable':
-            from app.UI.employee.CDutyTable import CDutyTable
-            CAppManager.panel = CDutyTable(CAppManager.mainScreen)
+            from app.UI.employee.CWgtDutyTable import CWgtDutyTable
+            CAppManager.panel = CWgtDutyTable(CAppManager.mainScreen)
          
         CAppManager.mainScreen.SetPanel(CAppManager.panel)
         CAppManager.panel.Initailize() 

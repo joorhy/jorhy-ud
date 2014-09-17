@@ -9,5 +9,7 @@ class CEnumEvent(CSingleton):
     EVT_LOGIN = wx.NewId()
     # Dining room refresh event
     EVT_DINING_ROOM_REFRESH = wx.NewId()
+    # Dishes publish refresh event
+    EVT_DISHES_PUBLISH_REFRESH = wx.NewId()
 
     

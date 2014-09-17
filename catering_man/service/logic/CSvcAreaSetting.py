@@ -29,7 +29,6 @@ class CSvcAreaSetting(CSingleton):
         session = CSqlManager.session
         result = session.query(CDbTableInfoArea.num_id).all()
         result.reverse()
-        print result[0][0]
         return int(result[0][0])
     
     @staticmethod
