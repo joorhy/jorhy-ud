@@ -11,5 +11,9 @@ class CEnumEvent(CSingleton):
     EVT_DINING_ROOM_REFRESH = wx.NewId()
     # Dishes publish refresh event
     EVT_DISHES_PUBLISH_REFRESH = wx.NewId()
+    # Employee manager refresh event
+    EVT_EMPLOYEE_REFRESH = wx.NewId()
+    # Printer scheme refresh event
+    EVT_PRINTER_SCHEME_REFRESH = wx.NewId()
 
     

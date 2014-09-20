@@ -6,14 +6,22 @@ from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
 class CDataEmployee(object):
-    def __init__(self, id_, code, name, table_type, area, peple_num, min_type):
-        self.id = id_
+    def __init__(self, num_id, line, code, name, birthday, duty, 
+                 department, sex, telephone, id_card, state, addr, email, note):
+        self.id = num_id
+        self.line = line
         self.code = code
         self.name = name
-        self.table_type = table_type
-        self.area = area
-        self.peple_num = peple_num
-        self.min_type = min_type
+        self.birthday = birthday
+        self.duty = duty
+        self.department = department
+        self.sex = sex
+        self.telephone = telephone
+        self.id_card = id_card
+        self.state = state
+        self.addr = addr
+        self.email = email
+        self.note = note
         
 class CDataEmployeeInfo(CSingleton):
     cur_item_index = 0
@@ -35,10 +43,9 @@ class CDataEmployeeInfo(CSingleton):
         result = CSvcEmployee.GetAll()
         data = list()
         for item in result:
-            data_item = CDataEmployee(item[0], item[1], item[2], item[3], item[4], item[5], item[6])
+            data_item = CDataEmployee(item[0], item[1], item[2], item[3], item[4], item[5], item[6],
+                                      item[7], item[8], item[9], item[10], item[11], item[12], item[13])
             data.append(data_item)
-            
-        #CDataTypeInfo.data_len = len(data)
             
         return data
     
@@ -47,7 +54,8 @@ class CDataEmployeeInfo(CSingleton):
         del CDataEmployeeInfo.table_items[0:len(CDataEmployeeInfo.table_items)]
         result = CSvcEmployee.GetItems()
         for item in result:
-            data_item = CDataEmployee(item[0], item[1], item[2], item[3], item[4], item[5], item[6])
+            data_item = CDataEmployee(item[0], item[1], item[2], item[3], item[4], item[5], item[6],
+                                      item[7], item[8], item[9], item[10], item[11], item[12], item[13])
             CDataEmployeeInfo.table_items.append(data_item)
             
     @staticmethod
@@ -57,28 +65,22 @@ class CDataEmployeeInfo(CSingleton):
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataEmployee):
-            item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
+            item = [data.code, data.name, data.birthday, data.duty, data.department, data.sex,
+                    data.telephone, data.id_card, data.state, data.addr, data.email, data.note]
             CSvcEmployee.AddItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
-    
-    @staticmethod      
-    def AddItems(data):
-        for obj in data:
-            if isinstance(obj, CDataEmployee):
-                item = [obj.code, obj.name, obj.table_type, obj.area, obj.peple_num, obj.min_type]
-                CSvcEmployee.AddItem(item)
-        CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)         
+            CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)      
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataEmployee):
-            item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
+            item = [data.id, data.code, data.name]
             CSvcEmployee.DeleteItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
+            CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataEmployee):
-            item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
+            item = [data.id, data.code, data.name, data.birthday, data.duty, data.department, data.sex,
+                    data.telephone, data.id_card, data.state, data.addr, data.email, data.note]
             CSvcEmployee.UpdateItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
+            CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)

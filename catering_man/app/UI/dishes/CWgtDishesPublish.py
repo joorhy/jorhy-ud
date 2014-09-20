@@ -17,7 +17,7 @@ from app.UI.dishes.CPopUnitSetting import CPopUnitSetting
 from app.UI.dishes.CPopCategorySetting import CPopCategorySetting
 from app.UI.dishes.CPopDishesInfo import CPopDishesInfo
 from app.logic.dishes.CModelDishes import CModelDishes
-from app.logic.dishes.CDataDishes import CDataDishesInfo, CDataDishes
+from app.logic.dishes.CDataDishes import CDataDishesInfo
 from app.logic.dishes.CDataCategory import CDataCategoryInfo
 from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent

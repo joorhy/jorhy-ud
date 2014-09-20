@@ -1,5 +1,5 @@
-# -*- coding: utf-8 -*- 
 #!/usr/bin/env python
+# -*- coding: utf-8 -*- 
 
 ###########################################################################
 ## Python code generated with wxFormBuilder (version Jun  5 2014)

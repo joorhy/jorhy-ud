@@ -15,8 +15,11 @@ from app.CAppManager import CAppManager
 from app.logic.desktop.CDataDeskTop import CDataDeskTop
 from app.UI.employee.CPopDepartment import CPopDepartment
 from app.logic.employee.CModelEmployee import CModelEmployee
-from app.logic.employee.CDataEmployee import CDataEmployeeInfo
+from app.logic.employee.CDataEmployee import CDataEmployeeInfo, CDataEmployee
 from app.UI.employee.CPopEmployee import CPopEmployee
+from app.logic.employee.CDataDepartment import CDataDepartmentInfo
+from framework.CEvtManager import CEvtManager
+from app.logic.CEnumEvent import CEnumEvent
 
 ###########################################################################
 ## Class CEmployee
@@ -47,11 +50,6 @@ class CWgtEmployee ( wx.Panel ):
         self.m_btnDelete.SetMinSize( wx.Size( 50,50 ) )
         
         m_topSizer.Add( self.m_btnDelete, 0, 0, 5 )
-        
-        '''self.m_btnState = wx.Button( self, wx.ID_ANY, u"离职", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.m_btnState.SetMinSize( wx.Size( 50,50 ) )
-        
-        m_topSizer.Add( self.m_btnState, 0, 0, 5 )'''
         
         self.m_btnDepartment = wx.Button( self, wx.ID_ANY, u"行政部门", wx.DefaultPosition, wx.DefaultSize, 0 )
         self.m_btnDepartment.SetFont( wx.Font( 8, 70, 90, 90, False, wx.EmptyString ) )
@@ -130,20 +128,90 @@ class CWgtEmployee ( wx.Panel ):
         self.m_btnNew.Bind( wx.EVT_BUTTON, self.OnBtnNew )
         self.m_btnModify.Bind( wx.EVT_BUTTON, self.OnBtnModify )
         self.m_btnDelete.Bind( wx.EVT_BUTTON, self.OnBtnDelete )
-        #self.m_btnState.Bind( wx.EVT_BUTTON, self.OnBtnState )
         self.m_btnDepartment.Bind( wx.EVT_BUTTON, self.OnBtnDepartment )
         self.m_btnRefresh.Bind( wx.EVT_BUTTON, self.OnBtnRefresh )
         self.m_btnExit.Bind( wx.EVT_BUTTON, self.OnBtnExit )
+        
+        # Show tree ctrl
+        self.ShowTreeCtrl()
     
     def __del__( self ):
         pass
     
     def Initailize(self):
+        # Add event listenner
+        CEvtManager.AddListenner(self, CEnumEvent.EVT_EMPLOYEE_REFRESH, self.OnBtnRefresh)
+        
         x, y = CDataDeskTop.GetFrameSize()       
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
-        pass
+        # Remove event listenner
+        CEvtManager.RemoveListenner(self, CEnumEvent.EVT_EMPLOYEE_REFRESH, self.OnBtnRefresh)
+    
+    def ShowTreeCtrl(self):
+        isz = (16,16)
+        il = wx.ImageList(isz[0], isz[1])
+        fldridx     = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER,      wx.ART_OTHER, isz))
+        fldropenidx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_OTHER, isz))
+        fileidx     = il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
+        
+        self.m_treeCtrl.SetImageList(il)
+        self.il = il
+
+        self.root = self.m_treeCtrl.AddRoot(u"全部行政部门")
+        self.m_treeCtrl.SetPyData(self.root, None)
+        self.m_treeCtrl.SetItemImage(self.root, fldridx, wx.TreeItemIcon_Normal)
+        self.m_treeCtrl.SetItemImage(self.root, fldropenidx, wx.TreeItemIcon_Expanded)
+        
+        department_map = dict()
+        li_items = CDataEmployeeInfo.GetItems()
+        for item in li_items:
+            if department_map.has_key(item.department):
+                department_map[item.department].append(item)
+            else:
+                list_tmp = []
+                list_tmp.append(item)
+                department_map_tmp = {item.department:list_tmp}
+                department_map.update(department_map_tmp)
+        
+        li_department = CDataDepartmentInfo.GetData()
+        for dept in li_department:
+            if department_map.has_key(dept.code):
+                title = "%s(%d)" % (dept.name, len(department_map[dept.code]))
+                child = self.m_treeCtrl.AppendItem(self.root, title)
+                self.m_treeCtrl.SetPyData(child, None)
+                self.m_treeCtrl.SetItemImage(child, fldridx, wx.TreeItemIcon_Normal)
+                self.m_treeCtrl.SetItemImage(child, fldropenidx, wx.TreeItemIcon_Expanded)
+                for employee_info in department_map[dept.code]:
+                    sub_clild = self.m_treeCtrl.AppendItem(child, employee_info.name)
+                    self.m_treeCtrl.SetPyData(sub_clild, None)
+                    self.m_treeCtrl.SetItemImage(sub_clild, fileidx, wx.TreeItemIcon_Normal)
+                    self.m_treeCtrl.SetItemImage(sub_clild, fileidx, wx.TreeItemIcon_Selected)
+            else:
+                title = "%s(0)" % dept.name
+                child = self.m_treeCtrl.AppendItem(self.root, title)
+                self.m_treeCtrl.SetPyData(child, None)
+                self.m_treeCtrl.SetItemImage(child, fldridx, wx.TreeItemIcon_Normal)
+                self.m_treeCtrl.SetItemImage(child, fldropenidx, wx.TreeItemIcon_Expanded)
+                
+        self.m_treeCtrl.Expand(self.root)
+        
+    def RefreshUI(self):
+        # Refresh treeCtrl
+        CDataEmployeeInfo.RefreshItems()
+        self.m_treeCtrl.DeleteAllItems()
+        self.ShowTreeCtrl()
+        
+        # Refresh dataviewlist
+        result = CDataEmployeeInfo.GetData()
+        del self.model.data[0:len(self.model.data)]
+        for new_obj in result:
+            item = self.model.ObjectToItem(new_obj)
+            self.model.data.append(new_obj)
+            self.m_dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
+                    
+        self.model.Cleared()
     
     # Virtual event handlers, overide them in your derived class
     def OnSize( self, event ):
@@ -153,7 +221,6 @@ class CWgtEmployee ( wx.Panel ):
         self.m_btnNew.SetMaxSize(wx.Size( 50,50 ))
         self.m_btnModify.SetMaxSize(wx.Size( 50,50 ))
         self.m_btnDelete.SetMaxSize(wx.Size( 50,50 ))
-        #self.m_btnState.SetMaxSize(wx.Size( 50,50 ))
         self.m_btnDepartment.SetMaxSize(wx.Size( 50,50 ))
         self.m_btnRefresh.SetMaxSize(wx.Size( 50,50 ))
         self.m_btnExit.SetMaxSize(wx.Size( 50,50 ))
@@ -168,14 +235,20 @@ class CWgtEmployee ( wx.Panel ):
     
     def OnBtnModify( self, event ):
         event.Skip()
+        item = self.m_dataViewList.GetCurrentItem()
+        data = self.model.ItemToObject(item)
+        index = self.model.data.index(data)
+        CDataEmployeeInfo.SetCurItemIndex(index)
         self.popEmployee = CPopEmployee(self, "mod")
         self.popEmployee.ShowModal()
     
     def OnBtnDelete( self, event ):
         event.Skip()
-    
-    '''def OnBtnState( self, event ):
-        event.Skip()'''
+        item = self.m_dataViewList.GetCurrentItem()
+        data = self.model.ItemToObject(item)
+        self.model.data.remove(data)
+        self.m_dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+        CDataEmployeeInfo.DeleteItem(data)
     
     def OnBtnDepartment( self, event ):
         event.Skip()
@@ -184,6 +257,7 @@ class CWgtEmployee ( wx.Panel ):
     
     def OnBtnRefresh( self, event ):
         event.Skip()
+        self.RefreshUI()
     
     def OnBtnExit( self, event ):
         event.Skip()

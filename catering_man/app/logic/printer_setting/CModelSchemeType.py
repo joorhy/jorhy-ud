@@ -4,9 +4,9 @@
 import wx
 import wx.xrc
 import wx.dataview
-from app.logic.employee.CDataEmployee import CDataEmployee
+from app.logic.printer_setting.CDataSchemeType import CDataSchemeType
 
-class CModelEmployee(wx.dataview.PyDataViewModel):
+class CModelSchemeType(wx.dataview.PyDataViewModel):
     def __init__(self, data):
         wx.dataview.PyDataViewModel.__init__(self)
         
@@ -25,19 +25,13 @@ class CModelEmployee(wx.dataview.PyDataViewModel):
                 
     # Report how many columns this model provides data for.
     def GetColumnCount(self):
-        return 9
+        return 3
 
     # Map the data column numbers to the data type
     def GetColumnType(self, col):
         mapper = {  0 : 'int',
-                    1 : 'string',
+                    1 : 'int',
                     2 : 'string',
-                    3 : 'string',
-                    4 : 'string',
-                    5 : 'int',
-                    6 : 'string',
-                    7 : 'string',
-                    8 : 'string'
                  }
         return mapper[col]
         
@@ -88,26 +82,10 @@ class CModelEmployee(wx.dataview.PyDataViewModel):
         
         # Fetch the data object for this item.
         node = self.ItemToObject(item)          
-        if isinstance(node, CDataEmployee):
-            if node.sex == 0:
-                str_sex = u"男"
-            else:
-                str_sex = u"女" 
-            
-            if node.state == 0:
-                str_state = u"在职"
-            else:
-                str_state = u"离职"
-                
-            mapper = {  0 : node.line,
+        if isinstance(node, CDataSchemeType):
+            mapper = {  0 : node.id,
                         1 : node.code,
                         2 : node.name,
-                        3 : node.department,
-                        4 : node.duty,
-                        5 : node.telephone,
-                        6 : str_sex,
-                        7 : node.birthday.strftime("%Y-%m-%d"),
-                        8 : str_state
                      }
             return mapper[col]
         
@@ -126,33 +104,10 @@ class CModelEmployee(wx.dataview.PyDataViewModel):
         # to deal with Song objects and cols 1 - 5
         
         node = self.ItemToObject(item)
-        if isinstance(node, CDataEmployee):
-            if value == u"男":
-                num_sex = 0
-            else:
-                num_sex = 1
-                
-            if value == u"在职":
-                num_state = 0
-            else:
-                num_state = 1
-                
+        if isinstance(node, CDataSchemeType):
             if col == 0:
-                node.line = value
+                node.id = value
             elif col == 1:
                 node.code = value
             elif col == 2:
                 node.name = value
-            elif col == 3:
-                node.department = value
-            elif col == 4:
-                node.duty = value
-            elif col == 5:
-                node.telephone = value
-            elif col == 6:
-                node.sex = num_sex
-            elif col == 7:
-                node.birthday = value.GetValue().Format("%Y-%m-%d")
-            elif col == 6:
-                node.set = num_state
-

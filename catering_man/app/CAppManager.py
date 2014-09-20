@@ -40,6 +40,12 @@ class CAppManager(CSingleton):
         elif app == 'DutyTable':
             from app.UI.employee.CWgtDutyTable import CWgtDutyTable
             CAppManager.panel = CWgtDutyTable(CAppManager.mainScreen)
+        elif app == 'PrinterScheme':
+            from app.UI.printer_setting.CWgtPrinterScheme import CWgtPrinterScheme
+            CAppManager.panel = CWgtPrinterScheme(CAppManager.mainScreen)
+        elif app == 'SchemeRelated':
+            from app.UI.printer_setting.CWgtSchemeRelated import CWgtSchemeRelated
+            CAppManager.panel = CWgtSchemeRelated(CAppManager.mainScreen)
          
         CAppManager.mainScreen.SetPanel(CAppManager.panel)
         CAppManager.panel.Initailize() 

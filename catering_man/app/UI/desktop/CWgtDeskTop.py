@@ -248,6 +248,8 @@ class CWgtDeskTop ( wx.Panel ):
             CAppManager.SwitchToApplication('DishesPublish')
         elif select_item == "staff_manager":
             CAppManager.SwitchToApplication('Employee')
+        elif select_item == "printer":
+            CAppManager.SwitchToApplication('PrinterScheme')
         elif select_item == "report_forms":
             pass
         elif select_item == "system_setting":
@@ -266,6 +268,8 @@ class CWgtDeskTop ( wx.Panel ):
             pass
         elif select_item == "staff_manager":
             CAppManager.SwitchToApplication('DutyTable')
+        elif select_item == "printer":
+            CAppManager.SwitchToApplication('SchemeRelated')
         elif select_item == "report_forms":
             pass
         elif select_item == "system_setting":

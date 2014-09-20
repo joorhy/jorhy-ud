@@ -11,8 +11,11 @@
 import wx
 import wx.xrc
 import wx.dataview
+import datetime
 from app.logic.employee.CModelUserRole import CModelUserRole
 from app.logic.employee.CDataUserRole import CDataUserRoleInfo, CDataUserRole
+from app.logic.employee.CDataEmployee import CDataEmployeeInfo, CDataEmployee
+from app.logic.employee.CDataDepartment import CDataDepartmentInfo
 
 ###########################################################################
 ## Class CPopEmployee
@@ -143,9 +146,9 @@ class CPopEmployee ( wx.Dialog ):
         
         m_brithSizer.Add( self.m_staticText7, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
         
-        self.m_dateBrithDay = wx.DatePickerCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.DefaultDateTime, wx.DefaultPosition, wx.Size( 1120,-1 ), wx.DP_DEFAULT )
+        self.m_dateBrithDay = wx.DatePickerCtrl( self.m_mainInfoPanel, size = ( 120,-1 ),
+                                                         style = wx.TAB_TRAVERSAL| wx.DP_DROPDOWN| wx.DP_SHOWCENTURY | wx.DP_ALLOWNONE )
         m_brithSizer.Add( self.m_dateBrithDay, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
         
         m_topBottomGSizer.Add( m_brithSizer, 1, wx.EXPAND, 5 )
         
@@ -343,10 +346,77 @@ class CPopEmployee ( wx.Dialog ):
         self.m_btnSaveRole.Bind( wx.EVT_BUTTON, self.OnBtnSaveRole )
         self.m_btnSave.Bind( wx.EVT_BUTTON, self.OnBtnSave )
         self.m_btnExit.Bind( wx.EVT_BUTTON, self.OnBtnExit )
+        
+        # Initailize 
+        self.index = 0
+        self.type = type
+        self.user_id = 0
+        self.Initailize()
     
     def __del__( self ):
         pass
     
+    def Initailize(self):
+        if self.type == "add":
+            self.InitAddInfo()
+        elif self.type == "mod":
+            self.index = CDataEmployeeInfo.GetCurItemIndex()
+            self.InitModInfo()
+            
+    def InitAddInfo(self):
+        li_department = CDataDepartmentInfo.GetData()
+        for dept in li_department:
+            self.m_cbxDepartment.Append(dept.name, dept)
+        self.m_cbxDepartment.SetSelection(0)
+        
+        self.m_rbtnMan.SetValue(True)
+        self.m_rbtnOnDuty.SetValue(True)
+        
+    def InitModInfo(self):
+        self.m_txtCode.Enable(False)
+        if self.index < 0:
+            self.index = 0
+            return
+        
+        items = CDataEmployeeInfo.GetItems()
+        if self.index >= len(items):
+            self.index = len(items) - 1
+            return
+        
+        data = items[self.index]
+        self.user_id = data.id
+        self.m_txtCode.SetValue(str(data.code))
+        self.m_txtName.SetValue(data.name)
+        self.m_txtDuty.SetValue(data.duty)
+        self.m_txtTelephone.SetValue(str(data.telephone))
+        self.m_txtIdcard.SetValue(data.id_card)
+        self.m_txtAddr.SetValue(data.addr)
+        self.m_txtEmail.SetValue(data.email)
+        self.m_txtNote.SetValue(data.note)
+        if data.sex == 0:
+            self.m_rbtnMan.SetValue(True)
+            self.m_rbtnFeman.SetValue(False)
+        else:
+            self.m_rbtnMan.SetValue(False)
+            self.m_rbtnFeman.SetValue(True)
+            
+        if data.state == 0:
+            self.m_rbtnOnDuty.SetValue(True)
+            self.m_rbtnOffDuty.SetValue(False)
+        else:
+            self.m_rbtnOnDuty.SetValue(False)
+            self.m_rbtnOffDuty.SetValue(True)
+        
+        birth_day = wx.DateTime()    
+        self.m_dateBrithDay.SetValue(birth_day)
+
+        li_department = CDataDepartmentInfo.GetData()
+        dept_selection = 0
+        for dept in li_department:
+            self.m_cbxDepartment.Append(dept.name, dept)
+            if dept.code == data.department:
+                self.m_cbxDepartment.SetSelection(dept_selection)
+            dept_selection += 1
     
     # Virtual event handlers, overide them in your derived class
     def OnBtnNewRole( self, event ):
@@ -374,6 +444,35 @@ class CPopEmployee ( wx.Dialog ):
     
     def OnBtnSave( self, event ):
         event.Skip()
+        department = self.m_cbxDepartment.GetClientData(self.m_cbxDepartment.GetSelection())
+        if self.m_rbtnMan.GetValue() == True:
+            sex_type = 0
+        else:
+            sex_type = 1
+            
+        if self.m_rbtnOnDuty.GetValue() == True:
+            state_type = 0
+        else:
+            state_type = 1
+            
+        data = CDataEmployee(self.user_id, 0,
+                          self.m_txtCode.GetValue(), 
+                          self.m_txtName.GetValue(), 
+                          self.m_dateBrithDay.GetValue().Format("%Y-%m-%d %H:%M:%S"), 
+                          self.m_txtDuty.GetValue(), 
+                          department.code,
+                          sex_type, 
+                          int(self.m_txtTelephone.GetValue()),
+                          self.m_txtIdcard.GetValue(),
+                          state_type,
+                          self.m_txtAddr.GetValue(),
+                          self.m_txtEmail.GetValue(), 
+                          self.m_txtNote.GetValue())
+        
+        if self.type == "add":
+            CDataEmployeeInfo.AddItem(data)
+        elif self.type == "mod":
+            CDataEmployeeInfo.UpdateItem(data)
     
     def OnBtnExit( self, event ):
         event.Skip()
