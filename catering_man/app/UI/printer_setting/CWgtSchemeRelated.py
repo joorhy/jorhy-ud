@@ -13,8 +13,10 @@ import wx.xrc
 import wx.dataview
 from app.CAppManager import CAppManager
 from app.logic.desktop.CDataDeskTop import CDataDeskTop
-from app.logic.dishes.CDataDishes import CDataDishesInfo
-from app.logic.dishes.CDataCategory import CDataCategoryInfo
+from app.logic.dishes.CModelDishes import CModelDishes
+from app.logic.dishes.CDataDishes import CDataDishes, CDataDishesInfo
+from app.logic.dishes.CDataCategory import CDataCategory, CDataCategoryInfo
+from app.UI.printer_setting.CPopSchemeRelated import CPopSchemeRelated
 
 ###########################################################################
 ## Class CWgtSchemeRelated
@@ -70,13 +72,20 @@ class CWgtSchemeRelated ( wx.Panel ):
         m_rightSizer = wx.BoxSizer( wx.VERTICAL )
         
         m_rightSizer.SetMinSize( wx.Size( 600,550 ) ) 
-        self.m_dataViewList = wx.dataview.DataViewListCtrl( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
+        self.m_dataViewList = wx.dataview.DataViewCtrl( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0 )
         self.m_dataViewList.SetMinSize( wx.Size( -1,600 ) )
         
-        self.m_dataViewLine = self.m_dataViewList.AppendTextColumn( u"行号" ) 
-        self.m_dataViewCode = self.m_dataViewList.AppendTextColumn( u"品码" ) 
-        self.m_dataViewName = self.m_dataViewList.AppendTextColumn( u"品名" ) 
-        self.m_dataViewType = self.m_dataViewList.AppendTextColumn( u"厨打方式" ) 
+        # Create an instance of our model...
+        self.model = CModelDishes(CDataDishesInfo.GetData())
+        CDataDishesInfo.RefreshItems()
+        
+        # Tel the DVC to use the model
+        self.m_dataViewList.AssociateModel(self.model)
+        
+        self.m_dataViewLine = self.m_dataViewList.AppendTextColumn( u"行号", 0 ) 
+        self.m_dataViewCode = self.m_dataViewList.AppendTextColumn( u"品码", 1 ) 
+        self.m_dataViewName = self.m_dataViewList.AppendTextColumn( u"品名", 2 ) 
+        self.m_dataViewType = self.m_dataViewList.AppendTextColumn( u"厨打方式", 10 ) 
         m_rightSizer.Add( self.m_dataViewList, 0, wx.EXPAND|wx.LEFT, 5 )
         
         
@@ -94,11 +103,15 @@ class CWgtSchemeRelated ( wx.Panel ):
         # Connect Events
         self.Bind( wx.EVT_SIZE, self.OnSize )
         
-        self.m_btnSetting.Bind( wx.EVT_BUTTON, self.OnNew )
-        self.m_btnBatSetting.Bind( wx.EVT_BUTTON, self.OnModify )
+        self.m_btnSetting.Bind( wx.EVT_BUTTON, self.OnBntSetting )
+        self.m_btnBatSetting.Bind( wx.EVT_BUTTON, self.OnBntBatSetting )
         self.m_btnExit.Bind( wx.EVT_BUTTON, self.OnExit )
         
+        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.OnSelChanged, self.m_treeCtrl)
+        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.OnActivate, self.m_treeCtrl)
+        
         # Show tree ctrl
+        self.tree_data = None
         self.ShowTreeCtrl()
     
     def __del__( self ):
@@ -127,6 +140,7 @@ class CWgtSchemeRelated ( wx.Panel ):
         self.m_treeCtrl.SetItemImage(self.root, fldropenidx, wx.TreeItemIcon_Expanded)
         
         dishes_map = dict()
+        CDataDishesInfo.RefreshItems()
         li_items = CDataDishesInfo.GetItems()
         for item in li_items:
             if dishes_map.has_key(item.category):
@@ -142,12 +156,12 @@ class CWgtSchemeRelated ( wx.Panel ):
             if dishes_map.has_key(category.code):
                 title = "%s(%d)" % (category.name, len(dishes_map[category.code]))
                 child = self.m_treeCtrl.AppendItem(self.root, title)
-                self.m_treeCtrl.SetPyData(child, None)
+                self.m_treeCtrl.SetPyData(child, category)
                 self.m_treeCtrl.SetItemImage(child, fldridx, wx.TreeItemIcon_Normal)
                 self.m_treeCtrl.SetItemImage(child, fldropenidx, wx.TreeItemIcon_Expanded)
                 for dishes in dishes_map[category.code]:
                     sub_clild = self.m_treeCtrl.AppendItem(child, dishes.name)
-                    self.m_treeCtrl.SetPyData(sub_clild, None)
+                    self.m_treeCtrl.SetPyData(sub_clild, dishes)
                     self.m_treeCtrl.SetItemImage(sub_clild, fileidx, wx.TreeItemIcon_Normal)
                     self.m_treeCtrl.SetItemImage(sub_clild, fileidx, wx.TreeItemIcon_Selected)
             else:
@@ -171,15 +185,28 @@ class CWgtSchemeRelated ( wx.Panel ):
         self.m_treeCtrl.SetMinSize( wx.Size( 200,y-50 ) )
         self.m_dataViewList.SetMinSize( wx.Size( x-200,y-50 ) )
         
-    def OnNew( self, event ):
+    def OnBntSetting( self, event ):
         event.Skip()
+        if isinstance(self.tree_data, CDataDishes):
+            CDataDishesInfo.SetCurItemIndex2(self.tree_data)
+            self.popRelatedSetting = CPopSchemeRelated(self)
+            self.popRelatedSetting.ShowModal()
     
-    def OnModify( self, event ):
+    def OnBntBatSetting( self, event ):
         event.Skip()
+        if isinstance(self.tree_data, CDataCategory):
+            print 'CDataCategory'
     
     def OnExit( self, event ):
         event.Skip()
         CAppManager.SwitchToApplication('DeskTop')
+        
+    def OnSelChanged(self, event):
+        event.Skip()
+        self.tree_data = self.m_treeCtrl.GetPyData(event.GetItem())
+
+    def OnActivate(self, event):
+        event.Skip()
     
 if __name__ == '__main__':
     app = wx.PySimpleApp()

@@ -5,6 +5,7 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Float
 from sqlalchemy.orm import relationship
 from service.CSqlManager import CSqlManager
 from service.data_base.CDbPrinterScheme import CDbPrinterScheme
+import CDbDishSpec, CDbDishStyle, CDbUnit
 
 class CDbDishPublish(CSqlManager.base_model):
     __tablename__ = 'dish_publish'

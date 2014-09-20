@@ -25,7 +25,7 @@ class CModelDishes(wx.dataview.PyDataViewModel):
                 
     # Report how many columns this model provides data for.
     def GetColumnCount(self):
-        return 7
+        return 10
 
     # Map the data column numbers to the data type
     def GetColumnType(self, col):
@@ -35,7 +35,11 @@ class CModelDishes(wx.dataview.PyDataViewModel):
                     3 : 'string',
                     4 : 'string',
                     5 : 'int',
-                    6 : 'string'
+                    6 : 'string',
+                    7 : 'string',
+                    8 : 'int',
+                    9 : 'int',
+                    10: 'string'
                  }
         return mapper[col]
         
@@ -97,6 +101,7 @@ class CModelDishes(wx.dataview.PyDataViewModel):
                         7 : node.unit,
                         8 : node.price,
                         9 : node.stop,
+                        10: node.printer_scheme
                      }
             return mapper[col]
         
@@ -136,3 +141,5 @@ class CModelDishes(wx.dataview.PyDataViewModel):
                 node.price = value
             elif col == 9:
                 node.stop = value
+            elif col == 10:
+                node.printer_scheme = value

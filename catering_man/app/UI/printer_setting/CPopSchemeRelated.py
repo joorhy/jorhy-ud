@@ -10,6 +10,8 @@
 
 import wx
 import wx.xrc
+from app.logic.dishes.CDataDishes import CDataDishes, CDataDishesInfo
+from app.logic.printer_setting.CDataSchemeType import CDataSchemeTypeInfo
 
 ###########################################################################
 ## Class CPopSchemeRelated
@@ -114,20 +116,61 @@ class CPopSchemeRelated ( wx.Dialog ):
         self.m_btnNext.Bind( wx.EVT_BUTTON, self.OnBtnNext )
         self.m_btnSave.Bind( wx.EVT_BUTTON, self.OnBtnSave )
         self.m_btnExit.Bind( wx.EVT_BUTTON, self.OnBtnExit )
+        
+        # Initailize
+        self.index = CDataDishesInfo.GetCurItemIndex()
+        self.Initailze()
     
     def __del__( self ):
         pass
     
-    
+    def Initailze(self):
+        self.m_txtCode.Enable(False)
+        self.m_txtName.Enable(False)
+        self.m_rbtnPrintOn.SetValue(False)
+        self.m_rbtnPrintOff.SetValue(True)
+        if self.index < 0:
+            self.index = 0
+            return
+        
+        items = CDataDishesInfo.GetItems()
+        if self.index >= len(items):
+            self.index = len(items) - 1
+            return
+        
+        data = items[self.index]
+        self.m_txtCode.SetValue(str(data.code))
+        self.m_txtName.SetValue(data.name)
+        li_scheme = CDataSchemeTypeInfo.GetData()
+        scheme_selection = 0
+        for scheme in li_scheme:
+            self.m_cbxScheme.Append(scheme.name, scheme)
+            if scheme.code == data.printer_scheme:
+                self.m_cbxUnit.SetSelection(scheme_selection)
+            scheme_selection += 1    
+            
     # Virtual event handlers, overide them in your derived class
     def OnBtnPrev( self, event ):
         event.Skip()
+        self.index -= 1
+        self.Initailze()
     
     def OnBtnNext( self, event ):
         event.Skip()
+        self.index += 1
+        self.Initailze()
     
     def OnBtnSave( self, event ):
         event.Skip()
+        scheme_type = self.m_cbxScheme.GetClientData(self.m_cbxScheme.GetSelection())
+        items = CDataDishesInfo.GetItems()
+        if self.index >= len(items):
+            self.index = len(items) - 1
+            return
+        
+        data = items[self.index]
+        data.printer_scheme = scheme_type.code
+        CDataDishesInfo.UpdatePrinterScheme(data)
     
     def OnBtnExit( self, event ):
         event.Skip()

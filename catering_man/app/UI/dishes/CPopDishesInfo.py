@@ -439,7 +439,7 @@ class CPopDishesInfo ( wx.Dialog ):
                           float(self.m_txtCommition.GetValue()),
                           float(self.m_txtDiscount.GetValue()),
                           self.m_cbxStop.GetValue(),
-                          self.image_url)
+                          self.image_url, "")
         if self.type == "add":
             CDataDishesInfo.AddItem(data)
         elif self.type == "mod":

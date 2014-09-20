@@ -7,7 +7,7 @@ from app.logic.CEnumEvent import CEnumEvent
 
 class CDataDishes(object):
     def __init__(self, line, id_, code, name, spell, spec, category, 
-                 price, unit, style, commistion, discount, stop, image_url):
+                 price, unit, style, commistion, discount, stop, image_url, printer_scheme):
         self.line = line
         self.id = id_
         self.code = code
@@ -22,9 +22,11 @@ class CDataDishes(object):
         self.discount = discount
         self.stop = stop
         self.image_url = image_url
+        self.printer_scheme = printer_scheme
         
 class CDataDishesInfo(CSingleton):
     cur_item_index = 0
+    cur_item = None
     table_items = list()
     
     def __repr__(self):
@@ -37,6 +39,10 @@ class CDataDishesInfo(CSingleton):
     @staticmethod
     def SetCurItemIndex(index):
         CDataDishesInfo.cur_item_index = index
+        
+    @staticmethod
+    def SetCurItemIndex2(item):
+        CDataDishesInfo.cur_item_index = CDataDishesInfo.table_items.index(item)
     
     @staticmethod
     def GetData():
@@ -45,7 +51,7 @@ class CDataDishesInfo(CSingleton):
         for item in result:
             data_item = CDataDishes(item[0], item[1], item[2], item[3], item[4], item[5], 
                                     item[6], item[7], item[8], item[9], item[10], item[11], 
-                                    item[12], item[13])
+                                    item[12], item[13], item[14])
             data.append(data_item)
             
         return data
@@ -57,7 +63,7 @@ class CDataDishesInfo(CSingleton):
         for item in result:
             data_item = CDataDishes(item[0], item[1], item[2], item[3], item[4], item[5], 
                                     item[6], item[7], item[8], item[9], item[10], item[11],
-                                    item[12], item[13])
+                                    item[12], item[13], item[14])
             CDataDishesInfo.table_items.append(data_item)
             
     @staticmethod
@@ -85,4 +91,11 @@ class CDataDishesInfo(CSingleton):
             item = [data.id, data.code, data.name, data.spell, data.spec, data.category, data.price, data.unit, 
                     data.style, data.commistion, data.discount, data.stop, data.image_url]
             CSvcDishesInfo.UpdateItem(item)
+            CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
+            
+    @staticmethod        
+    def UpdatePrinterScheme(data):
+        if isinstance(data, CDataDishes):
+            item = [data.id, data.printer_scheme]
+            CSvcDishesInfo.UpdatePrinterScheme(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
