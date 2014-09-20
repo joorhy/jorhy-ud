@@ -1,0 +1,93 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from framework.CSingleton import CSingleton
+from service.logic.CSvcDishesInfo import CSvcDishesInfo
+from framework.CEvtManager import CEvtManager
+from app.logic.CEnumEvent import CEnumEvent
+
+class CDataDishes(object):
+    def __init__(self, line, id_, code, name, spell, spec, category, 
+                 price, unit, style, commistion, discount, stop, image_rul):
+        self.line = line
+        self.id = id_
+        self.code = code
+        self.name = name
+        self.spell = spell
+        self.spec = spec
+        self.category = category
+        self.price = price
+        self.unit = unit
+        self.style = style
+        self.commistion = commistion
+        self.discount = discount
+        self.stop = stop
+        self.image_rul = image_rul
+        
+class CDataDishesInfo(CSingleton):
+    cur_item_index = 0
+    table_items = list()
+    
+    def __repr__(self):
+        return '%s' % (self.__class__.__name__)
+    
+    @staticmethod
+    def GetCurItemIndex():
+        return CDataDishesInfo.cur_item_index
+    
+    @staticmethod
+    def SetCurItemIndex(index):
+        CDataDishesInfo.cur_item_index = index
+    
+    @staticmethod
+    def GetData():
+        result = CSvcDishesInfo.GetAll()
+        data = list()
+        for item in result:
+            data_item = CDataDishes(item[0], item[1], item[2], item[3], item[4], item[5], 
+                                    item[6], item[7], item[8], item[9], item[10], item[11], 
+                                    item[12], item[13], item[14])
+            data.append(data_item)
+            
+        return data
+    
+    @staticmethod
+    def RefreshItems():
+        del CDataDishesInfo.table_items[0:len(CDataDishesInfo.table_items)]
+        result = CSvcDishesInfo.GetItems()
+        for item in result:
+            data_item = CDataDishes(item[0], item[1], item[2], item[3], item[4], item[5], item[6])
+            CDataDishesInfo.table_items.append(data_item)
+            
+    @staticmethod
+    def GetItems():            
+        return CDataDishesInfo.table_items
+    
+    @staticmethod
+    def AddItem(data):
+        if isinstance(data, CDataDishes):
+            item = [data.code, data.name, data.spell, data.spec, data.category, data.price, data.unit, 
+                    data.style, data.commistion, data.discount, data.stop, data.image_rul]
+            CSvcDishesInfo.AddItem(item)
+            CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
+    
+    @staticmethod      
+    def AddItems(data):
+        for obj in data:
+            if isinstance(obj, CDataDishes):
+                item = [obj.code, obj.name, obj.table_type, obj.area, obj.peple_num, obj.min_type]
+                CDataDishesInfo.AddItem(item)
+        CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)         
+            
+    @staticmethod
+    def DeleteItem(data):
+        if isinstance(data, CDataDishes):
+            item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
+            CSvcDishesInfo.DeleteItem(item)
+            CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
+            
+    @staticmethod
+    def UpdateItem(data):
+        if isinstance(data, CDataDishes):
+            item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
+            CSvcDishesInfo.UpdateItem(item)
+            CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
