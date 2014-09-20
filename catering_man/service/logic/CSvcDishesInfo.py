@@ -31,7 +31,8 @@ class CSvcDishesInfo(CSingleton):
                          item.num_ticheng,
                          item.num_discount,
                          True,
-                         item.vch_picname])
+                         item.vch_picname,
+                         "" if item.num_printer_scheme == None else item.num_printer_scheme.vch_name])
             index += 1
             
         return data
@@ -58,7 +59,8 @@ class CSvcDishesInfo(CSingleton):
                          item.num_ticheng,
                          item.num_discount,
                          True,
-                         item.vch_picname])
+                         item.vch_picname,
+                         item.num_printer_scheme_id])
             index += 1
             
         return data
@@ -115,6 +117,21 @@ class CSvcDishesInfo(CSingleton):
                                                      CDbDishPublish.num_style_id:data[8],
                                                      CDbDishPublish.num_ticheng:data[9],
                                                      CDbDishPublish.num_discount:data[10],
-                                                     CDbDishPublish.vch_picname:data[12]})
+                                                     CDbDishPublish.vch_picname:data[12],
+                                                     CDbDishPublish.num_printer_scheme_id:data[13]})
         session.flush()
         session.commit()
+        
+    @staticmethod
+    def UpdatePrinterScheme(data):
+        if not data:
+            return
+            
+        session = CSqlManager.session
+        session.query(CDbDishPublish).filter(
+                                           CDbDishPublish.num_id == data[0]
+                                           ).update({
+                                                     CDbDishPublish.num_printer_scheme_id:data[1]})
+        session.flush()
+        session.commit()
+        
