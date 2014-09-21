@@ -10,6 +10,8 @@
 
 import wx
 import wx.xrc
+from app.logic.dishes.CDataDishes import CDataDishesInfo, CDataDishes
+from app.logic.printer_setting.CDataPrinterScheme import CDataPrinterSchemeInfo
 
 ###########################################################################
 ## Class CPopSchemeRelatedBat
@@ -49,7 +51,7 @@ class CPopSchemeRelatedBat ( wx.Dialog ):
         m_schemeSizer.Add( self.m_staticText, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
         
         m_cbxSchemeNameChoices = []
-        self.m_cbxSchemeName = wx.ComboBox( self.m_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, m_cbxSchemeNameChoices, 0 )
+        self.m_cbxSchemeName = wx.ComboBox( self.m_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 110,-1 ), m_cbxSchemeNameChoices, 0 )
         m_schemeSizer.Add( self.m_cbxSchemeName, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
         
         
@@ -83,15 +85,31 @@ class CPopSchemeRelatedBat ( wx.Dialog ):
         # Connect Events
         self.m_btnBat.Bind( wx.EVT_BUTTON, self.OnBtnBat )
         self.m_btnExit.Bind( wx.EVT_BUTTON, self.OnBtnExit )
+        
+        # Initailize
+        self.list_data = CDataDishesInfo.GetCurListData()
+        self.Initailze()
     
     def __del__( self ):
-        pass
+        pass    
     
-    
+    def Initailze(self):
+        li_scheme = CDataPrinterSchemeInfo.GetData()
+        for scheme in li_scheme:
+            self.m_cbxSchemeName.Append(scheme.name, scheme) 
+                
     # Virtual event handlers, overide them in your derived class
     def OnBtnBat( self, event ):
         event.Skip()
-    
+        if self.list_data == None:
+            return
+        
+        scheme_type = self.m_cbxSchemeName.GetClientData(self.m_cbxSchemeName.GetSelection())
+        for item in self.list_data:
+            if isinstance(item, CDataDishes):
+                item.printer_scheme = scheme_type.code
+                CDataDishesInfo.UpdatePrinterScheme(item)
+                
     def OnBtnExit( self, event ):
         event.Skip()
         self.Close()

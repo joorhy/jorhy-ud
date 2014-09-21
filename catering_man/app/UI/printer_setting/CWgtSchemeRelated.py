@@ -17,6 +17,9 @@ from app.logic.dishes.CModelDishes import CModelDishes
 from app.logic.dishes.CDataDishes import CDataDishes, CDataDishesInfo
 from app.logic.dishes.CDataCategory import CDataCategory, CDataCategoryInfo
 from app.UI.printer_setting.CPopSchemeRelated import CPopSchemeRelated
+from app.UI.printer_setting.CPopSchemeRelatedBat import CPopSchemeRelatedBat
+from framework.CEvtManager import CEvtManager
+from app.logic.CEnumEvent import CEnumEvent
 
 ###########################################################################
 ## Class CWgtSchemeRelated
@@ -118,11 +121,15 @@ class CWgtSchemeRelated ( wx.Panel ):
         pass
     
     def Initailize(self):
+        # Add event listenner
+        CEvtManager.AddListenner(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
+        
         x, y = CDataDeskTop.GetFrameSize()       
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
-        pass
+        # Add event listenner
+        CEvtManager.RemoveListenner(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
     
     def ShowTreeCtrl(self):
         isz = (16,16)
@@ -156,7 +163,7 @@ class CWgtSchemeRelated ( wx.Panel ):
             if dishes_map.has_key(category.code):
                 title = "%s(%d)" % (category.name, len(dishes_map[category.code]))
                 child = self.m_treeCtrl.AppendItem(self.root, title)
-                self.m_treeCtrl.SetPyData(child, category)
+                self.m_treeCtrl.SetPyData(child, dishes_map[category.code])
                 self.m_treeCtrl.SetItemImage(child, fldridx, wx.TreeItemIcon_Normal)
                 self.m_treeCtrl.SetItemImage(child, fldropenidx, wx.TreeItemIcon_Expanded)
                 for dishes in dishes_map[category.code]:
@@ -194,8 +201,10 @@ class CWgtSchemeRelated ( wx.Panel ):
     
     def OnBntBatSetting( self, event ):
         event.Skip()
-        if isinstance(self.tree_data, CDataCategory):
-            print 'CDataCategory'
+        if isinstance(self.tree_data, list):
+            CDataDishesInfo.SetCurListData(self.tree_data)
+            self.popRelatedBatSetting = CPopSchemeRelatedBat(self)
+            self.popRelatedBatSetting.ShowModal()
     
     def OnExit( self, event ):
         event.Skip()
@@ -207,6 +216,23 @@ class CWgtSchemeRelated ( wx.Panel ):
 
     def OnActivate(self, event):
         event.Skip()
+        
+    def OnRefresh(self, event ):
+        event.Skip()
+        # Refresh treeCtrl
+        CDataDishesInfo.RefreshItems()
+        self.m_treeCtrl.DeleteAllItems()
+        self.ShowTreeCtrl()
+        
+        # Refresh dataviewlist
+        result = CDataDishesInfo.GetData()
+        del self.model.data[0:len(self.model.data)]
+        for new_obj in result:
+            item = self.model.ObjectToItem(new_obj)
+            self.model.data.append(new_obj)
+            self.m_dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
+                    
+        self.model.Cleared()
     
 if __name__ == '__main__':
     app = wx.PySimpleApp()

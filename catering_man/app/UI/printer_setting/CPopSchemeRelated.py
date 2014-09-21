@@ -12,6 +12,7 @@ import wx
 import wx.xrc
 from app.logic.dishes.CDataDishes import CDataDishes, CDataDishesInfo
 from app.logic.printer_setting.CDataSchemeType import CDataSchemeTypeInfo
+from app.logic.printer_setting.CDataPrinterScheme import CDataPrinterSchemeInfo
 
 ###########################################################################
 ## Class CPopSchemeRelated
@@ -70,7 +71,7 @@ class CPopSchemeRelated ( wx.Dialog ):
         m_panelBtmSizer.Add( self.m_staticText3, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
         
         m_cbxSchemeChoices = []
-        self.m_cbxScheme = wx.ComboBox( self.m_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, m_cbxSchemeChoices, 0 )
+        self.m_cbxScheme = wx.ComboBox( self.m_panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 110,-1 ), m_cbxSchemeChoices, 0 )
         m_panelBtmSizer.Add( self.m_cbxScheme, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
         
         
@@ -141,12 +142,12 @@ class CPopSchemeRelated ( wx.Dialog ):
         data = items[self.index]
         self.m_txtCode.SetValue(str(data.code))
         self.m_txtName.SetValue(data.name)
-        li_scheme = CDataSchemeTypeInfo.GetData()
+        li_scheme = CDataPrinterSchemeInfo.GetData()
         scheme_selection = 0
         for scheme in li_scheme:
             self.m_cbxScheme.Append(scheme.name, scheme)
             if scheme.code == data.printer_scheme:
-                self.m_cbxUnit.SetSelection(scheme_selection)
+                self.m_cbxScheme.SetSelection(scheme_selection)
             scheme_selection += 1    
             
     # Virtual event handlers, overide them in your derived class

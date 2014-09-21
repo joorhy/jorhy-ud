@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
 <application:Application xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:advanced="http://www.eclipse.org/ui/2010/UIModel/application/ui/advanced" xmlns:application="http://www.eclipse.org/ui/2010/UIModel/application" xmlns:basic="http://www.eclipse.org/ui/2010/UIModel/application/ui/basic" xmlns:menu="http://www.eclipse.org/ui/2010/UIModel/application/ui/menu" xmi:id="_5j-xASoOEeSGPuyg-wl36Q" elementId="org.eclipse.e4.legacy.ide.application" contributorURI="platform:/plugin/org.eclipse.platform" selectedElement="_5j-xAioOEeSGPuyg-wl36Q" bindingContexts="_5j-xCyoOEeSGPuyg-wl36Q">
-  <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;workbench>&#xD;&#xA;&lt;mruList>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDbPrinterScheme.py&quot; tooltip=&quot;catering_man/service/data_base/CDbPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/service/data_base/CDbPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDataCategory.py&quot; tooltip=&quot;catering_man/app/logic/dishes/CDataCategory.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/dishes/CDataCategory.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CWgtSchemeRelated.py&quot; tooltip=&quot;catering_man/app/UI/printer_setting/CWgtSchemeRelated.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/printer_setting/CWgtSchemeRelated.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CWgtDishesPublish.py&quot; tooltip=&quot;catering_man/app/UI/dishes/CWgtDishesPublish.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/dishes/CWgtDishesPublish.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CWgtPrinterScheme.py&quot; tooltip=&quot;catering_man/app/UI/printer_setting/CWgtPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/printer_setting/CWgtPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CWgtDiningTable.py&quot; tooltip=&quot;catering_man/app/UI/dining_room/CWgtDiningTable.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/dining_room/CWgtDiningTable.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDataPrinterScheme.py&quot; tooltip=&quot;catering_man/app/logic/printer_setting/CDataPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/printer_setting/CDataPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CPopPrinterScheme.py&quot; tooltip=&quot;catering_man/app/UI/printer_setting/CPopPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/printer_setting/CPopPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.ide.FileStoreEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;dataview.py&quot; tooltip=&quot;D:\Python27\Lib\site-packages\wx-3.0-msw\wx\dataview.py&quot;>&#xD;&#xA;&lt;persistable uri=&quot;file:/D:/Python27/Lib/site-packages/wx-3.0-msw/wx/dataview.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CModelPrinterScheme.py&quot; tooltip=&quot;catering_man/app/logic/printer_setting/CModelPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/printer_setting/CModelPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDataSchemeType.py&quot; tooltip=&quot;catering_man/app/logic/printer_setting/CDataSchemeType.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/printer_setting/CDataSchemeType.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CModelTable.py&quot; tooltip=&quot;catering_man/app/logic/dining_room/CModelTable.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/dining_room/CModelTable.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CSvcPrinterScheme.py&quot; tooltip=&quot;catering_man/service/logic/CSvcPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/service/logic/CSvcPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CPopTableInfo.py&quot; tooltip=&quot;catering_man/app/UI/dining_room/CPopTableInfo.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/dining_room/CPopTableInfo.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CEnumEvent.py&quot; tooltip=&quot;catering_man/app/logic/CEnumEvent.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/CEnumEvent.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;/mruList>&#xD;&#xA;&lt;/workbench>"/>
+  <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;workbench>&#xD;&#xA;&lt;mruList>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CWgtDishesPublish.py&quot; tooltip=&quot;catering_man/app/UI/dishes/CWgtDishesPublish.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/dishes/CWgtDishesPublish.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CWgtPrinterScheme.py&quot; tooltip=&quot;catering_man/app/UI/printer_setting/CWgtPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/printer_setting/CWgtPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CWgtSchemeRelated.py&quot; tooltip=&quot;catering_man/app/UI/printer_setting/CWgtSchemeRelated.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/printer_setting/CWgtSchemeRelated.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDataDishes.py&quot; tooltip=&quot;catering_man/app/logic/dishes/CDataDishes.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/dishes/CDataDishes.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CPopSchemeRelatedBat.py&quot; tooltip=&quot;catering_man/app/UI/printer_setting/CPopSchemeRelatedBat.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/printer_setting/CPopSchemeRelatedBat.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CPopSchemeRelated.py&quot; tooltip=&quot;catering_man/app/UI/printer_setting/CPopSchemeRelated.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/printer_setting/CPopSchemeRelated.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CSvcDishesInfo.py&quot; tooltip=&quot;catering_man/service/logic/CSvcDishesInfo.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/service/logic/CSvcDishesInfo.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDataPrinterScheme.py&quot; tooltip=&quot;catering_man/app/logic/printer_setting/CDataPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/printer_setting/CDataPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDbPrinterScheme.py&quot; tooltip=&quot;catering_man/service/data_base/CDbPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/service/data_base/CDbPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDataCategory.py&quot; tooltip=&quot;catering_man/app/logic/dishes/CDataCategory.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/dishes/CDataCategory.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CWgtDiningTable.py&quot; tooltip=&quot;catering_man/app/UI/dining_room/CWgtDiningTable.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/dining_room/CWgtDiningTable.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CPopPrinterScheme.py&quot; tooltip=&quot;catering_man/app/UI/printer_setting/CPopPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/UI/printer_setting/CPopPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.ide.FileStoreEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;dataview.py&quot; tooltip=&quot;D:\Python27\Lib\site-packages\wx-3.0-msw\wx\dataview.py&quot;>&#xD;&#xA;&lt;persistable uri=&quot;file:/D:/Python27/Lib/site-packages/wx-3.0-msw/wx/dataview.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CModelPrinterScheme.py&quot; tooltip=&quot;catering_man/app/logic/printer_setting/CModelPrinterScheme.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/printer_setting/CModelPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;file factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; id=&quot;org.python.pydev.editor.PythonEditor&quot; name=&quot;CDataSchemeType.py&quot; tooltip=&quot;catering_man/app/logic/printer_setting/CDataSchemeType.py&quot;>&#xD;&#xA;&lt;persistable path=&quot;/catering_man/app/logic/printer_setting/CDataSchemeType.py&quot;/>&#xD;&#xA;&lt;/file>&#xD;&#xA;&lt;/mruList>&#xD;&#xA;&lt;/workbench>"/>
   <tags>activeSchemeId:org.eclipse.ui.defaultAcceleratorConfiguration</tags>
   <tags>ModelMigrationProcessor.001</tags>
   <children xsi:type="basic:TrimmedWindow" xmi:id="_5j-xAioOEeSGPuyg-wl36Q" elementId="IDEWindow" contributorURI="platform:/plugin/org.eclipse.platform" selectedElement="_5yqGMCoOEeSGPuyg-wl36Q" label="%trimmedwindow.label.eclipseSDK" x="0" y="0" width="1039" height="768">
@@ -146,11 +146,11 @@
           <tags>persp.actionSet:org.eclipse.mylyn.tasks.ui.navigation</tags>
           <tags>persp.actionSet:org.eclipse.rse.core.search.searchActionSet</tags>
           <children xsi:type="basic:PartSashContainer" xmi:id="_tJ8YkSoWEeSHGc9R-sYjDg" selectedElement="_tJ8YlCoWEeSHGc9R-sYjDg" horizontal="true">
-            <children xsi:type="basic:PartStack" xmi:id="_tJ8YkioWEeSHGc9R-sYjDg" elementId="topLeft" containerData="2342" selectedElement="_tJ8YkyoWEeSHGc9R-sYjDg">
+            <children xsi:type="basic:PartStack" xmi:id="_tJ8YkioWEeSHGc9R-sYjDg" elementId="topLeft" containerData="1968" selectedElement="_tJ8YkyoWEeSHGc9R-sYjDg">
               <tags>newtablook</tags>
               <children xsi:type="advanced:Placeholder" xmi:id="_tJ8YkyoWEeSHGc9R-sYjDg" elementId="org.python.pydev.navigator.view" ref="_tJ4HICoWEeSHGc9R-sYjDg"/>
             </children>
-            <children xsi:type="basic:PartSashContainer" xmi:id="_tJ8YlCoWEeSHGc9R-sYjDg" containerData="7658" selectedElement="_tJ8YlSoWEeSHGc9R-sYjDg">
+            <children xsi:type="basic:PartSashContainer" xmi:id="_tJ8YlCoWEeSHGc9R-sYjDg" containerData="8032" selectedElement="_tJ8YlioWEeSHGc9R-sYjDg">
               <children xsi:type="advanced:Placeholder" xmi:id="_tJ8YlSoWEeSHGc9R-sYjDg" elementId="org.eclipse.ui.editorss" containerData="5710" ref="_59rDYCoOEeSGPuyg-wl36Q"/>
               <children xsi:type="basic:PartStack" xmi:id="_tJ8YlioWEeSHGc9R-sYjDg" elementId="bottom" containerData="4290" selectedElement="_tJ8_oSoWEeSHGc9R-sYjDg">
                 <tags>newtablook</tags>
@@ -273,46 +273,33 @@
       <tags>categoryTag:Help</tags>
     </sharedElements>
     <sharedElements xsi:type="advanced:Area" xmi:id="_59rDYCoOEeSGPuyg-wl36Q" elementId="org.eclipse.ui.editorss" selectedElement="_59rDYSoOEeSGPuyg-wl36Q">
-      <children xsi:type="basic:PartStack" xmi:id="_59rDYSoOEeSGPuyg-wl36Q" elementId="org.eclipse.e4.primaryDataStack" selectedElement="_Qblz8ECiEeSUc_NWAA8QZw">
+      <children xsi:type="basic:PartStack" xmi:id="_59rDYSoOEeSGPuyg-wl36Q" elementId="org.eclipse.e4.primaryDataStack" selectedElement="_6i3N4EE1EeS7-_CFeh4c3g">
         <tags>newtablook</tags>
         <tags>org.eclipse.e4.primaryDataStack</tags>
         <tags>EditorStack</tags>
-        <children xsi:type="basic:Part" xmi:id="_N4O4oECdEeSUc_NWAA8QZw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CWgtPrinterScheme" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/UI/printer_setting/CWgtPrinterScheme.py" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/UI/printer_setting/CWgtPrinterScheme.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;5923&quot; selectionTopPixel=&quot;2442&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_PdKk8EEzEeS7-_CFeh4c3g" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CPopSchemeRelated" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/UI/printer_setting/CPopSchemeRelated.py" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/UI/printer_setting/CPopSchemeRelated.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;321&quot; selectionOffset=&quot;6319&quot; selectionTopPixel=&quot;2622&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>org.python.pydev.editor.PythonEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_T0XDYECeEeSUc_NWAA8QZw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CWgtDiningTable" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/UI/dining_room/CWgtDiningTable.py" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/UI/dining_room/CWgtDiningTable.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;2573&quot; selectionOffset=&quot;7762&quot; selectionTopPixel=&quot;4104&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_6i3N4EE1EeS7-_CFeh4c3g" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CPopSchemeRelatedBat" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/UI/printer_setting/CPopSchemeRelatedBat.py" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/UI/printer_setting/CPopSchemeRelatedBat.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;63&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;2367&quot; selectionTopPixel=&quot;808&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>org.python.pydev.editor.PythonEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_gUTOgEChEeSUc_NWAA8QZw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CWgtDishesPublish" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/UI/dishes/CWgtDishesPublish.py" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/UI/dishes/CWgtDishesPublish.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;1124&quot; selectionTopPixel=&quot;475&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="__AczgEE1EeS7-_CFeh4c3g" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CDataDishes" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/logic/dishes/CDataDishes.py" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/logic/dishes/CDataDishes.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;3900&quot; selectionTopPixel=&quot;1758&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>org.python.pydev.editor.PythonEditor</tags>
           <tags>removeOnHide</tags>
         </children>
-        <children xsi:type="basic:Part" xmi:id="_06pncEChEeSUc_NWAA8QZw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CWgtSchemeRelated" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/UI/printer_setting/CWgtSchemeRelated.py" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/UI/printer_setting/CWgtSchemeRelated.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;49&quot; selectionOffset=&quot;5542&quot; selectionTopPixel=&quot;2717&quot;/>&#xD;&#xA;&lt;/editor>"/>
+        <children xsi:type="basic:Part" xmi:id="_NcNScEE2EeS7-_CFeh4c3g" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CWgtSchemeRelated" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/UI/printer_setting/CWgtSchemeRelated.py" closeable="true">
+          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/UI/printer_setting/CWgtSchemeRelated.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;9722&quot; selectionTopPixel=&quot;4209&quot;/>&#xD;&#xA;&lt;/editor>"/>
           <tags>Editor</tags>
           <tags>org.python.pydev.editor.PythonEditor</tags>
           <tags>removeOnHide</tags>
-        </children>
-        <children xsi:type="basic:Part" xmi:id="_Fl1LUECiEeSUc_NWAA8QZw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CDataCategory" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/app/logic/dishes/CDataCategory.py" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/app/logic/dishes/CDataCategory.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;45&quot; selectionOffset=&quot;581&quot; selectionTopPixel=&quot;323&quot;/>&#xD;&#xA;&lt;/editor>"/>
-          <tags>Editor</tags>
-          <tags>org.python.pydev.editor.PythonEditor</tags>
-          <tags>removeOnHide</tags>
-        </children>
-        <children xsi:type="basic:Part" xmi:id="_Qblz8ECiEeSUc_NWAA8QZw" elementId="org.eclipse.e4.ui.compatibility.editor" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityEditor" label="CDbPrinterScheme" iconURI="platform:/plugin/org.python.pydev/icons/python_file.gif" tooltip="catering_man/service/data_base/CDbPrinterScheme.py" closeable="true">
-          <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;editor id=&quot;org.python.pydev.editor.PythonEditor&quot;>&#xD;&#xA;&lt;input factoryID=&quot;org.eclipse.ui.part.FileEditorInputFactory&quot; path=&quot;/catering_man/service/data_base/CDbPrinterScheme.py&quot;/>&#xD;&#xA;&lt;editorState selectionHorizontalPixel=&quot;0&quot; selectionLength=&quot;0&quot; selectionOffset=&quot;354&quot; selectionTopPixel=&quot;0&quot;/>&#xD;&#xA;&lt;/editor>"/>
-          <tags>Editor</tags>
-          <tags>org.python.pydev.editor.PythonEditor</tags>
-          <tags>removeOnHide</tags>
-          <tags>activeOnClose</tags>
         </children>
       </children>
     </sharedElements>
@@ -370,6 +357,7 @@
       <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;view/>"/>
       <tags>View</tags>
       <tags>categoryTag:General</tags>
+      <tags>activeOnClose</tags>
       <menus xmi:id="_3VXDsCoWEeSHGc9R-sYjDg" elementId="org.eclipse.ui.console.ConsoleView">
         <tags>ViewMenu</tags>
         <tags>menuContribution:menu</tags>
@@ -411,7 +399,7 @@
       <tags>categoryTag:Java</tags>
     </sharedElements>
     <sharedElements xsi:type="basic:Part" xmi:id="_tJ4HICoWEeSHGc9R-sYjDg" elementId="org.python.pydev.navigator.view" contributionURI="bundleclass://org.eclipse.ui.workbench/org.eclipse.ui.internal.e4.compatibility.CompatibilityView" label="PyDev Package Explorer" iconURI="platform:/plugin/org.python.pydev/icons/pydev_package_explorer.gif" tooltip="Workspace" closeable="true">
-      <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;view CommonNavigator.LINKING_ENABLED=&quot;0&quot; currentWorkingSetName=&quot;Aggregate for window 1408720424285&quot; org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets=&quot;0&quot;>&#xD;&#xA;&lt;expanded IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man&quot;/>&#xD;&#xA;&lt;expanded IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man/app&quot;/>&#xD;&#xA;&lt;expanded IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man/app/UI&quot;/>&#xD;&#xA;&lt;expanded IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man/app/UI/dishes&quot;/>&#xD;&#xA;&lt;expanded IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man/app/UI/printer_setting&quot;/>&#xD;&#xA;&lt;expanded IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man/service&quot;/>&#xD;&#xA;&lt;expanded IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man/service/data_base&quot;/>&#xD;&#xA;&lt;selected IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man/service/data_base/CDbPrinterScheme.py&quot;/>&#xD;&#xA;&lt;/view>"/>
+      <persistedState key="memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?>&#xD;&#xA;&lt;view CommonNavigator.LINKING_ENABLED=&quot;0&quot; currentWorkingSetName=&quot;Aggregate for window 1408720424285&quot; org.eclipse.ui.navigator.resources.workingSets.showTopLevelWorkingSets=&quot;0&quot;>&#xD;&#xA;&lt;expanded IMemento.internal.id=&quot;E:/U_Dot/workspace/catering_man&quot;/>&#xD;&#xA;&lt;/view>"/>
       <tags>View</tags>
       <tags>categoryTag:PyDev</tags>
       <menus xmi:id="_tMO3kCoWEeSHGc9R-sYjDg" elementId="org.python.pydev.navigator.view">
@@ -501,18 +489,18 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_50AKACoOEeSGPuyg-wl36Q" elementId="org.eclipse.ui.workbench.file">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0Y0RgD_4EeSUc_NWAA8QZw" elementId="new.group"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0Y0RgT_4EeSUc_NWAA8QZw" elementId="newWizardDropDown"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0Y0Rgj_4EeSUc_NWAA8QZw" elementId="new.ext" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0Y0Rgz_4EeSUc_NWAA8QZw" elementId="save.group" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0Y0RhD_4EeSUc_NWAA8QZw" elementId="save"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0Y0RhT_4EeSUc_NWAA8QZw" elementId="saveAll"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0Y0Rhj_4EeSUc_NWAA8QZw" elementId="save.ext" visible="false"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_0Y9bcD_4EeSUc_NWAA8QZw" elementId="print" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/print_edit.gif" tooltip="Print" command="_5kl1GSoOEeSGPuyg-wl36Q"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMcD_4EeSUc_NWAA8QZw" elementId="print.ext" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMcT_4EeSUc_NWAA8QZw" elementId="build.group"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMcj_4EeSUc_NWAA8QZw" elementId="build.ext" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMcz_4EeSUc_NWAA8QZw" elementId="additions"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMHSsEFdEeScqZYZpkpeYw" elementId="new.group"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMH5wEFdEeScqZYZpkpeYw" elementId="newWizardDropDown"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMH5wUFdEeScqZYZpkpeYw" elementId="new.ext" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMH5wkFdEeScqZYZpkpeYw" elementId="save.group" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMH5w0FdEeScqZYZpkpeYw" elementId="save"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMIg0EFdEeScqZYZpkpeYw" elementId="saveAll"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMIg0UFdEeScqZYZpkpeYw" elementId="save.ext" visible="false"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_VMJH4EFdEeScqZYZpkpeYw" elementId="print" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/print_edit.gif" tooltip="Print" enabled="false" command="_5kl1GSoOEeSGPuyg-wl36Q"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMV8MEFdEeScqZYZpkpeYw" elementId="print.ext" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMV8MUFdEeScqZYZpkpeYw" elementId="build.group"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMV8MkFdEeScqZYZpkpeYw" elementId="build.ext" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMWjQEFdEeScqZYZpkpeYw" elementId="additions"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_50AKASoOEeSGPuyg-wl36Q" elementId="additions" toBeRendered="false">
         <tags>toolbarSeparator</tags>
@@ -562,11 +550,14 @@
         <children xsi:type="menu:OpaqueToolItem" xmi:id="_psKFEj_5EeSUc_NWAA8QZw" elementId="pyDebugGroup"/>
         <children xsi:type="menu:OpaqueToolItem" xmi:id="_psKFEz_5EeSUc_NWAA8QZw" elementId="com.python.pydev.debug.actions.EndDebugServer"/>
         <children xsi:type="menu:OpaqueToolItem" xmi:id="_psKFFD_5EeSUc_NWAA8QZw" elementId="com.python.pydev.debug.actions.StartDebugServer"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_Aj5gGkEyEeS7-_CFeh4c3g" elementId="pyDebugGroup"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_Aj5gG0EyEeS7-_CFeh4c3g" elementId="com.python.pydev.debug.actions.EndDebugServer"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_Aj5gHEEyEeS7-_CFeh4c3g" elementId="com.python.pydev.debug.actions.StartDebugServer"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_tKSW0CoWEeSHGc9R-sYjDg" elementId="com.python.pydev.navigate.actionSet">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9ID_4EeSUc_NWAA8QZw" elementId="pyNavigateGroup"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9IT_4EeSUc_NWAA8QZw" elementId="com.python.pydev.analysis.actions.pyGlobalsBrowserWorkbench"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcSlkEFdEeScqZYZpkpeYw" elementId="pyNavigateGroup"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcSlkUFdEeScqZYZpkpeYw" elementId="com.python.pydev.analysis.actions.pyGlobalsBrowserWorkbench"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_4-GYkCoVEeSHGc9R-sYjDg" elementId="org.eclipse.debug.ui.breakpointActionSet" visible="false">
         <tags>Draggable</tags>
@@ -594,10 +585,10 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_6JJTkCoOEeSGPuyg-wl36Q" elementId="org.eclipse.debug.ui.launchActionSet">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9Ij_4EeSUc_NWAA8QZw" elementId="debug"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9Iz_4EeSUc_NWAA8QZw" elementId="org.eclipse.debug.internal.ui.actions.DebugDropDownAction"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9JD_4EeSUc_NWAA8QZw" elementId="org.eclipse.debug.internal.ui.actions.RunDropDownAction"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9JT_4EeSUc_NWAA8QZw" elementId="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcTMoEFdEeScqZYZpkpeYw" elementId="debug"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcTMoUFdEeScqZYZpkpeYw" elementId="org.eclipse.debug.internal.ui.actions.DebugDropDownAction"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcTMokFdEeScqZYZpkpeYw" elementId="org.eclipse.debug.internal.ui.actions.RunDropDownAction"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcTzsEFdEeScqZYZpkpeYw" elementId="org.eclipse.ui.externaltools.ExternalToolMenuDelegateToolbar"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_6KILACoOEeSGPuyg-wl36Q" elementId="org.eclipse.jdt.ui.JavaElementCreationActionSet" visible="false">
         <tags>Draggable</tags>
@@ -620,10 +611,9 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_6JsGICoOEeSGPuyg-wl36Q" elementId="org.eclipse.search.searchActionSet">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9Jj_4EeSUc_NWAA8QZw" elementId="Search"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9Jz_4EeSUc_NWAA8QZw" elementId="org.eclipse.mylyn.tasks.ui.openTask"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9KD_4EeSUc_NWAA8QZw" elementId="org.eclipse.search.OpenSearchDialogPage"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_psKFFT_5EeSUc_NWAA8QZw" elementId="openType"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcTzsUFdEeScqZYZpkpeYw" elementId="Search"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcUawEFdEeScqZYZpkpeYw" elementId="org.eclipse.mylyn.tasks.ui.openTask"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcUawUFdEeScqZYZpkpeYw" elementId="org.eclipse.search.OpenSearchDialogPage"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_50AxECoOEeSGPuyg-wl36Q" elementId="group.nav" toBeRendered="false">
         <tags>toolbarSeparator</tags>
@@ -631,15 +621,15 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_50BYICoOEeSGPuyg-wl36Q" elementId="org.eclipse.ui.workbench.navigate">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMdD_4EeSUc_NWAA8QZw" elementId="history.group"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMdT_4EeSUc_NWAA8QZw" elementId="group.application" visible="false"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMdj_4EeSUc_NWAA8QZw" elementId="backardHistory"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMdz_4EeSUc_NWAA8QZw" elementId="forwardHistory"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMeD_4EeSUc_NWAA8QZw" elementId="pin.group"/>
-        <children xsi:type="menu:HandledToolItem" xmi:id="_0ZHMeT_4EeSUc_NWAA8QZw" elementId="org.eclipse.ui.window.pinEditor" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/pin_editor.gif" tooltip="Pin Editor" enabled="false" command="_5kfHaCoOEeSGPuyg-wl36Q"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9KT_4EeSUc_NWAA8QZw" elementId="org.eclipse.ui.edit.text.gotoNextAnnotation"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9Kj_4EeSUc_NWAA8QZw" elementId="org.eclipse.ui.edit.text.gotoPreviousAnnotation"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0g_9Kz_4EeSUc_NWAA8QZw" elementId="org.eclipse.ui.edit.text.gotoLastEditPosition"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMWjQUFdEeScqZYZpkpeYw" elementId="history.group"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMWjQkFdEeScqZYZpkpeYw" elementId="group.application" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMWjQ0FdEeScqZYZpkpeYw" elementId="backardHistory"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMXKUEFdEeScqZYZpkpeYw" elementId="forwardHistory"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMXKUUFdEeScqZYZpkpeYw" elementId="pin.group"/>
+        <children xsi:type="menu:HandledToolItem" xmi:id="_VMXxYEFdEeScqZYZpkpeYw" elementId="org.eclipse.ui.window.pinEditor" iconURI="platform:/plugin/org.eclipse.ui/icons/full/etool16/pin_editor.gif" tooltip="Pin Editor" enabled="false" command="_5kfHaCoOEeSGPuyg-wl36Q"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcVB0EFdEeScqZYZpkpeYw" elementId="org.eclipse.ui.edit.text.gotoNextAnnotation"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcVB0UFdEeScqZYZpkpeYw" elementId="org.eclipse.ui.edit.text.gotoPreviousAnnotation"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_XcVo4EFdEeScqZYZpkpeYw" elementId="org.eclipse.ui.edit.text.gotoLastEditPosition"/>
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_50B_MCoOEeSGPuyg-wl36Q" elementId="group.editor" toBeRendered="false">
         <tags>toolbarSeparator</tags>
@@ -651,8 +641,8 @@
       </children>
       <children xsi:type="menu:ToolBar" xmi:id="_50CmQSoOEeSGPuyg-wl36Q" elementId="org.eclipse.ui.workbench.help" visible="false">
         <tags>Draggable</tags>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMej_4EeSUc_NWAA8QZw" elementId="group.help"/>
-        <children xsi:type="menu:OpaqueToolItem" xmi:id="_0ZHMez_4EeSUc_NWAA8QZw" elementId="group.application" visible="false"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMYYcEFdEeScqZYZpkpeYw" elementId="group.help"/>
+        <children xsi:type="menu:OpaqueToolItem" xmi:id="_VMYYcUFdEeScqZYZpkpeYw" elementId="group.application" visible="false"/>
       </children>
       <children xsi:type="menu:ToolControl" xmi:id="_52by8CoOEeSGPuyg-wl36Q" elementId="PerspectiveSpacer" contributionURI="bundleclass://org.eclipse.e4.ui.workbench.renderers.swt/org.eclipse.e4.ui.workbench.renderers.swt.LayoutModifierToolControl">
         <tags>stretch</tags>

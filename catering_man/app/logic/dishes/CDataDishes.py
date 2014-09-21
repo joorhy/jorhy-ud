@@ -26,7 +26,7 @@ class CDataDishes(object):
         
 class CDataDishesInfo(CSingleton):
     cur_item_index = 0
-    cur_item = None
+    cur_list_data = None
     table_items = list()
     
     def __repr__(self):
@@ -43,6 +43,14 @@ class CDataDishesInfo(CSingleton):
     @staticmethod
     def SetCurItemIndex2(item):
         CDataDishesInfo.cur_item_index = CDataDishesInfo.table_items.index(item)
+    
+    @staticmethod
+    def SetCurListData(data):
+        CDataDishesInfo.cur_list_data = data
+    
+    @staticmethod
+    def GetCurListData():
+        return CDataDishesInfo.cur_list_data
     
     @staticmethod
     def GetData():
