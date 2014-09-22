@@ -22,6 +22,7 @@ app.UI.employee.CPopDepartment|E:\U_Dot\workspace\catering_man\app\UI\employee\C
 app.UI.employee.CPopEmployee|E:\U_Dot\workspace\catering_man\app\UI\employee\CPopEmployee.py
 app.UI.employee.CWgtDutyTable|E:\U_Dot\workspace\catering_man\app\UI\employee\CWgtDutyTable.py
 app.UI.employee.CWgtEmployee|E:\U_Dot\workspace\catering_man\app\UI\employee\CWgtEmployee.py
+app.UI.employee.CWgtPermission|E:\U_Dot\workspace\catering_man\app\UI\employee\CWgtPermission.py
 app.UI.employee.__init__|E:\U_Dot\workspace\catering_man\app\UI\employee\__init__.py
 app.UI.login.CWgtLogin|E:\U_Dot\workspace\catering_man\app\UI\login\CWgtLogin.py
 app.UI.login.__init__|E:\U_Dot\workspace\catering_man\app\UI\login\__init__.py
