@@ -20,6 +20,7 @@ app.UI.dishes.CWgtDishesPublish|E:\U_Dot\workspace\catering_man\app\UI\dishes\CW
 app.UI.dishes.__init__|E:\U_Dot\workspace\catering_man\app\UI\dishes\__init__.py
 app.UI.employee.CPopDepartment|E:\U_Dot\workspace\catering_man\app\UI\employee\CPopDepartment.py
 app.UI.employee.CPopEmployee|E:\U_Dot\workspace\catering_man\app\UI\employee\CPopEmployee.py
+app.UI.employee.CPopPermission|E:\U_Dot\workspace\catering_man\app\UI\employee\CPopPermission.py
 app.UI.employee.CWgtDutyTable|E:\U_Dot\workspace\catering_man\app\UI\employee\CWgtDutyTable.py
 app.UI.employee.CWgtEmployee|E:\U_Dot\workspace\catering_man\app\UI\employee\CWgtEmployee.py
 app.UI.employee.CWgtPermission|E:\U_Dot\workspace\catering_man\app\UI\employee\CWgtPermission.py
@@ -36,8 +37,9 @@ app.UI.printer_setting.__init__|E:\U_Dot\workspace\catering_man\app\UI\printer_s
 app.UI.stock.CProcure|E:\U_Dot\workspace\catering_man\app\UI\stock\CProcure.py
 app.UI.stock.CStock|E:\U_Dot\workspace\catering_man\app\UI\stock\CStock.py
 app.UI.stock.__init__|E:\U_Dot\workspace\catering_man\app\UI\stock\__init__.py
-app.UI.system.CCompany|E:\U_Dot\workspace\catering_man\app\UI\system\CCompany.py
 app.UI.system.CDataBackup|E:\U_Dot\workspace\catering_man\app\UI\system\CDataBackup.py
+app.UI.system.CPopCompany|E:\U_Dot\workspace\catering_man\app\UI\system\CPopCompany.py
+app.UI.system.CPopRegister|E:\U_Dot\workspace\catering_man\app\UI\system\CPopRegister.py
 app.UI.system.CPrinterSetting|E:\U_Dot\workspace\catering_man\app\UI\system\CPrinterSetting.py
 app.UI.system.__init__|E:\U_Dot\workspace\catering_man\app\UI\system\__init__.py
 app.__init__|E:\U_Dot\workspace\catering_man\app\__init__.py
