@@ -12,11 +12,17 @@ import wx
 import wx.xrc
 from app.CAppManager import CAppManager
 from app.logic.desktop.CDataDeskTop import CDataDeskTop
+from app.UI.system.CPopCompany import CPopCompany
+from app.UI.system.CPopRegister import CPopRegister
 
 ###########################################################################
 ## Class CWgtDeskTop
 ###########################################################################
 
+li_funcwidget_1 = ['DiningTable', 'DishesPublish', 'Employee', 'PrinterScheme', '', 'Company']
+li_funcwidget_2 = ['', '', 'DutyTable', 'SchemeRelated', '', 'Register']
+
+li_title = [u"餐厅设置", u"菜品发布", u"员工管理", u"打印设置", u"报表中心", u"系统设置"]
 
 class CWgtDeskTop (wx.Panel):
 	def _init_status_bar_sizer(self, parent):
@@ -43,7 +49,7 @@ class CWgtDeskTop (wx.Panel):
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		sizer.SetMinSize(wx.Size(200,750)) 
 		
-		# Selector panel initailize
+		# Selector panel initialize
 		self.selectorPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
 		self.selectorPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_INACTIVECAPTION))
 		
@@ -76,9 +82,6 @@ class CWgtDeskTop (wx.Panel):
 		# Add system setting button
 		self.btnSysSetting = wx.Button(self.selectorPanel, wx.ID_ANY, u"系统设置", wx.DefaultPosition, wx.DefaultSize, 0)
 		selectorBottomSizer.Add(self.btnSysSetting, 0, wx.ALIGN_CENTER|wx.ALL, 5)
-		# Add stock manager button
-		self.btnStockMan = wx.Button(self.selectorPanel, wx.ID_ANY, u"库存管理", wx.DefaultPosition, wx.DefaultSize, 0)
-		selectorBottomSizer.Add(self.btnStockMan, 0, wx.ALIGN_CENTER|wx.ALL, 5)
 		# Add exit button
 		self.btnExit = wx.Button(self.selectorPanel, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
 		selectorBottomSizer.Add(self.btnExit, 0, wx.ALIGN_CENTER|wx.ALL, 5)
@@ -95,14 +98,14 @@ class CWgtDeskTop (wx.Panel):
 		sizer = wx.BoxSizer(wx.VERTICAL)
 		sizer.SetMinSize(wx.Size(600, 750)) 
 		
-		# Funcwiget panel initailize
+		# Function widget panel initialize
 		self.funcPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
 		self.funcPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_INACTIVECAPTION))
 		self.funcPanel.SetMinSize(wx.Size(800, 600))
 		
 		funcSizer = wx.BoxSizer(wx.HORIZONTAL)
 		
-		# Define function buttons dict
+		# Define function buttons dictionary
 		self.di_funcButtons = dict()
 		# Add function 1
 		self.btnFunc_1 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)  
@@ -129,7 +132,7 @@ class CWgtDeskTop (wx.Panel):
 		funcBtnItem_6 = {5:self.btnFunc_6}
 		self.di_funcButtons.update(funcBtnItem_6 ) 
 		
-		# Layout funcwiget items
+		# Layout function widget items
 		self.funcPanel.SetSizer(funcSizer)
 		self.funcPanel.Layout()
 		funcSizer.Fit(self.funcPanel)
@@ -154,11 +157,10 @@ class CWgtDeskTop (wx.Panel):
 		self.Bind(wx.EVT_SIZE, self.OnSize)
 		self.btnDiningRoomSetting.Bind(wx.EVT_LEFT_DOWN, self.OnDiningRoonSetting)
 		self.btnDishesPublishing.Bind(wx.EVT_LEFT_DOWN, self.OnDishesPublishing)
-		self.btnStaffMan.Bind(wx.EVT_LEFT_DOWN, self.OnStaffManager)
-		self.btnPrinter.Bind(wx.EVT_LEFT_DOWN, self.OnPrinter)
+		self.btnStaffMan.Bind(wx.EVT_LEFT_DOWN, self.OnEmployeeManager)
+		self.btnPrinter.Bind(wx.EVT_LEFT_DOWN, self.OnPrinterSetting)
 		self.btnReportForms.Bind(wx.EVT_LEFT_DOWN, self.OnReportForms)
 		self.btnSysSetting.Bind(wx.EVT_LEFT_DOWN, self.OnSystemSetting)
-		self.btnStockMan.Bind(wx.EVT_LEFT_DOWN, self.OnStockManager)
 		self.btnExit.Bind(wx.EVT_LEFT_DOWN, parent.OnExit)
 		self.btnFunc_1.Bind(wx.EVT_LEFT_DOWN, self.OnFunc_1)
 		self.btnFunc_2.Bind(wx.EVT_LEFT_DOWN, self.OnFunc_2)
@@ -170,32 +172,30 @@ class CWgtDeskTop (wx.Panel):
 	def __del__( self ):
 		pass
 
-	# Override function, initailize ui
+	# Override function, initialize user interface
 	def Initailize(self):
 		x, y = CDataDeskTop.GetFrameSize()
 		self.SetSize(wx.Size(x, y))
 
 		select_item = CDataDeskTop.GetSelectedItem()
-		if select_item == "dining_table":
+		if select_item == 0:
 			self.ShowDiningRoonSetting()
-		elif select_item == "dishes_publishing":
+		elif select_item == 1:
 			self.ShowDishesPublishing()
-		elif select_item == "staff_manager":
+		elif select_item == 2:
 			self.ShowStaffManager()
-		elif select_item == "printer":
+		elif select_item == 3:
 			self.ShowPrinter()
-		elif select_item == "report_forms":
+		elif select_item == 4:
 			self.ShowReportForms()
-		elif select_item == "system_setting":
+		elif select_item == 5:
 			self.ShowSystemSetting()
-		elif select_item == "stock_manager":
-			self.ShowStockManager()
 
-	# Override function uninitailize ui
+	# Override function un initialize user interface
 	def Uninitailize(self):
 		pass
 
-	# Virtual event handlers, overide them in your derived class
+	# Virtual event handlers, override them in your derived class
 	def OnSize(self, event):
 		event.Skip()
 		x, y = self.GetSize()
@@ -206,105 +206,84 @@ class CWgtDeskTop (wx.Panel):
 
 		self.ShowFuncBtns()
 
-	def OnDiningRoonSetting( self, event ):
+	def OnDiningRoonSetting(self, event):
 		event.Skip()
-		CDataDeskTop.SetSelectedItem("dining_table")
+		CDataDeskTop.SetSelectedItem(0)
 		self.ShowDiningRoonSetting()
 
-	def OnDishesPublishing( self, event ):
+	def OnDishesPublishing(self, event):
 		event.Skip()
-		CDataDeskTop.SetSelectedItem("dishes_publishing")
+		CDataDeskTop.SetSelectedItem(1)
 		self.ShowDishesPublishing()
 
-	def OnStaffManager( self, event ):
+	def OnEmployeeManager(self, event):
 		event.Skip()
-		CDataDeskTop.SetSelectedItem("staff_manager")
+		CDataDeskTop.SetSelectedItem(2)
 		self.ShowStaffManager()
 
-	def OnPrinter( self, event ):
+	def OnPrinterSetting(self, event):
 		event.Skip()
-		CDataDeskTop.SetSelectedItem("printer")
+		CDataDeskTop.SetSelectedItem(3)
 		self.ShowPrinter()
 
-	def OnReportForms( self, event ):
+	def OnReportForms(self, event):
 		event.Skip()
-		CDataDeskTop.SetSelectedItem("report_forms")
+		CDataDeskTop.SetSelectedItem(4)
 		self.ShowReportForms()
 
-	def OnSystemSetting( self, event ):
+	def OnSystemSetting(self, event):
 		event.Skip()
-		CDataDeskTop.SetSelectedItem("system_setting")
+		CDataDeskTop.SetSelectedItem(5)
 		self.ShowSystemSetting()
 
-	def OnStockManager( self, event ):
+	def OnFunc_1(self, event):
 		event.Skip()
-		CDataDeskTop.SetSelectedItem("stock_manager")
-		self.ShowStockManager()
-
-	def OnFunc_1( self, event ):
-		event.Skip()
-
 		select_item = CDataDeskTop.GetSelectedItem()
-		if select_item == "dining_table":
-			CAppManager.SwitchToApplication('DiningTable')
-		elif select_item == "dishes_publishing":
-			CAppManager.SwitchToApplication('DishesPublish')
-		elif select_item == "staff_manager":
-			CAppManager.SwitchToApplication('Employee')
-		elif select_item == "printer":
-			CAppManager.SwitchToApplication('PrinterScheme')
-		elif select_item == "report_forms":
-			pass
-		elif select_item == "system_setting":
-			pass
-		elif select_item == "stock_manager":
-			pass
+		if select_item != 5:
+			CAppManager.SwitchToApplication(li_funcwidget_1[select_item])
+		else:
+			self.popCompany = CPopCompany(self)
+			self.popCompany.ShowModal()
+			self.Refresh()
 
-	def OnFunc_2( self, event ):
+	def OnFunc_2(self, event):
 		event.Skip()
-
 		select_item = CDataDeskTop.GetSelectedItem()
-		if select_item == "dining_table":
-			pass
-		elif select_item == "dishes_publishing":
-			pass
-		elif select_item == "staff_manager":
-			CAppManager.SwitchToApplication('DutyTable')
-		elif select_item == "printer":
-			CAppManager.SwitchToApplication('SchemeRelated')
-		elif select_item == "report_forms":
-			pass
-		elif select_item == "system_setting":
-			pass
-		elif select_item == "stock_manager":
-			pass
+		if select_item != 5:
+			CAppManager.SwitchToApplication(li_funcwidget_2[select_item])
+		else:
+			self.popRigster = CPopRegister(self)
+			self.popRigster.ShowModal()
+			self.Refresh()
 
-	def OnFunc_3( self, event ):
+	def OnFunc_3(self, event):
 		event.Skip()
 
-	def OnFunc_4( self, event ):
+	def OnFunc_4(self, event):
 		event.Skip()
 
-	def OnFunc_5( self, event ):
+	def OnFunc_5(self, event):
 		event.Skip()
 
-	def OnFunc_6( self, event ):
+	def OnFunc_6(self, event):
 		event.Skip()
 
 	def ShowDiningRoonSetting(self):
 		self.EnableAllSelector()
 		self.HideAllFuncBtn()
 		self.btnDiningRoomSetting.Enabled = False;
-		self.btnFunc_1.Show()
-		self.btnFunc_1.Label = u"餐桌设置"
+		#self.btnFunc_1.Show()
+		#self.btnFunc_1.Label = u"餐桌设置"
+		CAppManager.SwitchToApplication(li_funcwidget_1[0])
 		self.SetFramTile()
 
 	def ShowDishesPublishing(self):
 		self.EnableAllSelector()
 		self.HideAllFuncBtn()
 		self.btnDishesPublishing.Enabled = False;
-		self.btnFunc_1.Show()
-		self.btnFunc_1.Label = u"菜品发布"
+		#self.btnFunc_1.Show()
+		#self.btnFunc_1.Label = u"菜品发布"
+		CAppManager.SwitchToApplication(li_funcwidget_1[1])
 		self.SetFramTile()
 		self.ShowFuncBtns()
 
@@ -315,9 +294,9 @@ class CWgtDeskTop (wx.Panel):
 		self.btnFunc_1.Show()
 		self.btnFunc_1.Label = u"员工管理"
 		self.btnFunc_2.Show()
-		self.btnFunc_2.Label = u"员工排班"
+		self.btnFunc_2.Label = u"权限管理"
 		self.btnFunc_3.Show()
-		self.btnFunc_3.Label = u"权限管理"
+		self.btnFunc_3.Label = u"员工排班"
 		self.SetFramTile()
 		self.ShowFuncBtns()
 
@@ -354,22 +333,11 @@ class CWgtDeskTop (wx.Panel):
 		self.HideAllFuncBtn()
 		self.btnSysSetting.Enabled = False;
 		self.btnFunc_1.Show()
-		self.btnFunc_1.Label = u"数据备份"
+		self.btnFunc_1.Label = u"公司信息"
 		self.btnFunc_2.Show()
-		self.btnFunc_2.Label = u"公司信息"
+		self.btnFunc_2.Label = u"注册"
 		self.btnFunc_3.Show()
-		self.btnFunc_3.Label = u"注册"
-		self.SetFramTile()
-		self.ShowFuncBtns()
-
-	def ShowStockManager(self):
-		self.EnableAllSelector()
-		self.HideAllFuncBtn()
-		self.btnStockMan.Enabled = False;
-		self.btnFunc_1.Show()
-		self.btnFunc_1.Label = u"采购管理"
-		self.btnFunc_2.Show()
-		self.btnFunc_2.Label = u"库存管理"
+		self.btnFunc_3.Label = u"数据备份"
 		self.SetFramTile()
 		self.ShowFuncBtns()
 
@@ -380,7 +348,6 @@ class CWgtDeskTop (wx.Panel):
 		self.btnPrinter.Enabled = True
 		self.btnReportForms.Enabled = True
 		self.btnSysSetting.Enabled = True
-		self.btnStockMan.Enabled = True
 
 	def HideAllFuncBtn(self):
 		self.btnFunc_1.Hide()
@@ -393,20 +360,18 @@ class CWgtDeskTop (wx.Panel):
 	def ShowFuncBtns(self):
 		select_item = CDataDeskTop.GetSelectedItem()  
 		self.func_num = 1
-		if select_item == "dining_table":
+		if select_item == 0:
 			self.func_num = 1
-		elif select_item == "dishes_publishing":
+		elif select_item == 1:
 			self.func_num = 1
-		elif select_item == "staff_manager":
+		elif select_item == 2:
 			self.func_num = 3
-		elif select_item == "printer":
+		elif select_item == 3:
 			self.func_num = 2
-		elif select_item == "report_forms":
+		elif select_item == 4:
 			self.func_num = 5
-		elif select_item == "system_setting":
-			self.func_num = 3
-		elif select_item == "stock_manager":
-			self.func_num = 2   
+		elif select_item == 5:
+			self.func_num = 3 
 			
 		x, y = self.GetSize()
 		btn_y = ((y - 50) - 100) / 2
@@ -417,20 +382,7 @@ class CWgtDeskTop (wx.Panel):
 
 	def SetFramTile(self): 
 		select_item = CDataDeskTop.GetSelectedItem()  
-		if select_item == "dining_table":
-			self.GetParent().SetTitle(u"餐厅设置")
-		elif select_item == "dishes_publishing":
-			self.GetParent().SetTitle(u"菜品发布")
-		elif select_item == "staff_manager":
-			self.GetParent().SetTitle(u"员工管理")
-		elif select_item == "printer":
-			self.GetParent().SetTitle(u"打印设置")
-		elif select_item == "report_forms":
-			self.GetParent().SetTitle(u"报表中心")
-		elif select_item == "system_setting":
-			self.GetParent().SetTitle(u"菜品发布")
-		elif select_item == "stock_manager":
-			self.GetParent().SetTitle(u"库存管理")   
+		self.GetParent().SetTitle(li_title[select_item])
 
 if __name__ == '__main__':
 	app = wx.PySimpleApp()

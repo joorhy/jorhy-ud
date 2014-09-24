@@ -21,359 +21,357 @@ from app.logic.employee.CDataDepartment import CDataDepartmentInfo
 ## Class CPopEmployee
 ###########################################################################
 
-class CPopEmployee ( wx.Dialog ):
-    
-    def __init__( self, parent, type = "add" ):
-        wx.Dialog.__init__ ( self, parent, id = wx.ID_ANY, title = u"员工资料维护", pos = wx.DefaultPosition, size = wx.Size( 700,400 ), style = wx.CAPTION )
-        
-        self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
-        
-        m_sizer = wx.BoxSizer( wx.VERTICAL )
-        
-        self.m_notebook = wx.Notebook( self, wx.ID_ANY, wx.DefaultPosition, wx.Size( -1,300 ), 0 )
-        self.m_mainInfoPanel = wx.Panel( self.m_notebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( 700,300 ), wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL )
-        self.m_mainInfoPanel.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        self.m_mainInfoPanel.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
-        self.m_mainInfoPanel.SetMaxSize( wx.Size( -1,300 ) )
-        
-        m_mainPanelSizer = wx.BoxSizer( wx.VERTICAL )
-        
-        m_mainTopGSizer = wx.GridSizer( 1, 3, 0, 0 )
-        
-        m_topLeftGSizer = wx.GridSizer( 3, 1, 0, 0 )
-        
-        m_codeSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText1 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"工号：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText1.Wrap( -1 )
-        self.m_staticText1.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString ) )
-        self.m_staticText1.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BACKGROUND ) )
-        
-        m_codeSizer.Add( self.m_staticText1, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_txtCode = wx.TextCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
-        m_codeSizer.Add( self.m_txtCode, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_topLeftGSizer.Add( m_codeSizer, 1, wx.EXPAND, 5 )
-        
-        m_dutySizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText2 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"职务：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText2.Wrap( -1 )
-        self.m_staticText2.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        
-        m_dutySizer.Add( self.m_staticText2, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_txtDuty = wx.TextCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
-        m_dutySizer.Add( self.m_txtDuty, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_topLeftGSizer.Add( m_dutySizer, 1, wx.EXPAND, 5 )
-        
-        m_telSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText3 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"电话：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText3.Wrap( -1 )
-        self.m_staticText3.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        
-        m_telSizer.Add( self.m_staticText3, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_txtTelephone = wx.TextCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
-        m_telSizer.Add( self.m_txtTelephone, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_topLeftGSizer.Add( m_telSizer, 1, wx.EXPAND, 5 )
-        
-        
-        m_mainTopGSizer.Add( m_topLeftGSizer, 1, wx.EXPAND, 5 )
-        
-        m_topMidGSizer = wx.GridSizer( 3, 1, 0, 0 )
-        
-        m_nameSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText4 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"员工姓名：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText4.Wrap( -1 )
-        self.m_staticText4.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        
-        m_nameSizer.Add( self.m_staticText4, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_txtName = wx.TextCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,-1 ), 0 )
-        m_nameSizer.Add( self.m_txtName, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_topMidGSizer.Add( m_nameSizer, 1, wx.EXPAND, 5 )
-        
-        m_deptSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText5 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"行政部门：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText5.Wrap( -1 )
-        self.m_staticText5.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_CAPTIONTEXT ) )
-        
-        m_deptSizer.Add( self.m_staticText5, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        m_cbxDepartmentChoices = []
-        self.m_cbxDepartment = wx.ComboBox( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( -1,-1 ), m_cbxDepartmentChoices, 0 )
-        m_deptSizer.Add( self.m_cbxDepartment, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_topMidGSizer.Add( m_deptSizer, 1, wx.EXPAND, 5 )
-        
-        m_idSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText6 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"身份证号：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText6.Wrap( -1 )
-        self.m_staticText6.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        
-        m_idSizer.Add( self.m_staticText6, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_txtIdcard = wx.TextCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0 )
-        m_idSizer.Add( self.m_txtIdcard, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_topMidGSizer.Add( m_idSizer, 1, wx.EXPAND, 5 )
-        
-        
-        m_mainTopGSizer.Add( m_topMidGSizer, 1, wx.EXPAND, 5 )
-        
-        m_topBottomGSizer = wx.GridSizer( 3, 1, 0, 0 )
-        
-        m_brithSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText7 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"生日：", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
-        self.m_staticText7.Wrap( -1 )
-        self.m_staticText7.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        
-        m_brithSizer.Add( self.m_staticText7, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_dateBrithDay = wx.DatePickerCtrl( self.m_mainInfoPanel, size = ( 120,-1 ),
-                                                         style = wx.TAB_TRAVERSAL| wx.DP_DROPDOWN| wx.DP_SHOWCENTURY | wx.DP_ALLOWNONE )
-        m_brithSizer.Add( self.m_dateBrithDay, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        m_topBottomGSizer.Add( m_brithSizer, 1, wx.EXPAND, 5 )
-        
-        m_sexSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText8 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"性别：", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
-        self.m_staticText8.Wrap( -1 )
-        self.m_staticText8.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_CAPTIONTEXT ) )
-        
-        m_sexSizer.Add( self.m_staticText8, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_sexPanel = wx.Panel( self.m_mainInfoPanel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 100,25 ), wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL )
-        self.m_sexPanel.SetMinSize( wx.Size( 100,-1 ) )
-        
-        m_sexSelectSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        m_sexSelectSizer.SetMinSize( wx.Size( 80,25 ) ) 
-        self.m_rbtnMan = wx.RadioButton( self.m_sexPanel, wx.ID_ANY, u"男", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
-        m_sexSelectSizer.Add( self.m_rbtnMan, 0, wx.ALL, 5 )
-        
-        self.m_rbtnFeman = wx.RadioButton( self.m_sexPanel, wx.ID_ANY, u"女", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
-        m_sexSelectSizer.Add( self.m_rbtnFeman, 0, wx.ALL, 5 )
-        
-        
-        self.m_sexPanel.SetSizer( m_sexSelectSizer )
-        self.m_sexPanel.Layout()
-        m_sexSizer.Add( self.m_sexPanel, 1, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_topBottomGSizer.Add( m_sexSizer, 1, wx.EXPAND, 5 )
-        
-        m_stateSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText9 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"状态：", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
-        self.m_staticText9.Wrap( -1 )
-        self.m_staticText9.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        
-        m_stateSizer.Add( self.m_staticText9, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_statePanel = wx.Panel( self.m_mainInfoPanel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 80,25 ), wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL )
-        m_stateSelectSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        m_stateSelectSizer.SetMinSize( wx.Size( 80,25 ) ) 
-        self.m_rbtnOnDuty = wx.RadioButton( self.m_statePanel, wx.ID_ANY, u"在职", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
-        m_stateSelectSizer.Add( self.m_rbtnOnDuty, 0, wx.ALL, 5 )
-        
-        self.m_rbtnOffDuty = wx.RadioButton( self.m_statePanel, wx.ID_ANY, u"离职", wx.DefaultPosition, wx.Size( 60,-1 ), 0 )
-        m_stateSelectSizer.Add( self.m_rbtnOffDuty, 0, wx.ALL, 5 )
-        
-        
-        self.m_statePanel.SetSizer( m_stateSelectSizer )
-        self.m_statePanel.Layout()
-        m_stateSizer.Add( self.m_statePanel, 1, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_topBottomGSizer.Add( m_stateSizer, 1, wx.EXPAND, 5 )
-        
-        
-        m_mainTopGSizer.Add( m_topBottomGSizer, 1, wx.EXPAND, 5 )
-        
-        
-        m_mainPanelSizer.Add( m_mainTopGSizer, 1, 0, 5 )
-        
-        m_mainBottomSizer = wx.BoxSizer( wx.VERTICAL )
-        
-        m_mainBottomSizer.SetMinSize( wx.Size( 600,-1 ) ) 
-        m_mainBottomGSizer = wx.GridSizer( 3, 1, 0, 0 )
-        
-        m_addrSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText10 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"居住地址：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText10.Wrap( -1 )
-        self.m_staticText10.SetFont( wx.Font( wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString ) )
-        self.m_staticText10.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_CAPTIONTEXT ) )
-        
-        m_addrSizer.Add( self.m_staticText10, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_txtAddr = wx.TextCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 400,-1 ), 0 )
-        m_addrSizer.Add( self.m_txtAddr, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_mainBottomGSizer.Add( m_addrSizer, 1, wx.EXPAND, 5 )
-        
-        m_emailSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText11 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"电子邮件：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText11.Wrap( -1 )
-        self.m_staticText11.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        
-        m_emailSizer.Add( self.m_staticText11, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_txtEmail = wx.TextCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 400,-1 ), 0 )
-        m_emailSizer.Add( self.m_txtEmail, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_mainBottomGSizer.Add( m_emailSizer, 1, wx.EXPAND, 5 )
-        
-        m_noteSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        self.m_staticText12 = wx.StaticText( self.m_mainInfoPanel, wx.ID_ANY, u"备注：", wx.DefaultPosition, wx.Size( 80,-1 ), 0 )
-        self.m_staticText12.Wrap( -1 )
-        self.m_staticText12.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        
-        m_noteSizer.Add( self.m_staticText12, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_txtNote = wx.TextCtrl( self.m_mainInfoPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size( 400,-1 ), 0 )
-        m_noteSizer.Add( self.m_txtNote, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_mainBottomGSizer.Add( m_noteSizer, 1, wx.EXPAND, 5 )
-        
-        
-        m_mainBottomSizer.Add( m_mainBottomGSizer, 1, wx.EXPAND, 5 )
-        
-        
-        m_mainPanelSizer.Add( m_mainBottomSizer, 1, 0, 5 )
-        
-        
-        self.m_mainInfoPanel.SetSizer( m_mainPanelSizer )
-        self.m_mainInfoPanel.Layout()
-        self.m_notebook.AddPage( self.m_mainInfoPanel, u"主要资料", True )
-        self.m_rolePanel = wx.Panel( self.m_notebook, wx.ID_ANY, wx.DefaultPosition, wx.Size( 700,300 ), wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL )
-        self.m_rolePanel.SetForegroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNTEXT ) )
-        self.m_rolePanel.SetBackgroundColour( wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE ) )
-        
-        m_roleSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        m_roleLeftSizer = wx.BoxSizer( wx.HORIZONTAL )
-        
-        m_roleLeftSizer.SetMinSize( wx.Size( 500,300 ) ) 
-        self.m_dataViewRole = wx.dataview.DataViewCtrl( self.m_rolePanel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 500,300 ), 0|wx.TAB_TRAVERSAL )
-        self.m_dataViewRole.SetMaxSize( wx.Size( 500,300 ) )
-        
+class CPopEmployee (wx.Dialog):
+    def _init_view_sizer(self, parent):
+        notebook = wx.Notebook(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(-1,300), 0)
+
+        # Add employee main info panel
+        mainInfoPanel = wx.Panel(notebook, wx.ID_ANY, wx.DefaultPosition, wx.Size(700,300), wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        mainInfoPanel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        mainInfoPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        mainInfoPanel.SetMaxSize(wx.Size(-1,300))
+        
+        # Add employee main info sizer
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self._init_main_info_view_sizer(mainInfoPanel, sizer)
+        # Layout main info 
+        mainInfoPanel.SetSizer(sizer)
+        mainInfoPanel.Layout()
+        # Add main info panel into note book
+        notebook.AddPage(mainInfoPanel, u"主要资料", True)
+
+        # Add employee role info panel
+        rolePanel = wx.Panel(notebook, wx.ID_ANY, wx.DefaultPosition, wx.Size(700,300), wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        rolePanel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        rolePanel.SetBackgroundColour(wx.SystemSettings.GetColour( wx.SYS_COLOUR_BTNFACE))
+
+        # Add employee role info sizer
+        roleSizer = wx.BoxSizer(wx.HORIZONTAL)
+        self._init_role_info_view_sizer(rolePanel, roleSizer)
+        # Layout role panel
+        rolePanel.SetSizer(roleSizer)
+        rolePanel.Layout()
+        # Add role info panel into note book
+        notebook.AddPage(rolePanel, u"角色设置", False)
+
+        # Layout note book 
+        parent.Add(notebook, 1, wx.EXPAND |wx.ALL, 5)
+
+    def _init_main_info_view_sizer(self, container, parent):
+        gSizer = wx.GridSizer(1, 3, 0, 0)
+
+        # Add 3 columns sizer for main info
+        self._init_main_info_column_1_sizer(container, gSizer)
+        self._init_main_info_column_2_sizer(container, gSizer)
+        self._init_main_info_column_3_sizer(container, gSizer)
+        parent.Add(gSizer, 1, 0, 5)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        sizer.SetMinSize(wx.Size(600,-1))
+        # Add 3 rows for main info
+        self._init_main_info_3_rows_sizer(container, sizer)
+        parent.Add(sizer, 1, 0, 5)
+
+    def _init_main_info_column_1_sizer(self, container, parent):
+        gSizer = wx.GridSizer(3, 1, 0, 0)
+
+        # Add employee's job number sizer
+        codeSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add job number label
+        sTxtCode = wx.StaticText(container, wx.ID_ANY, u"工号：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtCode.Wrap(-1)
+        sTxtCode.SetFont(wx.Font(wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString))
+        sTxtCode.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        codeSizer.Add(sTxtCode, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add job number text control
+        self.txtCode = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1,-1), 0)
+        codeSizer.Add(self.txtCode, 0, wx.ALIGN_CENTER|wx.ALL,5)
+        # Layout job number sizer
+        gSizer.Add(codeSizer, 1, wx.EXPAND, 5)
+
+        # Add employee's duty sizer
+        dutySizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add duty label
+        sTxtDuty = wx.StaticText(container, wx.ID_ANY, u"职务：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtDuty.Wrap(-1)
+        sTxtDuty.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        dutySizer.Add(sTxtDuty, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add duty text control
+        self.txtDuty = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1,-1), 0)
+        dutySizer.Add(self.txtDuty, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout duty sizer
+        gSizer.Add(dutySizer, 1, wx.EXPAND, 5)
+
+        # Add employee's telephone number sizer
+        telSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add telephone label
+        sTxtTel = wx.StaticText(container, wx.ID_ANY, u"电话：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtTel.Wrap( -1 )
+        sTxtTel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT ))
+        telSizer.Add(sTxtTel, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
+        # Add telephone text control
+        self.txtTelephone = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1,-1), 0)
+        telSizer.Add(self.txtTelephone, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout telephone number sizer
+        gSizer.Add(telSizer, 1, wx.EXPAND, 5)
+
+        # Layout main info column 1
+        parent.Add(gSizer, 1, wx.EXPAND, 5)
+
+    def _init_main_info_column_2_sizer(self, container, parent):
+        gSizer = wx.GridSizer(3, 1, 0, 0)
+
+        # Add employee's name sizer
+        nameSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add name label
+        sTxtName = wx.StaticText(container, wx.ID_ANY, u"员工姓名：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtName.Wrap(-1)
+        sTxtName.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        nameSizer.Add(sTxtName, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add name text control
+        self.txtName = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1,-1), 0)
+        nameSizer.Add(self.txtName, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout name
+        gSizer.Add(nameSizer, 1, wx.EXPAND, 5)
+
+        # Add employee's department sizer
+        deptSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add department label
+        sTxtDept = wx.StaticText(container, wx.ID_ANY, u"行政部门：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtDept.Wrap(-1)
+        sTxtDept.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_CAPTIONTEXT))
+        deptSizer.Add(sTxtDept, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add department combo box
+        cbxDepartmentChoices = list()
+        self.cbxDepartment = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1,-1), cbxDepartmentChoices, 0)
+        deptSizer.Add(self.cbxDepartment, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout department
+        gSizer.Add(deptSizer, 1, wx.EXPAND, 5)
+
+        # Add employee's ID number sizer
+        idSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add ID number label
+        sTxtID = wx.StaticText(container, wx.ID_ANY, u"身份证号：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtID.Wrap(-1)
+        sTxtID.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        idSizer.Add(sTxtID, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add ID number text control
+        self.txtIdcard = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+        idSizer.Add(self.txtIdcard, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout ID number
+        gSizer.Add(idSizer, 1, wx.EXPAND, 5)
+        
+        #Layout main info column 2
+        parent.Add(gSizer, 1, wx.EXPAND, 5)
+
+    def _init_main_info_column_3_sizer(self, container, parent):
+        gSizer = wx.GridSizer(3, 1, 0, 0)
+
+        # Add employee's birthday sizer
+        birthSizer = wx.BoxSizer( wx.HORIZONTAL )
+        # Add birthday label
+        sTxtBirthday = wx.StaticText(container, wx.ID_ANY, u"生日：", wx.DefaultPosition, wx.Size(60,-1), 0)
+        sTxtBirthday.Wrap(-1)
+        sTxtBirthday.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        birthSizer.Add(sTxtBirthday, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add birthday picker control
+        self.dateBrithDay = wx.DatePickerCtrl(container, size=(120,-1), style=wx.TAB_TRAVERSAL| wx.DP_DROPDOWN| wx.DP_SHOWCENTURY | wx.DP_ALLOWNONE)
+        birthSizer.Add(self.dateBrithDay, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout birthday
+        gSizer.Add(birthSizer, 1, wx.EXPAND, 5)
+
+        # Add employee's gender sizer
+        sexSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add gender label
+        sTxtGender = wx.StaticText(container, wx.ID_ANY, u"性别：", wx.DefaultPosition, wx.Size(60,-1), 0)
+        sTxtGender.Wrap(-1)
+        sTxtGender.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_CAPTIONTEXT))
+        sexSizer.Add(sTxtGender, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add gender panel 
+        sexPanel = wx.Panel(container, wx.ID_ANY, wx.DefaultPosition, wx.Size(100,25), wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        sexPanel.SetMinSize(wx.Size(100,-1))
+        # Add gender selector sizer
+        sexSelectSizer = wx.BoxSizer(wx.HORIZONTAL)
+        sexSelectSizer.SetMinSize(wx.Size(80,25)) 
+        self.rbtnMan = wx.RadioButton(sexPanel, wx.ID_ANY, u"男", wx.DefaultPosition, wx.Size(60,-1), 0)
+        sexSelectSizer.Add(self.rbtnMan, 0, wx.ALL, 5)
+        self.rbtnFeman = wx.RadioButton(sexPanel, wx.ID_ANY, u"女", wx.DefaultPosition, wx.Size(60,-1), 0)
+        sexSelectSizer.Add(self.rbtnFeman, 0, wx.ALL, 5)
+        # Layout gender sizer
+        sexPanel.SetSizer(sexSelectSizer)
+        sexPanel.Layout()
+        sexSizer.Add(sexPanel, 1, wx.ALIGN_CENTER|wx.ALL, 5)
+        gSizer.Add(sexSizer, 1, wx.EXPAND, 5)
+
+        # Add employee's job status sizer
+        stateSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add job status label
+        sTxtStatus = wx.StaticText(container, wx.ID_ANY, u"状态：", wx.DefaultPosition, wx.Size(60,-1), 0)
+        sTxtStatus.Wrap(-1)
+        sTxtStatus.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        stateSizer.Add(sTxtStatus, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add job status panel
+        statePanel = wx.Panel(container, wx.ID_ANY, wx.DefaultPosition, wx.Size(80,25), wx.SUNKEN_BORDER|wx.TAB_TRAVERSAL)
+        # Add job status selector sizer
+        stateSelectSizer = wx.BoxSizer(wx.HORIZONTAL)
+        stateSelectSizer.SetMinSize(wx.Size(80,25)) 
+        self.rbtnOnDuty = wx.RadioButton(statePanel, wx.ID_ANY, u"在职", wx.DefaultPosition, wx.Size(60,-1), 0)
+        stateSelectSizer.Add(self.rbtnOnDuty, 0, wx.ALL, 5) 
+        self.rbtnOffDuty = wx.RadioButton(statePanel, wx.ID_ANY, u"离职", wx.DefaultPosition, wx.Size(60,-1), 0)
+        stateSelectSizer.Add(self.rbtnOffDuty, 0, wx.ALL, 5)
+        # Layout job status sizer
+        statePanel.SetSizer(stateSelectSizer)
+        statePanel.Layout()
+        stateSizer.Add(statePanel, 1, wx.ALIGN_CENTER|wx.ALL, 5)
+        gSizer.Add(stateSizer, 1, wx.EXPAND, 5)
+
+        #Layout main info column 3
+        parent.Add(gSizer, 1, wx.EXPAND, 5)
+
+    def _init_main_info_3_rows_sizer(self, container, parent):
+        # Create 3 rows and 1 column grid sizer
+        gSizer = wx.GridSizer(3, 1, 0, 0)
+        
+        # Add employee's address sizer
+        addrSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add address label
+        sTxtAddr = wx.StaticText(container, wx.ID_ANY, u"居住地址：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtAddr.Wrap(-1)
+        sTxtAddr.SetFont(wx.Font(wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString))
+        sTxtAddr.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_CAPTIONTEXT))
+        addrSizer.Add(sTxtAddr, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add address text control
+        self.txtAddr = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(400,-1), 0)
+        addrSizer.Add(self.txtAddr, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout address sizer
+        gSizer.Add(addrSizer, 1, wx.EXPAND, 5)
+        
+        # Add employee's email sizer
+        emailSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add email label
+        sTxtEmail = wx.StaticText(container, wx.ID_ANY, u"电子邮件：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtEmail.Wrap(-1)
+        sTxtEmail.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        emailSizer.Add(sTxtEmail, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add email text control
+        self.txtEmail = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(400,-1), 0)
+        emailSizer.Add(self.txtEmail, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout email sizer
+        gSizer.Add(emailSizer, 1, wx.EXPAND, 5)
+        
+        # Add employee's remarks
+        noteSizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add remarks label
+        sTxtNote = wx.StaticText(container, wx.ID_ANY, u"备注：", wx.DefaultPosition, wx.Size(80,-1), 0)
+        sTxtNote.Wrap(-1)
+        sTxtNote.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        noteSizer.Add(sTxtNote, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add remarks text control
+        self.txtNote = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(400,-1), 0)
+        noteSizer.Add(self.txtNote, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout remarks sizer
+        gSizer.Add(noteSizer, 1, wx.EXPAND, 5)
+        
+        # Layout 3 rows main info of employee, contains address email and remarks
+        parent.Add(gSizer, 1, wx.EXPAND, 5)
+
+    def _init_role_info_view_sizer(self, container, parent):
+        # Add data view list sizer
+        dataSizer = wx.BoxSizer(wx.HORIZONTAL)
+        dataSizer.SetMinSize(wx.Size(500,300)) 	
+        # Add data view list 
+        self.dataViewRole = wx.dataview.DataViewCtrl(container, wx.ID_ANY, wx.DefaultPosition, wx.Size(500,300), 0|wx.TAB_TRAVERSAL)
+        self.dataViewRole.SetMaxSize(wx.Size(500,300))
+        # Add items into data view list
+        self.dataViewRole.AppendTextColumn(u"行号", 0) 
+        self.dataViewRole.AppendTextColumn(u"编码", 1) 
+        self.dataViewRole.AppendTextColumn(u"员工角色", 2) 
+        self.dataViewRole.AppendTextColumn(u"状态", 3) 
+        dataSizer.Add(self.dataViewRole, 0, wx.EXPAND, 5)
+        # Layout data view list
+        parent.Add(dataSizer, 1, wx.EXPAND, 5)
+
+        # Add control buttons sizer
+        ctrlSizer = wx.BoxSizer(wx.VERTICAL)
+        ctrlSizer.SetMinSize(wx.Size(600,300))
+        # Add new role button
+        self.btnNewRole = wx.Button(container, wx.ID_ANY, u"新增角色", wx.DefaultPosition, wx.DefaultSize, 0)
+        ctrlSizer.Add( self.btnNewRole, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add delete role button
+        self.btnDeleteRole = wx.Button(container, wx.ID_ANY, u"删除角色", wx.DefaultPosition, wx.DefaultSize, 0)
+        ctrlSizer.Add(self.btnDeleteRole, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add save role button
+        self.btnSaveRole = wx.Button(container, wx.ID_ANY, u"保存角色", wx.DefaultPosition, wx.DefaultSize, 0)
+        ctrlSizer.Add(self.btnSaveRole, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout control buttons
+        parent.Add(ctrlSizer, 1, wx.EXPAND, 5)
+
+    def _init_ctrl_sizer(self, parent):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.SetMinSize(wx.Size(700,100))
+        # Add spacer 
+        sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
+        # Add save button
+        self.btnSave = wx.Button(self, wx.ID_ANY, u"保存", wx.DefaultPosition, wx.DefaultSize, 0)
+        sizer.Add(self.btnSave, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Add exit button
+        self.btnExit = wx.Button(self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
+        sizer.Add(self.btnExit, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        # Layout control sizer
+        parent.Add(sizer, 1, wx.BOTTOM, 5)
+
+    def __init__(self, parent, type_ = "add"):
+        wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"员工资料维护", pos=wx.DefaultPosition, size=wx.Size(700,400), style=wx.CAPTION)
+        self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+        
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self._init_view_sizer(sizer)
+        self._init_ctrl_sizer(sizer)
+
+        self.SetSizer(sizer)
+        self.Layout() 
+        self.Centre(wx.BOTH)
+
         # Create an instance of our model...
         self.model = CModelUserRole(CDataUserRoleInfo.GetData())
         
-        # Tel the DVC to use the model
-        self.m_dataViewRole.AssociateModel(self.model)
-        
-        self.m_dataViewListRole = self.m_dataViewRole.AppendTextColumn( u"行号", 0 ) 
-        self.m_dataViewListRole = self.m_dataViewRole.AppendTextColumn( u"编码", 1 ) 
-        self.m_dataViewListRole = self.m_dataViewRole.AppendTextColumn( u"员工角色", 2 ) 
-        self.m_dataViewListState = self.m_dataViewRole.AppendTextColumn( u"状态", 3) 
-        m_roleLeftSizer.Add( self.m_dataViewRole, 0, wx.EXPAND, 5 )
-        
-        
-        m_roleSizer.Add( m_roleLeftSizer, 1, wx.EXPAND, 5 )
-        
-        m_roleRightSizer = wx.BoxSizer( wx.VERTICAL )
-        
-        m_roleRightSizer.SetMinSize( wx.Size( 600,300 ) ) 
-        self.m_btnNewRole = wx.Button( self.m_rolePanel, wx.ID_ANY, u"新增角色", wx.DefaultPosition, wx.DefaultSize, 0 )
-        m_roleRightSizer.Add( self.m_btnNewRole, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_btnDeleteRole = wx.Button( self.m_rolePanel, wx.ID_ANY, u"删除角色", wx.DefaultPosition, wx.DefaultSize, 0 )
-        m_roleRightSizer.Add( self.m_btnDeleteRole, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_btnSaveRole = wx.Button( self.m_rolePanel, wx.ID_ANY, u"保存角色", wx.DefaultPosition, wx.DefaultSize, 0 )
-        m_roleRightSizer.Add( self.m_btnSaveRole, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_roleSizer.Add( m_roleRightSizer, 1, wx.EXPAND, 5 )
-        
-        
-        self.m_rolePanel.SetSizer( m_roleSizer )
-        self.m_rolePanel.Layout()
-        self.m_notebook.AddPage( self.m_rolePanel, u"角色设置", False )
-        
-        m_sizer.Add( self.m_notebook, 1, wx.EXPAND |wx.ALL, 5 )
-        
-        m_sizerBottom = wx.BoxSizer( wx.HORIZONTAL )
-        
-        m_sizerBottom.SetMinSize( wx.Size( 700,100 ) ) 
-        
-        m_sizerBottom.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        
-        self.m_btnSave = wx.Button( self, wx.ID_ANY, u"保存", wx.DefaultPosition, wx.DefaultSize, 0 )
-        m_sizerBottom.Add( self.m_btnSave, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        self.m_btnExit = wx.Button( self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0 )
-        m_sizerBottom.Add( self.m_btnExit, 0, wx.ALIGN_CENTER|wx.ALL, 5 )
-        
-        
-        m_sizer.Add( m_sizerBottom, 1, wx.BOTTOM, 5 )
-        
-        
-        self.SetSizer( m_sizer )
-        self.Layout()
-        
-        self.Centre( wx.BOTH )
+        # Tell the DVC to use the model
+        self.dataViewRole.AssociateModel(self.model)
         
         # Connect Events
-        self.m_btnNewRole.Bind( wx.EVT_BUTTON, self.OnBtnNewRole )
-        self.m_btnDeleteRole.Bind( wx.EVT_BUTTON, self.OnBtnDeleteRole )
-        self.m_btnSaveRole.Bind( wx.EVT_BUTTON, self.OnBtnSaveRole )
-        self.m_btnSave.Bind( wx.EVT_BUTTON, self.OnBtnSave )
-        self.m_btnExit.Bind( wx.EVT_BUTTON, self.OnBtnExit )
+        self.btnNewRole.Bind(wx.EVT_BUTTON, self.OnBtnNewRole)
+        self.btnDeleteRole.Bind(wx.EVT_BUTTON, self.OnBtnDeleteRole)
+        self.btnSaveRole.Bind(wx.EVT_BUTTON, self.OnBtnSaveRole)
+        self.btnSave.Bind(wx.EVT_BUTTON, self.OnBtnSave)
+        self.btnExit.Bind(wx.EVT_BUTTON, self.OnBtnExit)
         
-        # Initailize 
+        # Initialize 
         self.index = 0
-        self.type = type
+        self.type = type_
         self.user_id = 0
-        self.Initailize()
+        self.InitializeView()
     
     def __del__( self ):
         pass
     
-    def Initailize(self):
+    def InitializeView(self):
         if self.type == "add":
-            self.InitAddInfo()
+            self.InitAddView()
         elif self.type == "mod":
             self.index = CDataEmployeeInfo.GetCurItemIndex()
-            self.InitModInfo()
+            self.InitModView()
             
-    def InitAddInfo(self):
+    def InitAddView(self):
         li_department = CDataDepartmentInfo.GetData()
         for dept in li_department:
-            self.m_cbxDepartment.Append(dept.name, dept)
-        self.m_cbxDepartment.SetSelection(0)
+            self.cbxDepartment.Append(dept.name, dept)
+        self.cbxDepartment.SetSelection(0)
         
-        self.m_rbtnMan.SetValue(True)
-        self.m_rbtnOnDuty.SetValue(True)
+        self.rbtnMan.SetValue(True)
+        self.rbtnOnDuty.SetValue(True)
         
-    def InitModInfo(self):
-        self.m_txtCode.Enable(False)
+    def InitModView(self):
+        self.txtCode.Enable(False)
         if self.index < 0:
             self.index = 0
             return
@@ -385,37 +383,37 @@ class CPopEmployee ( wx.Dialog ):
         
         data = items[self.index]
         self.user_id = data.id
-        self.m_txtCode.SetValue(str(data.code))
-        self.m_txtName.SetValue(data.name)
-        self.m_txtDuty.SetValue(data.duty)
-        self.m_txtTelephone.SetValue(str(data.telephone))
-        self.m_txtIdcard.SetValue(data.id_card)
-        self.m_txtAddr.SetValue(data.addr)
-        self.m_txtEmail.SetValue(data.email)
-        self.m_txtNote.SetValue(data.note)
+        self.txtCode.SetValue(str(data.code))
+        self.txtName.SetValue(data.name)
+        self.txtDuty.SetValue(data.duty)
+        self.txtTelephone.SetValue(str(data.telephone))
+        self.txtIdcard.SetValue(data.id_card)
+        self.txtAddr.SetValue(data.addr)
+        self.txtEmail.SetValue(data.email)
+        self.txtNote.SetValue(data.note)
         if data.sex == 0:
-            self.m_rbtnMan.SetValue(True)
-            self.m_rbtnFeman.SetValue(False)
+            self.rbtnMan.SetValue(True)
+            self.rbtnFeman.SetValue(False)
         else:
-            self.m_rbtnMan.SetValue(False)
-            self.m_rbtnFeman.SetValue(True)
+            self.rbtnMan.SetValue(False)
+            self.rbtnFeman.SetValue(True)
             
         if data.state == 0:
-            self.m_rbtnOnDuty.SetValue(True)
-            self.m_rbtnOffDuty.SetValue(False)
+            self.rbtnOnDuty.SetValue(True)
+            self.rbtnOffDuty.SetValue(False)
         else:
-            self.m_rbtnOnDuty.SetValue(False)
-            self.m_rbtnOffDuty.SetValue(True)
+            self.rbtnOnDuty.SetValue(False)
+            self.rbtnOffDuty.SetValue(True)
         
         birth_day = wx.DateTime()    
-        self.m_dateBrithDay.SetValue(birth_day)
+        self.dateBrithDay.SetValue(birth_day)
 
         li_department = CDataDepartmentInfo.GetData()
         dept_selection = 0
         for dept in li_department:
-            self.m_cbxDepartment.Append(dept.name, dept)
+            self.cbxDepartment.Append(dept.name, dept)
             if dept.code == data.department:
-                self.m_cbxDepartment.SetSelection(dept_selection)
+                self.cbxDepartment.SetSelection(dept_selection)
             dept_selection += 1
     
     # Virtual event handlers, overide them in your derived class
@@ -426,48 +424,48 @@ class CPopEmployee ( wx.Dialog ):
         data = CDataUserRole(CDataUserRoleInfo.GetDataLen() + 1, CDataUserRoleInfo.GetId(), 0, "")
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
-        self.m_dataViewRole.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
+        self.dataViewRole.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
     
     def OnBtnDeleteRole( self, event ):
         event.Skip()
-        item = self.m_dataViewRole.GetCurrentItem()
+        item = self.dataViewRole.GetCurrentItem()
         data = self.model.ItemToObject(item)
         self.model.data.remove(data)
-        self.m_dataViewRole.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+        self.dataViewRole.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
         CDataUserRoleInfo.DeleteItem(data)
     
     def OnBtnSaveRole( self, event ):
         event.Skip()
-        item = self.m_dataViewRole.GetCurrentItem()
+        item = self.dataViewRole.GetCurrentItem()
         data = self.model.ItemToObject(item)
         CDataUserRoleInfo.UpdateItem(data)
     
     def OnBtnSave( self, event ):
         event.Skip()
-        department = self.m_cbxDepartment.GetClientData(self.m_cbxDepartment.GetSelection())
-        if self.m_rbtnMan.GetValue() == True:
+        department = self.cbxDepartment.GetClientData(self.cbxDepartment.GetSelection())
+        if self.rbtnMan.GetValue() == True:
             sex_type = 0
         else:
             sex_type = 1
             
-        if self.m_rbtnOnDuty.GetValue() == True:
+        if self.rbtnOnDuty.GetValue() == True:
             state_type = 0
         else:
             state_type = 1
             
         data = CDataEmployee(self.user_id, 0,
-                          self.m_txtCode.GetValue(), 
-                          self.m_txtName.GetValue(), 
-                          self.m_dateBrithDay.GetValue().Format("%Y-%m-%d %H:%M:%S"), 
-                          self.m_txtDuty.GetValue(), 
+                          self.txtCode.GetValue(), 
+                          self.txtName.GetValue(), 
+                          self.dateBrithDay.GetValue().Format("%Y-%m-%d %H:%M:%S"), 
+                          self.txtDuty.GetValue(), 
                           department.code,
                           sex_type, 
-                          int(self.m_txtTelephone.GetValue()),
-                          self.m_txtIdcard.GetValue(),
+                          int(self.txtTelephone.GetValue()),
+                          self.txtIdcard.GetValue(),
                           state_type,
-                          self.m_txtAddr.GetValue(),
-                          self.m_txtEmail.GetValue(), 
-                          self.m_txtNote.GetValue())
+                          self.txtAddr.GetValue(),
+                          self.txtEmail.GetValue(), 
+                          self.txtNote.GetValue())
         
         if self.type == "add":
             CDataEmployeeInfo.AddItem(data)

@@ -46,7 +46,7 @@ class CAppManager(CSingleton):
         elif app == 'SchemeRelated':
             from app.UI.printer_setting.CWgtSchemeRelated import CWgtSchemeRelated
             CAppManager.panel = CWgtSchemeRelated(CAppManager.mainScreen)
-         
+        
         CAppManager.mainScreen.SetPanel(CAppManager.panel)
         CAppManager.panel.Initailize() 
         CAppManager.panel.Show(True)

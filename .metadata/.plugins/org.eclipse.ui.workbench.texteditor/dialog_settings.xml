@@ -3,26 +3,26 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="299" key="DIALOG_WIDTH"/>
 		<item value="292" key="DIALOG_Y_ORIGIN"/>
-		<item value="727" key="DIALOG_X_ORIGIN"/>
 		<item value="435" key="DIALOG_HEIGHT"/>
+		<item value="727" key="DIALOG_X_ORIGIN"/>
 		<item value="1|微软雅黑|10.5|0|WINDOWS|1|-14|0|0|0|400|0|0|0|-122|3|2|1|34|微软雅黑" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="btnImport" key="selection"/>
+		<item value="OnFunc_1" key="selection"/>
 		<list key="findhistory">
-			<item value="btnImport"/>
-			<item value="m_midRightFgSizer"/>
-			<item value="_init_imager_view_sizer"/>
-			<item value="btnImpo"/>
-			<item value="cbxMinExpense"/>
-			<item value="cbxType"/>
-			<item value="m_"/>
-			<item value="cur_item"/>
+			<item value="OnFunc_1"/>
+			<item value="ShowStockManager"/>
+			<item value="btnStockMan"/>
+			<item value="OnStockManager"/>
+			<item value="OnPrinter"/>
+			<item value="OnStaffManager"/>
+			<item value="starf"/>
+			<item value="key_1"/>
 		</list>
 		<list key="replacehistory">
 		</list>

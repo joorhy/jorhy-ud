@@ -5,7 +5,7 @@ from framework.CSingleton import CSingleton
 class CDataDeskTop(CSingleton):
     m_frame_width = 800
     m_frame_height = 600
-    m_selected_item = "dining_table"
+    m_selected_item = 5
     
     def __init__(self):
         pass
@@ -27,5 +27,11 @@ class CDataDeskTop(CSingleton):
         return CDataDeskTop.m_selected_item
     
     @staticmethod
-    def SetSelectedItem(strItem):
-       CDataDeskTop.m_selected_item = strItem
+    def SetSelectedItem(strItem = 5):
+        # 0 for dining room setting
+        # 1 for dishes publishing
+        # 2 for employee manager
+        # 3 for printer setting
+        # 4 for report form manager
+        # 5 for system setting
+        CDataDeskTop.m_selected_item = strItem

@@ -34,9 +34,6 @@ app.UI.printer_setting.CPopSchemeType|E:\U_Dot\workspace\catering_man\app\UI\pri
 app.UI.printer_setting.CWgtPrinterScheme|E:\U_Dot\workspace\catering_man\app\UI\printer_setting\CWgtPrinterScheme.py
 app.UI.printer_setting.CWgtSchemeRelated|E:\U_Dot\workspace\catering_man\app\UI\printer_setting\CWgtSchemeRelated.py
 app.UI.printer_setting.__init__|E:\U_Dot\workspace\catering_man\app\UI\printer_setting\__init__.py
-app.UI.stock.CProcure|E:\U_Dot\workspace\catering_man\app\UI\stock\CProcure.py
-app.UI.stock.CStock|E:\U_Dot\workspace\catering_man\app\UI\stock\CStock.py
-app.UI.stock.__init__|E:\U_Dot\workspace\catering_man\app\UI\stock\__init__.py
 app.UI.system.CDataBackup|E:\U_Dot\workspace\catering_man\app\UI\system\CDataBackup.py
 app.UI.system.CPopCompany|E:\U_Dot\workspace\catering_man\app\UI\system\CPopCompany.py
 app.UI.system.CPopRegister|E:\U_Dot\workspace\catering_man\app\UI\system\CPopRegister.py

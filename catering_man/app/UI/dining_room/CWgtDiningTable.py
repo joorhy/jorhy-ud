@@ -163,14 +163,14 @@ class CWgtDiningTable (wx.Panel):
     
     def Initailize(self):
         # Add event listener
-        CEvtManager.AddListenner(self, CEnumEvent.EVT_DINING_ROOM_REFRESH, self.OnBtnRefresh)
+        CEvtManager.AddListener(self, CEnumEvent.EVT_DINING_ROOM_REFRESH, self.OnBtnRefresh)
         
         x, y = CDataDeskTop.GetFrameSize()
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
         # Remove event listener
-        CEvtManager.RemoveListenner(self, CEnumEvent.EVT_DINING_ROOM_REFRESH, self.OnBtnRefresh)
+        CEvtManager.RemoveListener(self, CEnumEvent.EVT_DINING_ROOM_REFRESH, self.OnBtnRefresh)
     
     def ShowTreeCtrl(self):
         isz = (16,16)
@@ -302,6 +302,7 @@ class CWgtDiningTable (wx.Panel):
     
     def OnBtnExit(self, event):
         event.Skip()
+        CDataDeskTop.SetSelectedItem()
         CAppManager.SwitchToApplication('DeskTop')
     
 if __name__ == '__main__':

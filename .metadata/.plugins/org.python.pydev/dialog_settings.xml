@@ -2,12 +2,27 @@
 <section name="Workbench">
 	<section name="PydevSearchPage">
 		<item value="false" key="com.python.pydev.ui.search.pySearchPageCASE_SENSITIVE"/>
-		<item value="1" key="com.python.pydev.ui.search.pySearchPageHISTORY_SIZE"/>
+		<item value="2" key="com.python.pydev.ui.search.pySearchPageHISTORY_SIZE"/>
 		<item value="false" key="com.python.pydev.ui.search.pySearchPageSEARCH_DERIVED"/>
 		<item value="false" key="REG_EX_SEARCH"/>
-		<section name="com.python.pydev.ui.search.pySearchPageHISTORY0">
+		<section name="com.python.pydev.ui.search.pySearchPageHISTORY1">
 			<item value="false" key="isRegExSearch"/>
 			<item value="image_rul" key="textPattern"/>
+			<item value="0" key="scope"/>
+			<item value="false" key="ignoreCase"/>
+			<list key="fileNamePatterns">
+				<item value="*.py"/>
+				<item value="*.pyw"/>
+				<item value="*.pyx"/>
+				<item value="*.pxd"/>
+				<item value="*.pxi"/>
+			</list>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="com.python.pydev.ui.search.pySearchPageHISTORY0">
+			<item value="false" key="isRegExSearch"/>
+			<item value="listenner" key="textPattern"/>
 			<item value="0" key="scope"/>
 			<item value="false" key="ignoreCase"/>
 			<list key="fileNamePatterns">
@@ -25,8 +40,8 @@
 		<section name="DialogBoundsSettings">
 			<item value="319" key="DIALOG_WIDTH"/>
 			<item value="8" key="DIALOG_Y_ORIGIN"/>
-			<item value="100" key="DIALOG_X_ORIGIN"/>
 			<item value="362" key="DIALOG_HEIGHT"/>
+			<item value="100" key="DIALOG_X_ORIGIN"/>
 			<item value="1|微软雅黑|10.5|0|WINDOWS|1|-14|0|0|0|400|0|0|0|-122|3|2|1|34|微软雅黑" key="DIALOG_FONT_NAME"/>
 		</section>
 	</section>

@@ -97,7 +97,7 @@ class CPopRegister ( wx.Dialog ):
         pass
     
     
-    # Virtual event handlers, overide them in your derived class
+    # Virtual event handlers, override them in your derived class
     def OnBtnApply( self, event ):
         event.Skip()
     

@@ -121,15 +121,15 @@ class CWgtSchemeRelated ( wx.Panel ):
         pass
     
     def Initailize(self):
-        # Add event listenner
-        CEvtManager.AddListenner(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
+        # Add event listener
+        CEvtManager.AddListener(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
         
         x, y = CDataDeskTop.GetFrameSize()       
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
-        # Add event listenner
-        CEvtManager.RemoveListenner(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
+        # Add event listener
+        CEvtManager.RemoveListener(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
     
     def ShowTreeCtrl(self):
         isz = (16,16)

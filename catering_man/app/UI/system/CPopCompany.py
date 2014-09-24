@@ -9,6 +9,8 @@
 
 import wx
 import wx.xrc
+from app.logic.desktop.CDataDeskTop import CDataDeskTop
+from app.CAppManager import CAppManager
 
 ###########################################################################
 ## Class CPopCompany
@@ -125,13 +127,15 @@ class CPopCompany ( wx.Dialog ):
         pass
     
     
-    # Virtual event handlers, overide them in your derived class
+    # Virtual event handlers, override them in your derived class
     def OnBtnSave( self, event ):
         event.Skip()
     
     def OnBtnExit( self, event ):
         event.Skip()
         self.Close()
+        #CDataDeskTop.SetSelectedItem()
+        #CAppManager.SwitchToApplication('DeskTop')
      
 if __name__ == '__main__':
     app = wx.PySimpleApp()
