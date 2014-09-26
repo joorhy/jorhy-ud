@@ -78,11 +78,8 @@ app.logic.printer_setting.CDataSchemeType|E:\WorkSpace\jorhy-ud\catering_man\app
 app.logic.printer_setting.CModelPrinterScheme|E:\WorkSpace\jorhy-ud\catering_man\app\logic\printer_setting\CModelPrinterScheme.py
 app.logic.printer_setting.CModelSchemeType|E:\WorkSpace\jorhy-ud\catering_man\app\logic\printer_setting\CModelSchemeType.py
 app.logic.printer_setting.__init__|E:\WorkSpace\jorhy-ud\catering_man\app\logic\printer_setting\__init__.py
-framework.CBrevityCode|E:\WorkSpace\jorhy-ud\catering_man\framework\CBrevityCode.py
-framework.CEvent|E:\WorkSpace\jorhy-ud\catering_man\framework\CEvent.py
-framework.CEvtManager|E:\WorkSpace\jorhy-ud\catering_man\framework\CEvtManager.py
-framework.CSingleton|E:\WorkSpace\jorhy-ud\catering_man\framework\CSingleton.py
 framework.__init__|E:\WorkSpace\jorhy-ud\catering_man\framework\__init__.py
+framework.core|E:\WorkSpace\jorhy-ud\catering_man\framework\core.py
 service.CSqlManager|E:\WorkSpace\jorhy-ud\catering_man\service\CSqlManager.py
 service.__init__|E:\WorkSpace\jorhy-ud\catering_man\service\__init__.py
 service.data_base.__init__|E:\WorkSpace\jorhy-ud\catering_man\service\data_base\__init__.py
