@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 from service.logic.manager import SvcDishSpec
 
 class CDataSpec(object):
@@ -9,7 +9,7 @@ class CDataSpec(object):
         self.name = name
         self.price = price
 
-class CDataSpecInfo(CSingleton):
+class CDataSpecInfo(Singleton):
     data_len = 0
     def __repr__(self):
         return '%s' % (self.__class__.__name__)

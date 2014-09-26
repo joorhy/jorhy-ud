@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from framework.CSingleton import CSingleton
+from framework.core import Singleton, EvtManager
 from service.logic.manager import SvcTableInfo
-from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
 class CDataTable(object):
@@ -15,7 +14,7 @@ class CDataTable(object):
         self.peple_num = peple_num
         self.min_type = min_type
         
-class CDataTableInfo(CSingleton):
+class CDataTableInfo(Singleton):
     cur_item_index = 0
     table_items = list()
     
@@ -59,7 +58,7 @@ class CDataTableInfo(CSingleton):
         if isinstance(data, CDataTable):
             item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
             SvcTableInfo.AddItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
     
     @staticmethod      
     def AddItems(data):
@@ -67,18 +66,18 @@ class CDataTableInfo(CSingleton):
             if isinstance(obj, CDataTable):
                 item = [obj.code, obj.name, obj.table_type, obj.area, obj.peple_num, obj.min_type]
                 SvcTableInfo.AddItem(item)
-        CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)         
+        EvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)         
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataTable):
             item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
             SvcTableInfo.DeleteItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataTable):
             item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
             SvcTableInfo.UpdateItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 from service.logic.manager import SvcDepartment
 
 class CDataDepartment(object):
@@ -9,7 +9,7 @@ class CDataDepartment(object):
         self.code = code
         self.name = name
 
-class CDataDepartmentInfo(CSingleton):
+class CDataDepartmentInfo(Singleton):
     data_len = 0
     def __repr__(self):
         return '%s' % (self.__class__.__name__)

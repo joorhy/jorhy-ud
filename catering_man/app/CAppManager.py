@@ -1,11 +1,11 @@
 #_*_ encoding=utf-8 _*_
 #!/usr/bin/env python
 import wx
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 from Tkconstants import BOTH
 from app.UI.CScnMain import CScnMain
 
-class CAppManager(CSingleton):
+class CAppManager(Singleton):
     mainScreen = None
     panel = None
     

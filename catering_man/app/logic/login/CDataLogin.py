@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*- 
 #!/usr/bin/env python
 import wx
-from framework.CEvtManager import CEvtManager
-from framework.CSingleton import CSingleton
+from framework.core import Singleton, EvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
-class CDataLogin(CSingleton):
+class CDataLogin(Singleton):
     chechResult = False
     
     def __init__(self):
@@ -18,7 +17,7 @@ class CDataLogin(CSingleton):
         if strUser == '0000' and strPasswd == '0000':
             self.chechResult = True
             
-        CEvtManager.DispatchEvent(CEnumEvent.EVT_LOGIN)
+        EvtManager.DispatchEvent(CEnumEvent.EVT_LOGIN)
         
     def GetResult(self):
         return self.chechResult

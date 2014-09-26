@@ -19,7 +19,7 @@ from app.logic.dishes.CModelStyle import CModelStyle
 from app.logic.dishes.CDataStyle import CDataStyle, CDataStyleInfo
 from app.logic.dishes.CDataUnit import CDataUnitInfo
 from app.logic.dishes.CDataCategory import CDataCategoryInfo
-from framework.CBrevityCode import CBrevityCode
+from framework.core import BrevityCode
 
 ###########################################################################
 ## Class CPopDishesInfo

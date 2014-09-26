@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 #_*_ encoding=utf-8 _*_
 
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 from service.CSqlManager import CSqlManager
 from service.data_base.canteen import *
 
-class SvcAreaSetting(CSingleton):
+class SvcAreaSetting(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -64,7 +64,7 @@ class SvcAreaSetting(CSingleton):
         session.flush()
         session.commit()
         
-class SvcCategorySetting(CSingleton):
+class SvcCategorySetting(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -124,7 +124,7 @@ class SvcCategorySetting(CSingleton):
         session.flush()
         session.commit()
         
-class SvcDepartment(CSingleton):
+class SvcDepartment(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -184,7 +184,7 @@ class SvcDepartment(CSingleton):
         session.flush()
         session.commit()
         
-class SvcDishesInfo(CSingleton):
+class SvcDishesInfo(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
 
@@ -312,7 +312,7 @@ class SvcDishesInfo(CSingleton):
         session.flush()
         session.commit()
         
-class SvcDishSpec(CSingleton):
+class SvcDishSpec(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -371,7 +371,7 @@ class SvcDishSpec(CSingleton):
         session.flush()
         session.commit()
         
-class SvcDishStyle(CSingleton):
+class SvcDishStyle(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -432,7 +432,7 @@ class SvcDishStyle(CSingleton):
         session.flush()
         session.commit()
         
-class SvcEmployee(CSingleton):
+class SvcEmployee(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
 
@@ -546,7 +546,7 @@ class SvcEmployee(CSingleton):
         session.flush()
         session.commit()
         
-class SvcMinexpenseSetting(CSingleton):
+class SvcMinexpenseSetting(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -607,7 +607,7 @@ class SvcMinexpenseSetting(CSingleton):
         session.flush()
         session.commit()
         
-class SvcPrinterScheme(CSingleton):
+class SvcPrinterScheme(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
 
@@ -686,7 +686,7 @@ class SvcPrinterScheme(CSingleton):
         session.flush()
         session.commit()
         
-class SvcSchemeType(CSingleton):
+class SvcSchemeType(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -745,7 +745,7 @@ class SvcSchemeType(CSingleton):
         session.flush()
         session.commit()
 
-class SvcTableInfo(CSingleton):
+class SvcTableInfo(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
 
@@ -830,7 +830,7 @@ class SvcTableInfo(CSingleton):
         session.flush()
         session.commit()
         
-class SvcTypeSetting(CSingleton):
+class SvcTypeSetting(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -890,7 +890,7 @@ class SvcTypeSetting(CSingleton):
         session.flush()
         session.commit()
         
-class SvcUnitSetting(CSingleton):
+class SvcUnitSetting(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     
@@ -950,7 +950,7 @@ class SvcUnitSetting(CSingleton):
         session.flush()
         session.commit()
         
-class SvcUserRole(CSingleton):
+class SvcUserRole(Singleton):
     def __repr__(self):
         return '%s' % (self.__class__.__name__)
     

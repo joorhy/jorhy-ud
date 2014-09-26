@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 from service.logic.manager import SvcAreaSetting
 
 class CDataArea(object):
@@ -9,7 +9,7 @@ class CDataArea(object):
         self.code = code
         self.name = name
 
-class CDataAreaInfo(CSingleton):
+class CDataAreaInfo(Singleton):
     data_len = 0
     def __repr__(self):
         return '%s' % (self.__class__.__name__)

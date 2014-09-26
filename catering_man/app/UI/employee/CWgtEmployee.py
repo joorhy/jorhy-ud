@@ -18,7 +18,7 @@ from app.logic.employee.CModelEmployee import CModelEmployee
 from app.logic.employee.CDataEmployee import CDataEmployeeInfo, CDataEmployee
 from app.UI.employee.CPopEmployee import CPopEmployee
 from app.logic.employee.CDataDepartment import CDataDepartmentInfo
-from framework.CEvtManager import CEvtManager
+from framework.core import EvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
 ###########################################################################
@@ -127,14 +127,14 @@ class CWgtEmployee (wx.Panel):
     
     def Initailize(self):
         # Add event listener
-        CEvtManager.AddListener(self, CEnumEvent.EVT_EMPLOYEE_REFRESH, self.OnBtnRefresh)
+        EvtManager.AddListener(self, CEnumEvent.EVT_EMPLOYEE_REFRESH, self.OnBtnRefresh)
         
         x, y = CDataDeskTop.GetFrameSize()       
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
         # Remove event listener
-        CEvtManager.RemoveListener(self, CEnumEvent.EVT_EMPLOYEE_REFRESH, self.OnBtnRefresh)
+        EvtManager.RemoveListener(self, CEnumEvent.EVT_EMPLOYEE_REFRESH, self.OnBtnRefresh)
     
     def ShowTreeCtrl(self):
         isz = (16,16)

@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from framework.CSingleton import CSingleton
+from framework.core import Singleton, EvtManager
 from service.logic.manager import SvcPrinterScheme
-from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
 class CDataPrinterScheme(object):
@@ -15,7 +14,7 @@ class CDataPrinterScheme(object):
         self.print_count = print_count
         self.backup = backup
         
-class CDataPrinterSchemeInfo(CSingleton):
+class CDataPrinterSchemeInfo(Singleton):
     cur_item_index = 0
     table_items = list()
     
@@ -57,18 +56,18 @@ class CDataPrinterSchemeInfo(CSingleton):
         if isinstance(data, CDataPrinterScheme):
             item = [data.code, data.name, data.valid, data.scheme_type, data.print_count, data.backup]
             SvcPrinterScheme.AddItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)       
+            EvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)       
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataPrinterScheme):
             item = [data.code, data.name]
             SvcPrinterScheme.DeleteItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataPrinterScheme):
             item = [data.code, data.name, data.valid, data.scheme_type, data.print_count, data.backup]
             SvcPrinterScheme.UpdateItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)

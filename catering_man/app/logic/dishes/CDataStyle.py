@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 from service.logic.manager import SvcDishStyle
 
 class CDataStyle(object):
@@ -10,7 +10,7 @@ class CDataStyle(object):
         self.price_add = price_add
         self.amount_add = amount_add
 
-class CDataStyleInfo(CSingleton):
+class CDataStyleInfo(Singleton):
     data_len = 0
     def __repr__(self):
         return '%s' % (self.__class__.__name__)

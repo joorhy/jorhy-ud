@@ -5,9 +5,9 @@ from sqlalchemy import MetaData
 from sqlalchemy.engine import create_engine 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 
-class CSqlManager(CSingleton):
+class CSqlManager(Singleton):
     db_config = {
              'host' : '127.0.0.1',
              'user' : 'root',
@@ -47,8 +47,8 @@ class CSqlManager(CSingleton):
 if __name__ == '__main__':
     CSqlManager.Initailize()
     
-    from service.data_base.CDbTableInfoArea import CDbTableInfoArea
-    ret = CSqlManager.session.query(CDbTableInfoArea).all()
+    from service.data_base.canteen import TableInfoArea
+    ret = CSqlManager.session.query(TableInfoArea).all()
     for item in ret:
         print item.vch_name
     

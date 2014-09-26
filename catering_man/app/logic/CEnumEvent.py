@@ -2,9 +2,9 @@
 #!/usr/bin/env python
 
 import wx
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 
-class CEnumEvent(CSingleton):
+class CEnumEvent(Singleton):
     # Login event  
     EVT_LOGIN = wx.NewId()
     # Dining room refresh event

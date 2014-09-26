@@ -20,7 +20,7 @@ from app.logic.dining_room.CModelTable import CModelTable
 from app.logic.dining_room.CDataTable import CDataTableInfo
 from app.UI.dining_room.CPopMinexpenseSetting import CPopMinexpenseSetting
 from app.logic.dining_room.CDataType import CDataTypeInfo
-from framework.CEvtManager import CEvtManager
+from framework.core import EvtManager
 from app.logic.CEnumEvent import CEnumEvent
 from app.UI.dining_room.CPopTableBatAdd import CPopTableBatAdd
 
@@ -163,14 +163,14 @@ class CWgtDiningTable (wx.Panel):
     
     def Initailize(self):
         # Add event listener
-        CEvtManager.AddListener(self, CEnumEvent.EVT_DINING_ROOM_REFRESH, self.OnBtnRefresh)
+        EvtManager.AddListener(self, CEnumEvent.EVT_DINING_ROOM_REFRESH, self.OnBtnRefresh)
         
         x, y = CDataDeskTop.GetFrameSize()
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
         # Remove event listener
-        CEvtManager.RemoveListener(self, CEnumEvent.EVT_DINING_ROOM_REFRESH, self.OnBtnRefresh)
+        EvtManager.RemoveListener(self, CEnumEvent.EVT_DINING_ROOM_REFRESH, self.OnBtnRefresh)
     
     def ShowTreeCtrl(self):
         isz = (16,16)

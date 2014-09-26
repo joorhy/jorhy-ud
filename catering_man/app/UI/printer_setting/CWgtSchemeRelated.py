@@ -18,7 +18,7 @@ from app.logic.dishes.CDataDishes import CDataDishes, CDataDishesInfo
 from app.logic.dishes.CDataCategory import CDataCategory, CDataCategoryInfo
 from app.UI.printer_setting.CPopSchemeRelated import CPopSchemeRelated
 from app.UI.printer_setting.CPopSchemeRelatedBat import CPopSchemeRelatedBat
-from framework.CEvtManager import CEvtManager
+from framework.core import EvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
 ###########################################################################
@@ -111,14 +111,14 @@ class CWgtSchemeRelated (wx.Panel):
     
     def Initailize(self):
         # Add event listener
-        CEvtManager.AddListener(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
+        EvtManager.AddListener(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
         
         x, y = CDataDeskTop.GetFrameSize()       
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
         # Add event listener
-        CEvtManager.RemoveListener(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
+        EvtManager.RemoveListener(self, CEnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.OnRefresh)
     
     def ShowTreeCtrl(self):
         isz = (16,16)

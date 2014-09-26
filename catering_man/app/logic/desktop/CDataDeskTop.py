@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #_*_ encoding=utf-8 _*_
-from framework.CSingleton import CSingleton
+from framework.core import Singleton
 
-class CDataDeskTop(CSingleton):
+class CDataDeskTop(Singleton):
     m_frame_width = 800
     m_frame_height = 600
     m_selected_item = 5

@@ -17,7 +17,7 @@ from app.UI.printer_setting.CPopPrinterScheme import CPopPrinterScheme
 from app.UI.printer_setting.CPopSchemeType import CPopSchemeType
 from app.logic.printer_setting.CDataPrinterScheme import CDataPrinterSchemeInfo
 from app.logic.printer_setting.CModelPrinterScheme import CModelPrinterScheme
-from framework.CEvtManager import CEvtManager
+from framework.core import EvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
 ###########################################################################
@@ -108,14 +108,14 @@ class CWgtPrinterScheme(wx.Panel):
     
     def Initailize(self):
         # Add event listener
-        CEvtManager.AddListener(self, CEnumEvent.EVT_PRINTER_SCHEME_REFRESH, self.OnBtnRefresh)
+        EvtManager.AddListener(self, CEnumEvent.EVT_PRINTER_SCHEME_REFRESH, self.OnBtnRefresh)
         
         x, y = CDataDeskTop.GetFrameSize()       
         self.SetSize(wx.Size(x, y))
 
     def Uninitailize(self):
         # Add event listener
-        CEvtManager.RemoveListener(self, CEnumEvent.EVT_PRINTER_SCHEME_REFRESH, self.OnBtnRefresh)
+        EvtManager.RemoveListener(self, CEnumEvent.EVT_PRINTER_SCHEME_REFRESH, self.OnBtnRefresh)
     
     def RefreshUI(self):        
         # Refresh data view list

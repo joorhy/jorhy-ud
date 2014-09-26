@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from framework.CSingleton import CSingleton
+from framework.core import Singleton, EvtManager
 from service.logic.manager import SvcEmployee
-from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
 class CDataEmployee(object):
@@ -23,7 +22,7 @@ class CDataEmployee(object):
         self.email = email
         self.note = note
         
-class CDataEmployeeInfo(CSingleton):
+class CDataEmployeeInfo(Singleton):
     cur_item_index = 0
     table_items = list()
     
@@ -68,14 +67,14 @@ class CDataEmployeeInfo(CSingleton):
             item = [data.code, data.name, data.birthday, data.duty, data.department, data.sex,
                     data.telephone, data.id_card, data.state, data.addr, data.email, data.note]
             SvcEmployee.AddItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)      
+            EvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)      
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataEmployee):
             item = [data.id, data.code, data.name]
             SvcEmployee.DeleteItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)
             
     @staticmethod
     def UpdateItem(data):
@@ -83,4 +82,4 @@ class CDataEmployeeInfo(CSingleton):
             item = [data.id, data.code, data.name, data.birthday, data.duty, data.department, data.sex,
                     data.telephone, data.id_card, data.state, data.addr, data.email, data.note]
             SvcEmployee.UpdateItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)

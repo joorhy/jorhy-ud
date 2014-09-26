@@ -11,7 +11,7 @@
 import wx
 import wx.xrc
 from app.logic.login.CDataLogin import CDataLogin
-from framework.CEvtManager import CEvtManager
+from framework.core import EvtManager
 from app.logic.CEnumEvent import CEnumEvent
 from app.CAppManager import CAppManager
 
@@ -162,13 +162,13 @@ class CWgtLogin(wx.Panel):
     
     def Initailize(self):
         # Add event listener
-        CEvtManager.AddListener(self, CEnumEvent.EVT_LOGIN, self.OnEvtLogin)
+        EvtManager.AddListener(self, CEnumEvent.EVT_LOGIN, self.OnEvtLogin)
         
         self.GetParent().SetTitle(u"登陆")
 
     def Uninitailize(self):
         # Remove event listener
-        CEvtManager.RemoveListener(self, CEnumEvent.EVT_LOGIN, self.OnEvtLogin)
+        EvtManager.RemoveListener(self, CEnumEvent.EVT_LOGIN, self.OnEvtLogin)
     
         
     # Virtual event handlers, override them in your derived class

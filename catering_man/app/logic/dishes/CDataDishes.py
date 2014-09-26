@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from framework.CSingleton import CSingleton
+from framework.core import Singleton, EvtManager
 from service.logic.manager import SvcDishesInfo
-from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
 class CDataDishes(object):
@@ -24,7 +23,7 @@ class CDataDishes(object):
         self.image_url = image_url
         self.printer_scheme = printer_scheme
         
-class CDataDishesInfo(CSingleton):
+class CDataDishesInfo(Singleton):
     cur_item_index = 0
     cur_list_data = None
     table_items = list()
@@ -84,14 +83,14 @@ class CDataDishesInfo(CSingleton):
             item = [data.code, data.name, data.spell, data.spec, data.category, data.price, data.unit, 
                     data.style, data.commistion, data.discount, data.stop, data.image_url]
             SvcDishesInfo.AddItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)        
+            EvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)        
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataDishes):
             item = [data.id, data.code, data.name]
             SvcDishesInfo.DeleteItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
             
     @staticmethod
     def UpdateItem(data):
@@ -99,11 +98,11 @@ class CDataDishesInfo(CSingleton):
             item = [data.id, data.code, data.name, data.spell, data.spec, data.category, data.price, data.unit, 
                     data.style, data.commistion, data.discount, data.stop, data.image_url]
             SvcDishesInfo.UpdateItem(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
             
     @staticmethod        
     def UpdatePrinterScheme(data):
         if isinstance(data, CDataDishes):
             item = [data.id, data.printer_scheme]
             SvcDishesInfo.UpdatePrinterScheme(item)
-            CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
+            EvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
