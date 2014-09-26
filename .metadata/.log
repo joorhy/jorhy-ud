@@ -5721,3 +5721,15 @@ java.lang.RuntimeException: Expected to find 'from' token as the current tempora
 	at org.python.pydev.editor.hover.PyTextHover.getDocstringHover(PyTextHover.java:206)
 	at org.python.pydev.editor.hover.PyTextHover.getHoverInfo(PyTextHover.java:150)
 	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:168)
+
+!ENTRY org.eclipse.ui 4 4 2014-09-26 14:50:04.010
+!MESSAGE Unable to find Action Set: org.eclipse.mylyn.context.ui.actionSet
+
+!ENTRY org.eclipse.ui 4 4 2014-09-26 14:50:04.011
+!MESSAGE Unable to find Action Set: org.eclipse.mylyn.doc.actionSet
+
+!ENTRY org.eclipse.ui 4 4 2014-09-26 14:50:04.011
+!MESSAGE Unable to find Action Set: org.eclipse.mylyn.tasks.ui.navigation
+
+!ENTRY org.eclipse.ui 4 4 2014-09-26 14:50:04.012
+!MESSAGE Unable to find Action Set: org.eclipse.rse.core.search.searchActionSet
