@@ -1,9 +1,9 @@
 # coding: utf-8
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Table
 from sqlalchemy.orm import relationship
-from service.CSqlManager import CSqlManager
+from service.data_base.SqlManager import SqlManager
 
-Base = CSqlManager.base_model
+Base = SqlManager.base_model
 metadata = Base.metadata
 
 class CompanyInfo(Base):
