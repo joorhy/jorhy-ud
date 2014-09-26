@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcCategorySetting import CSvcCategorySetting
+from service.logic.manager import SvcCategorySetting
 
 class CDataCategory(object):
     def __init__(self, id_, code, name):
@@ -20,7 +20,7 @@ class CDataCategoryInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcCategorySetting.GetAll()
+        result = SvcCategorySetting.GetAll()
         data = list()
         for item in result:
             data_item = CDataCategory(item[0], item[1], item[2])
@@ -32,23 +32,23 @@ class CDataCategoryInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcCategorySetting.GetId()
+        return SvcCategorySetting.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataCategory):
             item = [data.code, data.name]
-            CSvcCategorySetting.AddItem(item)
+            SvcCategorySetting.AddItem(item)
             CDataCategoryInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataCategory):
             item = [data.code, data.name]
-            CSvcCategorySetting.DeleteItem(item)
+            SvcCategorySetting.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataCategory):
             item = [data.code, data.name]
-            CSvcCategorySetting.UpdateItem(item)
+            SvcCategorySetting.UpdateItem(item)

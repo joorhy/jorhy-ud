@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcDishSpec import CSvcDishSpec
+from service.logic.manager import SvcDishSpec
 
 class CDataSpec(object):
     def __init__(self, code, name, price):
@@ -20,7 +20,7 @@ class CDataSpecInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcDishSpec.GetAll()
+        result = SvcDishSpec.GetAll()
         data = list()
         for item in result:
             data_item = CDataSpec(item[0], item[1], item[2])
@@ -32,23 +32,23 @@ class CDataSpecInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcDishSpec.GetId()
+        return SvcDishSpec.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataSpec):
             item = [data.code, data.name, data.price]
-            CSvcDishSpec.AddItem(item)
+            SvcDishSpec.AddItem(item)
             CDataSpecInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataSpec):
             item = [data.code, data.name]
-            CSvcDishSpec.DeleteItem(item)
+            SvcDishSpec.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataSpec):
             item = [data.code, data.name, data.price]
-            CSvcDishSpec.UpdateItem(item)
+            SvcDishSpec.UpdateItem(item)

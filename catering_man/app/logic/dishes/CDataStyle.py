@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcDishStyle import CSvcDishStyle
+from service.logic.manager import SvcDishStyle
 
 class CDataStyle(object):
     def __init__(self, code, name, price_add, amount_add):
@@ -21,7 +21,7 @@ class CDataStyleInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcDishStyle.GetAll()
+        result = SvcDishStyle.GetAll()
         data = list()
         for item in result:
             data_item = CDataStyle(item[0], item[1], item[2], item[3])
@@ -33,23 +33,23 @@ class CDataStyleInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcDishStyle.GetId()
+        return SvcDishStyle.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataStyle):
             item = [data.code, data.name, data.price_add, data.amount_add]
-            CSvcDishStyle.AddItem(item)
+            SvcDishStyle.AddItem(item)
             CDataStyleInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataStyle):
             item = [data.code, data.name]
-            CSvcDishStyle.DeleteItem(item)
+            SvcDishStyle.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataStyle):
             item = [data.code, data.name, data.price_add, data.amount_add]
-            CSvcDishStyle.UpdateItem(item)
+            SvcDishStyle.UpdateItem(item)

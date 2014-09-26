@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcUserRole import CSvcUserRole
+from service.logic.manager import SvcUserRole
 
 class CDataUserRole(object):
     def __init__(self, line, id_, code, name):
@@ -21,7 +21,7 @@ class CDataUserRoleInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcUserRole.GetAll()
+        result = SvcUserRole.GetAll()
         data = list()
         for item in result:
             data_item = CDataUserRole(item[0], item[1], item[2], item[3])
@@ -33,23 +33,23 @@ class CDataUserRoleInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcUserRole.GetId()
+        return SvcUserRole.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataUserRole):
             item = [data.id, data.code, data.name]
-            CSvcUserRole.AddItem(item)
+            SvcUserRole.AddItem(item)
             CDataUserRoleInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataUserRole):
             item = [data.id, data.code, data.name]
-            CSvcUserRole.DeleteItem(item)
+            SvcUserRole.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataUserRole):
             item = [data.id, data.code, data.name]
-            CSvcUserRole.UpdateItem(item)
+            SvcUserRole.UpdateItem(item)

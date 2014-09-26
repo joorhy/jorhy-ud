@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcUnitSetting import CSvcUnitSetting
+from service.logic.manager import SvcUnitSetting
 
 class CDataUnit(object):
     def __init__(self, id_, code, name):
@@ -20,7 +20,7 @@ class CDataUnitInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcUnitSetting.GetAll()
+        result = SvcUnitSetting.GetAll()
         data = list()
         for item in result:
             data_item = CDataUnit(item[0], item[1], item[2])
@@ -32,23 +32,23 @@ class CDataUnitInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcUnitSetting.GetId()
+        return SvcUnitSetting.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataUnit):
             item = [data.code, data.name]
-            CSvcUnitSetting.AddItem(item)
+            SvcUnitSetting.AddItem(item)
             CDataUnitInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataUnit):
             item = [data.code, data.name]
-            CSvcUnitSetting.DeleteItem(item)
+            SvcUnitSetting.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataUnit):
             item = [data.code, data.name]
-            CSvcUnitSetting.UpdateItem(item)
+            SvcUnitSetting.UpdateItem(item)

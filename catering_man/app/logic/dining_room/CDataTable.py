@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcTableInfo import CSvcTableInfo
+from service.logic.manager import SvcTableInfo
 from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
@@ -32,7 +32,7 @@ class CDataTableInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcTableInfo.GetAll()
+        result = SvcTableInfo.GetAll()
         data = list()
         for item in result:
             data_item = CDataTable(item[0], item[1], item[2], item[3], item[4], item[5], item[6])
@@ -45,7 +45,7 @@ class CDataTableInfo(CSingleton):
     @staticmethod
     def RefreshItems():
         del CDataTableInfo.table_items[0:len(CDataTableInfo.table_items)]
-        result = CSvcTableInfo.GetItems()
+        result = SvcTableInfo.GetItems()
         for item in result:
             data_item = CDataTable(item[0], item[1], item[2], item[3], item[4], item[5], item[6])
             CDataTableInfo.table_items.append(data_item)
@@ -58,7 +58,7 @@ class CDataTableInfo(CSingleton):
     def AddItem(data):
         if isinstance(data, CDataTable):
             item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
-            CSvcTableInfo.AddItem(item)
+            SvcTableInfo.AddItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
     
     @staticmethod      
@@ -66,19 +66,19 @@ class CDataTableInfo(CSingleton):
         for obj in data:
             if isinstance(obj, CDataTable):
                 item = [obj.code, obj.name, obj.table_type, obj.area, obj.peple_num, obj.min_type]
-                CSvcTableInfo.AddItem(item)
+                SvcTableInfo.AddItem(item)
         CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)         
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataTable):
             item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
-            CSvcTableInfo.DeleteItem(item)
+            SvcTableInfo.DeleteItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataTable):
             item = [data.code, data.name, data.table_type, data.area, data.peple_num, data.min_type]
-            CSvcTableInfo.UpdateItem(item)
+            SvcTableInfo.UpdateItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_DINING_ROOM_REFRESH)

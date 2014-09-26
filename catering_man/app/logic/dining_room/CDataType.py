@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcTypeSetting import CSvcTypeSetting
+from service.logic.manager import SvcTypeSetting
 
 class CDataType(object):
     def __init__(self, id_, code, name):
@@ -21,7 +21,7 @@ class CDataTypeInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcTypeSetting.GetAll()
+        result = SvcTypeSetting.GetAll()
         data = list()
         for item in result:
             data_item = CDataType(item[0], item[1], item[2])
@@ -33,23 +33,23 @@ class CDataTypeInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcTypeSetting.GetId()
+        return SvcTypeSetting.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataType):
             item = [data.code, data.name]
-            CSvcTypeSetting.AddItem(item)
+            SvcTypeSetting.AddItem(item)
             CDataTypeInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataType):
             item = [data.code, data.name]
-            CSvcTypeSetting.DeleteItem(item)
+            SvcTypeSetting.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataType):
             item = [data.code, data.name]
-            CSvcTypeSetting.UpdateItem(item)
+            SvcTypeSetting.UpdateItem(item)

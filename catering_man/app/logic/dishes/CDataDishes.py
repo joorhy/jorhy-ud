@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcDishesInfo import CSvcDishesInfo
+from service.logic.manager import SvcDishesInfo
 from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
@@ -54,7 +54,7 @@ class CDataDishesInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcDishesInfo.GetAll()
+        result = SvcDishesInfo.GetAll()
         data = list()
         for item in result:
             data_item = CDataDishes(item[0], item[1], item[2], item[3], item[4], item[5], 
@@ -67,7 +67,7 @@ class CDataDishesInfo(CSingleton):
     @staticmethod
     def RefreshItems():
         del CDataDishesInfo.table_items[0:len(CDataDishesInfo.table_items)]
-        result = CSvcDishesInfo.GetItems()
+        result = SvcDishesInfo.GetItems()
         for item in result:
             data_item = CDataDishes(item[0], item[1], item[2], item[3], item[4], item[5], 
                                     item[6], item[7], item[8], item[9], item[10], item[11],
@@ -83,14 +83,14 @@ class CDataDishesInfo(CSingleton):
         if isinstance(data, CDataDishes):
             item = [data.code, data.name, data.spell, data.spec, data.category, data.price, data.unit, 
                     data.style, data.commistion, data.discount, data.stop, data.image_url]
-            CSvcDishesInfo.AddItem(item)
+            SvcDishesInfo.AddItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)        
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataDishes):
             item = [data.id, data.code, data.name]
-            CSvcDishesInfo.DeleteItem(item)
+            SvcDishesInfo.DeleteItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
             
     @staticmethod
@@ -98,12 +98,12 @@ class CDataDishesInfo(CSingleton):
         if isinstance(data, CDataDishes):
             item = [data.id, data.code, data.name, data.spell, data.spec, data.category, data.price, data.unit, 
                     data.style, data.commistion, data.discount, data.stop, data.image_url]
-            CSvcDishesInfo.UpdateItem(item)
+            SvcDishesInfo.UpdateItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)
             
     @staticmethod        
     def UpdatePrinterScheme(data):
         if isinstance(data, CDataDishes):
             item = [data.id, data.printer_scheme]
-            CSvcDishesInfo.UpdatePrinterScheme(item)
+            SvcDishesInfo.UpdatePrinterScheme(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_DISHES_PUBLISH_REFRESH)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcSchemeType import CSvcSchemeType
+from service.logic.manager import SvcSchemeType
 
 class CDataSchemeType(object):
     def __init__(self, id_, code, name):
@@ -20,7 +20,7 @@ class CDataSchemeTypeInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcSchemeType.GetAll()
+        result = SvcSchemeType.GetAll()
         data = list()
         for item in result:
             data_item = CDataSchemeType(item[0], item[1], item[2])
@@ -32,23 +32,23 @@ class CDataSchemeTypeInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcSchemeType.GetId()
+        return SvcSchemeType.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataSchemeType):
             item = [data.code, data.name]
-            CSvcSchemeType.AddItem(item)
+            SvcSchemeType.AddItem(item)
             CDataSchemeTypeInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataSchemeType):
             item = [data.code, data.name]
-            CSvcSchemeType.DeleteItem(item)
+            SvcSchemeType.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataSchemeType):
             item = [data.code, data.name]
-            CSvcSchemeType.UpdateItem(item)
+            SvcSchemeType.UpdateItem(item)

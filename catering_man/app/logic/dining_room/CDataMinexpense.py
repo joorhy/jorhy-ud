@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcMinexpenseSetting import CSvcMinexpenseSetting
+from service.logic.manager import SvcMinexpenseSetting
 
 class CDataMinexpense(object):
     def __init__(self, id_, code, name, price):
@@ -21,7 +21,7 @@ class CDataMinexpenseInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcMinexpenseSetting.GetAll()
+        result = SvcMinexpenseSetting.GetAll()
         data = list()
         for item in result:
             data_item = CDataMinexpense(item[0], item[1], item[2], item[3])
@@ -33,23 +33,23 @@ class CDataMinexpenseInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcMinexpenseSetting.GetId()
+        return SvcMinexpenseSetting.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataMinexpense):
             item = [data.code, data.name, data.price]
-            CSvcMinexpenseSetting.AddItem(item)
+            SvcMinexpenseSetting.AddItem(item)
             CDataMinexpenseInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataMinexpense):
             item = [data.code, data.name, data.price]
-            CSvcMinexpenseSetting.DeleteItem(item)
+            SvcMinexpenseSetting.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataMinexpense):
             item = [data.code, data.name, data.price]
-            CSvcMinexpenseSetting.UpdateItem(item)
+            SvcMinexpenseSetting.UpdateItem(item)

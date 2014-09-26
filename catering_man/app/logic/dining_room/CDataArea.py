@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcAreaSetting import CSvcAreaSetting
+from service.logic.manager import SvcAreaSetting
 
 class CDataArea(object):
     def __init__(self, id_, code, name):
@@ -20,7 +20,7 @@ class CDataAreaInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcAreaSetting.GetAll()
+        result = SvcAreaSetting.GetAll()
         data = list()
         for item in result:
             data_item = CDataArea(item[0], item[1], item[2])
@@ -32,23 +32,23 @@ class CDataAreaInfo(CSingleton):
     
     @staticmethod
     def GetId():
-        return CSvcAreaSetting.GetId()
+        return SvcAreaSetting.GetId()
     
     @staticmethod
     def AddItem(data):
         if isinstance(data, CDataArea):
             item = [data.code, data.name]
-            CSvcAreaSetting.AddItem(item)
+            SvcAreaSetting.AddItem(item)
             CDataAreaInfo.data_len += 1
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataArea):
             item = [data.code, data.name]
-            CSvcAreaSetting.DeleteItem(item)
+            SvcAreaSetting.DeleteItem(item)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataArea):
             item = [data.code, data.name]
-            CSvcAreaSetting.UpdateItem(item)
+            SvcAreaSetting.UpdateItem(item)

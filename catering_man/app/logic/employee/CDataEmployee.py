@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcEmployee import CSvcEmployee
+from service.logic.manager import SvcEmployee
 from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
@@ -40,7 +40,7 @@ class CDataEmployeeInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcEmployee.GetAll()
+        result = SvcEmployee.GetAll()
         data = list()
         for item in result:
             data_item = CDataEmployee(item[0], item[1], item[2], item[3], item[4], item[5], item[6],
@@ -52,7 +52,7 @@ class CDataEmployeeInfo(CSingleton):
     @staticmethod
     def RefreshItems():
         del CDataEmployeeInfo.table_items[0:len(CDataEmployeeInfo.table_items)]
-        result = CSvcEmployee.GetItems()
+        result = SvcEmployee.GetItems()
         for item in result:
             data_item = CDataEmployee(item[0], item[1], item[2], item[3], item[4], item[5], item[6],
                                       item[7], item[8], item[9], item[10], item[11], item[12], item[13])
@@ -67,14 +67,14 @@ class CDataEmployeeInfo(CSingleton):
         if isinstance(data, CDataEmployee):
             item = [data.code, data.name, data.birthday, data.duty, data.department, data.sex,
                     data.telephone, data.id_card, data.state, data.addr, data.email, data.note]
-            CSvcEmployee.AddItem(item)
+            SvcEmployee.AddItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)      
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataEmployee):
             item = [data.id, data.code, data.name]
-            CSvcEmployee.DeleteItem(item)
+            SvcEmployee.DeleteItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)
             
     @staticmethod
@@ -82,5 +82,5 @@ class CDataEmployeeInfo(CSingleton):
         if isinstance(data, CDataEmployee):
             item = [data.id, data.code, data.name, data.birthday, data.duty, data.department, data.sex,
                     data.telephone, data.id_card, data.state, data.addr, data.email, data.note]
-            CSvcEmployee.UpdateItem(item)
+            SvcEmployee.UpdateItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_EMPLOYEE_REFRESH)

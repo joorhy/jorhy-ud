@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from framework.CSingleton import CSingleton
-from service.logic.CSvcPrinterScheme import CSvcPrinterScheme
+from service.logic.manager import SvcPrinterScheme
 from framework.CEvtManager import CEvtManager
 from app.logic.CEnumEvent import CEnumEvent
 
@@ -32,7 +32,7 @@ class CDataPrinterSchemeInfo(CSingleton):
     
     @staticmethod
     def GetData():
-        result = CSvcPrinterScheme.GetAll()
+        result = SvcPrinterScheme.GetAll()
         data = list()
         for item in result:
             data_item = CDataPrinterScheme(item[0], item[1], item[2], item[3], item[4], item[5], item[6])
@@ -43,7 +43,7 @@ class CDataPrinterSchemeInfo(CSingleton):
     @staticmethod
     def RefreshItems():
         del CDataPrinterSchemeInfo.table_items[0:len(CDataPrinterSchemeInfo.table_items)]
-        result = CSvcPrinterScheme.GetItems()
+        result = SvcPrinterScheme.GetItems()
         for item in result:
             data_item = CDataPrinterScheme(item[0], item[1], item[2], item[3], item[4], item[5], item[6])
             CDataPrinterSchemeInfo.table_items.append(data_item)
@@ -56,19 +56,19 @@ class CDataPrinterSchemeInfo(CSingleton):
     def AddItem(data):
         if isinstance(data, CDataPrinterScheme):
             item = [data.code, data.name, data.valid, data.scheme_type, data.print_count, data.backup]
-            CSvcPrinterScheme.AddItem(item)
+            SvcPrinterScheme.AddItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)       
             
     @staticmethod
     def DeleteItem(data):
         if isinstance(data, CDataPrinterScheme):
             item = [data.code, data.name]
-            CSvcPrinterScheme.DeleteItem(item)
+            SvcPrinterScheme.DeleteItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)
             
     @staticmethod
     def UpdateItem(data):
         if isinstance(data, CDataPrinterScheme):
             item = [data.code, data.name, data.valid, data.scheme_type, data.print_count, data.backup]
-            CSvcPrinterScheme.UpdateItem(item)
+            SvcPrinterScheme.UpdateItem(item)
             CEvtManager.DispatchEvent(CEnumEvent.EVT_PRINTER_SCHEME_REFRESH)
