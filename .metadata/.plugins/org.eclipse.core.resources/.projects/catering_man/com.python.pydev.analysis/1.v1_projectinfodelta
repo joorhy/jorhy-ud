@@ -1,1 +1,11 @@
-DELSTRapp.UI.desktop.CWgtDeskTop
+INSTUPservice.logic.CSvcUserRole
+E:\WorkSpace\jorhy-ud\catering_man\service\logic\CSvcUserRole.py
+INFOS:&&1|1|2|0&&2|3|2|1&&2|4|2|1&&2|5|2|1&&2|6|2|1&&2|7|2|1&&2|8|2|1
+GetAll=4
+__repr__=3
+GetId=5
+service.logic.CSvcUserRole=2
+DeleteItem=7
+AddItem=6
+CSvcUserRole=1
+UpdateItem=8
