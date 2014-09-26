@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #_*_ encoding=utf-8 _*_
 from framework.CSingleton import CSingleton
-from service.data_base.CDbPrinterScheme import CDbPrinterScheme
 from service.CSqlManager import CSqlManager
+from service.data_base.canteen import PrinterScheme
 
 class CSvcPrinterScheme(CSingleton):
     def __repr__(self):
@@ -14,7 +14,7 @@ class CSvcPrinterScheme(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbPrinterScheme).all()   
+        result = session.query(PrinterScheme).all()   
                                
         index = 0
         data = list()
@@ -31,7 +31,7 @@ class CSvcPrinterScheme(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbPrinterScheme).all()
+        result = session.query(PrinterScheme).all()
         index = 0
         data = list()
         for item in result:
@@ -46,7 +46,7 @@ class CSvcPrinterScheme(CSingleton):
         if not data:
             return
         
-        printerScheme = CDbPrinterScheme()
+        printerScheme = PrinterScheme()
         printerScheme.num_id = data[0]
         printerScheme.vch_name = data[1]
         printerScheme.num_valid = data[2]
@@ -64,7 +64,7 @@ class CSvcPrinterScheme(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbPrinterScheme).filter(CDbPrinterScheme.num_id == data[0]).delete()
+        session.query(PrinterScheme).filter(PrinterScheme.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -74,12 +74,11 @@ class CSvcPrinterScheme(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbPrinterScheme).filter(
-                                           CDbPrinterScheme.num_id == data[0]
+        session.query(PrinterScheme).filter(PrinterScheme.num_id == data[0]
                                            ).update({
-                                                     CDbPrinterScheme.vch_name:data[1],
-                                                     CDbPrinterScheme.num_valid:data[2],
-                                                     CDbPrinterScheme.num_bill_type:data[3],
-                                                     CDbPrinterScheme.num_print_count:data[4]})
+                                                     PrinterScheme.vch_name:data[1],
+                                                     PrinterScheme.num_valid:data[2],
+                                                     PrinterScheme.num_bill_type:data[3],
+                                                     PrinterScheme.num_print_count:data[4]})
         session.flush()
         session.commit()

@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbUnit import CDbUnit
+from service.data_base.canteen import Unit
 
 class CSvcUnitSetting(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcUnitSetting(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbUnit).all()
+        result = session.query(Unit).all()
         index = 0
         data = list()
         for item in result:
@@ -27,7 +27,7 @@ class CSvcUnitSetting(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbUnit.num_id).all()
+        result = session.query(Unit.num_id).all()
         result.reverse()
         print result[0][0]
         return int(result[0][0])
@@ -37,7 +37,7 @@ class CSvcUnitSetting(CSingleton):
         if not data:
             return
         
-        unit = CDbUnit()
+        unit = Unit()
         unit.vch_name = data[1]
             
         session = CSqlManager.session
@@ -51,7 +51,7 @@ class CSvcUnitSetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbUnit).filter(CDbUnit.num_id == data[0]).delete()
+        session.query(Unit).filter(Unit.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -61,6 +61,6 @@ class CSvcUnitSetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbUnit).filter(CDbUnit.num_id == data[0]).update({CDbUnit.vch_name:data[1]})
+        session.query(Unit).filter(Unit.num_id == data[0]).update({Unit.vch_name:data[1]})
         session.flush()
         session.commit()

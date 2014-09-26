@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #_*_ encoding=utf-8 _*_
 from framework.CSingleton import CSingleton
-from service.data_base.CDbTableInfo import CDbTableInfo
 from service.CSqlManager import CSqlManager
+from service.data_base.canteen import TableInfo
 
 class CSvcTableInfo(CSingleton):
     def __repr__(self):
@@ -14,7 +14,7 @@ class CSvcTableInfo(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbTableInfo).all()   
+        result = session.query(TableInfo).all()   
                                
         index = 0
         data = list()
@@ -31,12 +31,12 @@ class CSvcTableInfo(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbTableInfo.num_id, 
-                               CDbTableInfo.vch_name, 
-                               CDbTableInfo.num_people_amount, 
-                               CDbTableInfo.num_minexpense_type, 
-                               CDbTableInfo.num_area, 
-                               CDbTableInfo.num_type
+        result = session.query(TableInfo.num_id, 
+                               TableInfo.vch_name, 
+                               TableInfo.num_people_amount, 
+                               TableInfo.num_minexpense_type, 
+                               TableInfo.num_area, 
+                               TableInfo.num_type
                                ).all()
         index = 0
         data = list()
@@ -51,7 +51,7 @@ class CSvcTableInfo(CSingleton):
         if not data:
             return
         
-        tableInfo = CDbTableInfo()
+        tableInfo = TableInfo()
         tableInfo.vch_name = data[1]
         tableInfo.num_type = data[2]
         tableInfo.num_area = data[3]
@@ -69,7 +69,7 @@ class CSvcTableInfo(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbTableInfo).filter(CDbTableInfo.num_id == data[0]).delete()
+        session.query(TableInfo).filter(TableInfo.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -79,13 +79,12 @@ class CSvcTableInfo(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbTableInfo).filter(
-                                           CDbTableInfo.num_id == data[0]
-                                           ).update({
-                                                     CDbTableInfo.vch_name:data[1],
-                                                     CDbTableInfo.num_type:data[2],
-                                                     CDbTableInfo.num_area:data[3],
-                                                     CDbTableInfo.num_people_amount:data[4],
-                                                     CDbTableInfo.num_minexpense_type:data[5]})
+        session.query(TableInfo).filter(TableInfo.num_id == data[0]
+                                        ).update({
+                                                 TableInfo.vch_name:data[1],
+                                                 TableInfo.num_type:data[2],
+                                                 TableInfo.num_area:data[3],
+                                                 TableInfo.num_people_amount:data[4],
+                                                 TableInfo.num_minexpense_type:data[5]})
         session.flush()
         session.commit()

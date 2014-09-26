@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbDishSpec import CDbDishSpec
+from service.data_base.canteen import DishSpec
 
 class CSvcDishSpec(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcDishSpec(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbDishSpec).all()
+        result = session.query(DishSpec).all()
         data = list()
         for item in result:
             data.append([int(item.num_id), item.vch_name, int(item.num_price)])
@@ -25,7 +25,7 @@ class CSvcDishSpec(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbDishSpec.num_id).all()
+        result = session.query(DishSpec.num_id).all()
         result.reverse()
         return int(result[0][0])
     
@@ -34,7 +34,7 @@ class CSvcDishSpec(CSingleton):
         if not data:
             return
         
-        dishSpec = CDbDishSpec()
+        dishSpec = DishSpec()
         dishSpec.vch_name = data[1]
         dishSpec.num_price = data[2]
             
@@ -49,7 +49,7 @@ class CSvcDishSpec(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbDishSpec).filter(CDbDishSpec.num_id == data[0]).delete()
+        session.query(DishSpec).filter(DishSpec.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -59,7 +59,7 @@ class CSvcDishSpec(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbDishSpec).filter(CDbDishSpec.num_id == data[0]).update({CDbDishSpec.vch_name:data[1], 
-                                                                                 CDbDishSpec.num_price:data[2]})
+        session.query(DishSpec).filter(DishSpec.num_id == data[0]).update({DishSpec.vch_name:data[1], 
+                                                                                 DishSpec.num_price:data[2]})
         session.flush()
         session.commit()

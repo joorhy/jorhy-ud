@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbTableInfoMinexpense import CDbTableInfoMinexpense
+from service.data_base.canteen import TableInfoMinexpense
 
 class CSvcMinexpenseSetting(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcMinexpenseSetting(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbTableInfoMinexpense).all()
+        result = session.query(TableInfoMinexpense).all()
         index = 0
         data = list()
         for item in result:
@@ -27,7 +27,7 @@ class CSvcMinexpenseSetting(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbTableInfoMinexpense.num_id).all()
+        result = session.query(TableInfoMinexpense.num_id).all()
         result.reverse()
         print result[0][0]
         return int(result[0][0])
@@ -37,7 +37,7 @@ class CSvcMinexpenseSetting(CSingleton):
         if not data:
             return
         
-        tableInfoMinexpense = CDbTableInfoMinexpense()
+        tableInfoMinexpense = TableInfoMinexpense()
         tableInfoMinexpense.vch_name = data[1]
         tableInfoMinexpense.num_amount = data[2]
             
@@ -52,7 +52,7 @@ class CSvcMinexpenseSetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbTableInfoMinexpense).filter(CDbTableInfoMinexpense.num_id == data[0]).delete()
+        session.query(TableInfoMinexpense).filter(TableInfoMinexpense.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -62,6 +62,6 @@ class CSvcMinexpenseSetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbTableInfoMinexpense).filter(CDbTableInfoMinexpense.num_id == data[0]).update({CDbTableInfoMinexpense.vch_name:data[1],CDbTableInfoMinexpense.num_amount:data[2]})
+        session.query(TableInfoMinexpense).filter(TableInfoMinexpense.num_id == data[0]).update({TableInfoMinexpense.vch_name:data[1],TableInfoMinexpense.num_amount:data[2]})
         session.flush()
         session.commit()

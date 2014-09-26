@@ -2,7 +2,7 @@
 #!/usr/bin/env python
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbTableInfoType import CDbTableInfoType
+from service.data_base.canteen import TableInfoType
 
 class CSvcTypeSetting(CSingleton):
     def __repr__(self):
@@ -14,7 +14,7 @@ class CSvcTypeSetting(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbTableInfoType).all()
+        result = session.query(TableInfoType).all()
         index = 0
         data = list()
         for item in result:
@@ -26,7 +26,7 @@ class CSvcTypeSetting(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbTableInfoType.num_id).all()
+        result = session.query(TableInfoType.num_id).all()
         result.reverse()
         print result[0][0]
         return int(result[0][0])
@@ -36,7 +36,7 @@ class CSvcTypeSetting(CSingleton):
         if not data:
             return
         
-        tableInfoType = CDbTableInfoType()
+        tableInfoType = TableInfoType()
         tableInfoType.vch_name = data[1]
             
         session = CSqlManager.session
@@ -50,7 +50,7 @@ class CSvcTypeSetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbTableInfoType).filter(CDbTableInfoType.num_id == data[0]).delete()
+        session.query(TableInfoType).filter(TableInfoType.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -60,6 +60,6 @@ class CSvcTypeSetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbTableInfoType).filter(CDbTableInfoType.num_id == data[0]).update({CDbTableInfoType.vch_name:data[1]})
+        session.query(TableInfoType).filter(TableInfoType.num_id == data[0]).update({TableInfoType.vch_name:data[1]})
         session.flush()
         session.commit()

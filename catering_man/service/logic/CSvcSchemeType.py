@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbPrinterSchemeType import CDbPrinterSchemeType
+from service.data_base.canteen import PrinterSchemeType
 
 class CSvcSchemeType(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcSchemeType(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbPrinterSchemeType).all()
+        result = session.query(PrinterSchemeType).all()
         index = 0
         data = list()
         for item in result:
@@ -27,7 +27,7 @@ class CSvcSchemeType(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbPrinterSchemeType.num_id).all()
+        result = session.query(PrinterSchemeType.num_id).all()
         result.reverse()
         return int(result[0][0])
     
@@ -36,7 +36,7 @@ class CSvcSchemeType(CSingleton):
         if not data:
             return
         
-        schemeType = CDbPrinterSchemeType()
+        schemeType = PrinterSchemeType()
         schemeType.vch_name = data[1]
             
         session = CSqlManager.session
@@ -50,7 +50,7 @@ class CSvcSchemeType(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbPrinterSchemeType).filter(CDbPrinterSchemeType.num_id == data[0]).delete()
+        session.query(PrinterSchemeType).filter(PrinterSchemeType.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -60,6 +60,6 @@ class CSvcSchemeType(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbPrinterSchemeType).filter(CDbPrinterSchemeType.num_id == data[0]).update({CDbPrinterSchemeType.vch_name:data[1]})
+        session.query(PrinterSchemeType).filter(PrinterSchemeType.num_id == data[0]).update({PrinterSchemeType.vch_name:data[1]})
         session.flush()
         session.commit()

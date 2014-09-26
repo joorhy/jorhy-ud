@@ -2,9 +2,7 @@
 #_*_ encoding=utf-8 _*_
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbUUserInfo import CDbUUserInfo
-from service.data_base.CDbUType import CDbUType
-from service.data_base.CDbUUserdetail import CDbUUserdetail
+from service.data_base.canteen import UUserinfo, UType, UUserdetail
 
 class CSvcEmployee(CSingleton):
     def __repr__(self):
@@ -16,7 +14,7 @@ class CSvcEmployee(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbUUserInfo).all()        
+        result = session.query(UUserinfo).all()        
 
         index = 0
         data = list()
@@ -37,7 +35,7 @@ class CSvcEmployee(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbUUserInfo).all()
+        result = session.query(UUserinfo).all()
         index = 0
         data = list()
         for item in result:
@@ -56,7 +54,7 @@ class CSvcEmployee(CSingleton):
         if not data:
             return
         
-        user_details = CDbUUserdetail()
+        user_details = UUserdetail()
         user_details.vch_realname = data[1]    
         user_details.vch_englishname = ""       
         user_details.dt_birthday = data[2]      
@@ -74,10 +72,10 @@ class CSvcEmployee(CSingleton):
         session.flush()
         session.commit()
         
-        user_info = CDbUUserInfo()
+        user_info = UUserinfo()
         user_info.vch_name = data[0]
         user_info.vch_psw = "0000"
-        li_id_item = session.query(CDbUUserdetail.num_id).all()
+        li_id_item = session.query(UUserdetail.num_id).all()
         li_id = list()
         for id_itme in li_id_item:
             li_id.append(id_itme[0])
@@ -93,7 +91,7 @@ class CSvcEmployee(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbUUserInfo).filter(CDbUUserInfo.num_id == data[0]).delete()
+        session.query(UUserinfo).filter(UUserinfo.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -103,19 +101,19 @@ class CSvcEmployee(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbUUserInfo).filter(CDbUUserInfo.num_id == data[0]).update({CDbUUserInfo.vch_name:data[1]})
+        session.query(UUserinfo).filter(UUserinfo.num_id == data[0]).update({UUserinfo.vch_name:data[1]})
                                            
-        detail_id = session.query(CDbUUserInfo.num_userdetails_id).filter(CDbUUserInfo.num_id == data[0]).all()
-        session.query(CDbUUserdetail).filter(CDbUUserdetail.num_id == int(detail_id[0][0])).update(
-                                                                                                {CDbUUserdetail.vch_realname:data[2],
-                                                                                                 CDbUUserdetail.dt_birthday:data[3],
-                                                                                                 CDbUUserdetail.num_dept:data[5],
-                                                                                                 CDbUUserdetail.num_gender:data[6],
-                                                                                                 CDbUUserdetail.num_phone:data[7],
-                                                                                                 CDbUUserdetail.vch_idcard:data[8],
-                                                                                                 CDbUUserdetail.vch_address:data[10],
-                                                                                                 CDbUUserdetail.vch_email:data[11],
-                                                                                                 CDbUUserdetail.vch_memo:data[12]
+        detail_id = session.query(UUserinfo.num_userdetails_id).filter(UUserinfo.num_id == data[0]).all()
+        session.query(UUserdetail).filter(UUserdetail.num_id == int(detail_id[0][0])).update(
+                                                                                                {UUserdetail.vch_realname:data[2],
+                                                                                                 UUserdetail.dt_birthday:data[3],
+                                                                                                 UUserdetail.num_dept:data[5],
+                                                                                                 UUserdetail.num_gender:data[6],
+                                                                                                 UUserdetail.num_phone:data[7],
+                                                                                                 UUserdetail.vch_idcard:data[8],
+                                                                                                 UUserdetail.vch_address:data[10],
+                                                                                                 UUserdetail.vch_email:data[11],
+                                                                                                 UUserdetail.vch_memo:data[12]
                                                                                                  })
         session.flush()
         session.commit()

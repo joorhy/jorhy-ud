@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbTableInfoArea import CDbTableInfoArea
+from service.data_base.canteen import TableInfoArea
 
 class CSvcAreaSetting(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcAreaSetting(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbTableInfoArea).all()
+        result = session.query(TableInfoArea).all()
         index = 0
         data = list()
         for item in result:
@@ -27,7 +27,7 @@ class CSvcAreaSetting(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbTableInfoArea.num_id).all()
+        result = session.query(TableInfoArea.num_id).all()
         result.reverse()
         return int(result[0][0])
     
@@ -36,7 +36,7 @@ class CSvcAreaSetting(CSingleton):
         if not data:
             return
         
-        tableInfoArea = CDbTableInfoArea()
+        tableInfoArea = TableInfoArea()
         tableInfoArea.vch_name = data[1]
             
         session = CSqlManager.session
@@ -50,7 +50,7 @@ class CSvcAreaSetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbTableInfoArea).filter(CDbTableInfoArea.num_id == data[0]).delete()
+        session.query(TableInfoArea).filter(TableInfoArea.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -60,6 +60,6 @@ class CSvcAreaSetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbTableInfoArea).filter(CDbTableInfoArea.num_id == data[0]).update({CDbTableInfoArea.vch_name:data[1]})
+        session.query(TableInfoArea).filter(TableInfoArea.num_id == data[0]).update({TableInfoArea.vch_name:data[1]})
         session.flush()
         session.commit()

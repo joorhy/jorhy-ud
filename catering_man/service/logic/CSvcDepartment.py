@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbUDept import CDbUDept
+from service.data_base.canteen import UDept
 
 class CSvcDepartment(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcDepartment(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbUDept).all()
+        result = session.query(UDept).all()
         index = 0
         data = list()
         for item in result:
@@ -27,7 +27,7 @@ class CSvcDepartment(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbUDept.num_id).all()
+        result = session.query(UDept.num_id).all()
         result.reverse()
         print result[0][0]
         return int(result[0][0])
@@ -37,7 +37,7 @@ class CSvcDepartment(CSingleton):
         if not data:
             return
         
-        tableInfoArea = CDbUDept()
+        tableInfoArea = UDept()
         tableInfoArea.vch_name = data[1]
             
         session = CSqlManager.session
@@ -51,7 +51,7 @@ class CSvcDepartment(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbUDept).filter(CDbUDept.num_id == data[0]).delete()
+        session.query(UDept).filter(UDept.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -61,6 +61,6 @@ class CSvcDepartment(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbUDept).filter(CDbUDept.num_id == data[0]).update({CDbUDept.vch_name:data[1]})
+        session.query(UDept).filter(UDept.num_id == data[0]).update({UDept.vch_name:data[1]})
         session.flush()
         session.commit()

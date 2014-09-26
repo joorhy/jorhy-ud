@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 #_*_ encoding=utf-8 _*_
 from framework.CSingleton import CSingleton
-from service.data_base.CDbDishPublish import CDbDishPublish
 from service.CSqlManager import CSqlManager
+from service.data_base.canteen import DishPublish
 
 class CSvcDishesInfo(CSingleton):
     def __repr__(self):
@@ -14,7 +14,7 @@ class CSvcDishesInfo(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbDishPublish).all()   
+        result = session.query(DishPublish).all()   
                                
         index = 0
         data = list()
@@ -43,7 +43,7 @@ class CSvcDishesInfo(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbDishPublish).all()
+        result = session.query(DishPublish).all()
         index = 0
         data = list()
         for item in result:
@@ -70,7 +70,7 @@ class CSvcDishesInfo(CSingleton):
         if not data:
             return
         
-        dishPublish = CDbDishPublish()
+        dishPublish = DishPublish()
         dishPublish.num_code = data[0]
         dishPublish.vch_name = data[1]
         dishPublish.vch_spell = data[2]
@@ -94,7 +94,7 @@ class CSvcDishesInfo(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbDishPublish).filter(CDbDishPublish.num_id == data[0]).delete()
+        session.query(DishPublish).filter(DishPublish.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -104,21 +104,20 @@ class CSvcDishesInfo(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbDishPublish).filter(
-                                           CDbDishPublish.num_id == data[0]
+        session.query(DishPublish).filter(DishPublish.num_id == data[0]
                                            ).update({
-                                                     CDbDishPublish.num_code:data[1],
-                                                     CDbDishPublish.vch_name:data[2],
-                                                     CDbDishPublish.vch_spell:data[3],
-                                                     CDbDishPublish.num_spec_id:data[4],
-                                                     CDbDishPublish.num_category:data[5],
-                                                     CDbDishPublish.num_default_price:data[6],
-                                                     CDbDishPublish.num_unit:data[7],
-                                                     CDbDishPublish.num_style_id:data[8],
-                                                     CDbDishPublish.num_ticheng:data[9],
-                                                     CDbDishPublish.num_discount:data[10],
-                                                     CDbDishPublish.vch_picname:data[12],
-                                                     CDbDishPublish.num_printer_scheme_id:data[13]})
+                                                     DishPublish.num_code:data[1],
+                                                     DishPublish.vch_name:data[2],
+                                                     DishPublish.vch_spell:data[3],
+                                                     DishPublish.num_spec_id:data[4],
+                                                     DishPublish.num_category:data[5],
+                                                     DishPublish.num_default_price:data[6],
+                                                     DishPublish.num_unit:data[7],
+                                                     DishPublish.num_style_id:data[8],
+                                                     DishPublish.num_ticheng:data[9],
+                                                     DishPublish.num_discount:data[10],
+                                                     DishPublish.vch_picname:data[12],
+                                                     DishPublish.num_printer_scheme_id:data[13]})
         session.flush()
         session.commit()
         
@@ -128,10 +127,8 @@ class CSvcDishesInfo(CSingleton):
             return
             
         session = CSqlManager.session
-        session.query(CDbDishPublish).filter(
-                                           CDbDishPublish.num_id == data[0]
-                                           ).update({
-                                                     CDbDishPublish.num_printer_scheme_id:data[1]})
+        session.query(DishPublish).filter(DishPublish.num_id == data[0]
+                                           ).update({DishPublish.num_printer_scheme_id:data[1]})
         session.flush()
         session.commit()
         

@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbDishCategory import CDbDishCategory
+from service.data_base.canteen import DishCategory
 
 class CSvcCategorySetting(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcCategorySetting(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbDishCategory).all()
+        result = session.query(DishCategory).all()
         index = 0
         data = list()
         for item in result:
@@ -27,7 +27,7 @@ class CSvcCategorySetting(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbDishCategory.num_id).all()
+        result = session.query(DishCategory.num_id).all()
         result.reverse()
         print result[0][0]
         return int(result[0][0])
@@ -37,7 +37,7 @@ class CSvcCategorySetting(CSingleton):
         if not data:
             return
         
-        unit = CDbDishCategory()
+        unit = DishCategory()
         unit.vch_name = data[1]
             
         session = CSqlManager.session
@@ -51,7 +51,7 @@ class CSvcCategorySetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbDishCategory).filter(CDbDishCategory.num_id == data[0]).delete()
+        session.query(DishCategory).filter(DishCategory.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -61,6 +61,6 @@ class CSvcCategorySetting(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbDishCategory).filter(CDbDishCategory.num_id == data[0]).update({CDbDishCategory.vch_name:data[1]})
+        session.query(DishCategory).filter(DishCategory.num_id == data[0]).update({DishCategory.vch_name:data[1]})
         session.flush()
         session.commit()

@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbDishStyle import CDbDishStyle
+from service.data_base.canteen import DishStyle
 
 class CSvcDishStyle(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcDishStyle(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbDishStyle).all()
+        result = session.query(DishStyle).all()
         data = list()
         for item in result:
             data.append([int(item.num_id), item.vch_name, int(item.num_priceadd), item.ch_mountadd])
@@ -25,7 +25,7 @@ class CSvcDishStyle(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbDishStyle.num_id).all()
+        result = session.query(DishStyle.num_id).all()
         result.reverse()
         return int(result[0][0])
     
@@ -34,7 +34,7 @@ class CSvcDishStyle(CSingleton):
         if not data:
             return
         
-        dishStyle = CDbDishStyle()
+        dishStyle = DishStyle()
         dishStyle.vch_name = data[1]
         dishStyle.num_priceadd = data[2]
         dishStyle.ch_mountadd = data[3]
@@ -50,7 +50,7 @@ class CSvcDishStyle(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbDishStyle).filter(CDbDishStyle.num_id == data[0]).delete()
+        session.query(DishStyle).filter(DishStyle.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -60,8 +60,8 @@ class CSvcDishStyle(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbDishStyle).filter(CDbDishStyle.num_id == data[0]).update({CDbDishStyle.vch_name:data[1], 
-                                                                                   CDbDishStyle.num_priceadd:data[2],
-                                                                                   CDbDishStyle.ch_mountadd:data[3]})
+        session.query(DishStyle).filter(DishStyle.num_id == data[0]).update({DishStyle.vch_name:data[1], 
+                                                                                   DishStyle.num_priceadd:data[2],
+                                                                                   DishStyle.ch_mountadd:data[3]})
         session.flush()
         session.commit()

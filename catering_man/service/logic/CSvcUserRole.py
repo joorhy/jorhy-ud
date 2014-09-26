@@ -3,7 +3,7 @@
 
 from framework.CSingleton import CSingleton
 from service.CSqlManager import CSqlManager
-from service.data_base.CDbUPermission import CDbUPermission
+from service.data_base.canteen import UPermission
 
 class CSvcUserRole(CSingleton):
     def __repr__(self):
@@ -15,7 +15,7 @@ class CSvcUserRole(CSingleton):
         session.flush()
         session.commit()
         
-        result = session.query(CDbUPermission).all()
+        result = session.query(UPermission).all()
         index = 0
         data = list()
         for item in result:
@@ -27,7 +27,7 @@ class CSvcUserRole(CSingleton):
     @staticmethod
     def GetId():
         session = CSqlManager.session
-        result = session.query(CDbUPermission.num_id).all()
+        result = session.query(UPermission.num_id).all()
         result.reverse()
         print result[0][0]
         return int(result[0][0])
@@ -37,7 +37,7 @@ class CSvcUserRole(CSingleton):
         if not data:
             return
         
-        user_role = CDbUPermission()
+        user_role = UPermission()
         user_role.num_perm_code = data[1]
         user_role.vch_perm_desc = data[2]
             
@@ -52,7 +52,7 @@ class CSvcUserRole(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbUPermission).filter(CDbUPermission.num_id == data[0]).delete()
+        session.query(UPermission).filter(UPermission.num_id == data[0]).delete()
         session.flush()
         session.commit()
     
@@ -62,6 +62,6 @@ class CSvcUserRole(CSingleton):
             return
         
         session = CSqlManager.session
-        session.query(CDbUPermission).filter(CDbUPermission.num_id == data[0]).update({CDbUPermission.num_perm_code:data[1], CDbUPermission.vch_perm_desc:data[2]})
+        session.query(UPermission).filter(UPermission.num_id == data[0]).update({UPermission.num_perm_code:data[1], UPermission.vch_perm_desc:data[2]})
         session.flush()
         session.commit()
