@@ -19,9 +19,26 @@ import wx.xrc
 ###########################################################################
 
 li_func_widget_1 = ['DiningTable', 'DishesPublish', 'Employee', 'PrinterScheme', '', 'Company']
-li_func_widget_2 = ['', '', 'DutyTable', 'SchemeRelated', '', 'Register']
+li_func_widget_2 = ['', '', 'UserPermission', 'SchemeRelated', '', 'Register']
 
 li_title = [u"餐厅设置", u"菜品发布", u"员工管理", u"打印设置", u"报表中心", u"系统设置"]
+li_func_title_1 = [u'餐桌设置', u'菜品发布', u'员工管理', u'厨打方案', u'菜品销售查询', u'公司信息']
+li_func_title_2 = [u'', u'', u'权限管理', u'菜品关联', u'收银情况查询', u'注册']
+li_func_title_3 = [u'', u'', u'员工排班', u'', u'营业情况查询', u'数据备份']
+li_func_title_4 = [u'', u'', u'', u'', u'消费查询', u'']
+li_func_title_5 = [u'', u'', u'', u'', u'菜品排行榜', u'']
+li_func_title_6 = [u'', u'', u'', u'', u'', u'']
+li_func_titles = [li_func_title_1, li_func_title_2, li_func_title_3,
+                  li_func_title_4, li_func_title_5, li_func_title_6]
+
+
+def get_func_number(index):
+    func_num = 0
+    for li_func_title in li_func_titles:
+        if li_func_title[index] != u'':
+            func_num += 1
+
+    return func_num
 
 
 class WgtHomePage (wx.Panel):
@@ -110,7 +127,7 @@ class WgtHomePage (wx.Panel):
         # Define function buttons dictionary
         self.di_funcButtons = dict()
         # Add function 1
-        self.btnFunc_1 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)  
+        self.btnFunc_1 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)
         func_btn_item_1 = {0: self.btnFunc_1}
         self.di_funcButtons.update(func_btn_item_1)
         # Add function 2
@@ -158,19 +175,26 @@ class WgtHomePage (wx.Panel):
 
         # Connect Events
         self.Bind(wx.EVT_SIZE, self.on_size)
-        self.btnDiningRoomSetting.Bind(wx.EVT_LEFT_DOWN, self.on_dining_room_setting)
-        self.btnDishesPublishing.Bind(wx.EVT_LEFT_DOWN, self.on_dishes_publishing)
-        self.btnStaffMan.Bind(wx.EVT_LEFT_DOWN, self.on_employee_manager)
-        self.btnPrinter.Bind(wx.EVT_LEFT_DOWN, self.on_printer_setting)
-        self.btnReportForms.Bind(wx.EVT_LEFT_DOWN, self.on_report_forms)
-        self.btnSysSetting.Bind(wx.EVT_LEFT_DOWN, self.on_system_setting)
-        self.btnExit.Bind(wx.EVT_LEFT_DOWN, parent.on_exit)
-        self.btnFunc_1.Bind(wx.EVT_LEFT_DOWN, self.on_func_1)
-        self.btnFunc_2.Bind(wx.EVT_LEFT_DOWN, self.on_func_2)
-        self.btnFunc_3.Bind(wx.EVT_LEFT_DOWN, self.on_func_3)
-        self.btnFunc_4.Bind(wx.EVT_LEFT_DOWN, self.on_func_4)
-        self.btnFunc_5.Bind(wx.EVT_LEFT_DOWN, self.on_func_5)
-        self.btnFunc_6.Bind(wx.EVT_LEFT_DOWN, self.on_func_6)
+        self.btnDiningRoomSetting.Bind(wx.EVT_BUTTON, self.on_dining_room_setting)
+        self.btnDishesPublishing.Bind(wx.EVT_BUTTON, self.on_dishes_publishing)
+        self.btnStaffMan.Bind(wx.EVT_BUTTON, self.on_employee_manager)
+        self.btnPrinter.Bind(wx.EVT_BUTTON, self.on_printer_setting)
+        self.btnReportForms.Bind(wx.EVT_BUTTON, self.on_report_forms)
+        self.btnSysSetting.Bind(wx.EVT_BUTTON, self.on_system_setting)
+        self.btnExit.Bind(wx.EVT_BUTTON, parent.on_exit)
+        self.btnFunc_1.Bind(wx.EVT_BUTTON, self.on_func_1)
+        self.btnFunc_2.Bind(wx.EVT_BUTTON, self.on_func_2)
+        self.btnFunc_3.Bind(wx.EVT_BUTTON, self.on_func_3)
+        self.btnFunc_4.Bind(wx.EVT_BUTTON, self.on_func_4)
+        self.btnFunc_5.Bind(wx.EVT_BUTTON, self.on_func_5)
+        self.btnFunc_6.Bind(wx.EVT_BUTTON, self.on_func_6)
+
+        # Create function button list
+        self.func_num = 0
+        self.li_buttons = [self.btnDiningRoomSetting, self.btnDishesPublishing, self.btnStaffMan,
+                           self.btnPrinter, self.btnReportForms, self.btnSysSetting]
+        self.liFuncButtons = [self.btnFunc_1, self.btnFunc_2, self.btnFunc_3,
+                              self.btnFunc_4, self.btnFunc_5, self.btnFunc_6]
 
     def __del__(self):
         pass
@@ -181,18 +205,7 @@ class WgtHomePage (wx.Panel):
         self.SetSize(wx.Size(x, y))
 
         select_item = CtrlHomePage.get_selected_item()
-        if select_item == 0:
-            self._show_dining_room_setting()
-        elif select_item == 1:
-            self._show_dishes_publishing()
-        elif select_item == 2:
-            self._show_employee_manager()
-        elif select_item == 3:
-            self._show_kitchen_printer()
-        elif select_item == 4:
-            self._show_report_forms()
-        elif select_item == 5:
-            self._show_system_setting()
+        self._show_func_widget(select_item)
 
     # Override function un initialize user interface
     def un_initialize(self):
@@ -212,52 +225,54 @@ class WgtHomePage (wx.Panel):
     def on_dining_room_setting(self, event):
         event.Skip()
         CtrlHomePage.set_selected_item(0)
-        self._show_dining_room_setting()
+        self._show_func_widget(0)
 
     def on_dishes_publishing(self, event):
         event.Skip()
         CtrlHomePage.set_selected_item(1)
-        self._show_dishes_publishing()
+        self._show_func_widget(1)
 
     def on_employee_manager(self, event):
         event.Skip()
         CtrlHomePage.set_selected_item(2)
-        self._show_employee_manager()
+        self._show_func_widget(2)
 
     def on_printer_setting(self, event):
         event.Skip()
         CtrlHomePage.set_selected_item(3)
-        self._show_kitchen_printer()
+        self._show_func_widget(3)
 
     def on_report_forms(self, event):
         event.Skip()
         CtrlHomePage.set_selected_item(4)
-        self._show_report_forms()
+        self._show_func_widget(4)
 
     def on_system_setting(self, event):
         event.Skip()
         CtrlHomePage.set_selected_item(5)
-        self._show_system_setting()
+        self._show_func_widget(5)
 
     def on_func_1(self, event):
         event.Skip()
         select_item = CtrlHomePage.get_selected_item()
+        AppManager.set_app_title(li_func_title_1[select_item])
+        self._set_screen_tile()
         if select_item != 5:
             AppManager.switch_to_application(li_func_widget_1[select_item])
         else:
             pop_company = PopCompany(self)
             pop_company.ShowModal()
-            self.Refresh()
 
     def on_func_2(self, event):
         event.Skip()
         select_item = CtrlHomePage.get_selected_item()
+        AppManager.set_app_title(li_func_title_2[select_item])
+        self._set_screen_tile()
         if select_item != 5:
             AppManager.switch_to_application(li_func_widget_2[select_item])
         else:
             pop_register = PopRegister(self)
             pop_register.ShowModal()
-            self.Refresh()
 
     def on_func_3(self, event):
         event.Skip()
@@ -275,78 +290,27 @@ class WgtHomePage (wx.Panel):
         event.Skip()
         self.Refresh()
 
-    def _show_dining_room_setting(self):
+    def _show_func_widget(self, index):
         self._enable_all_selector()
         self._hide_all_func_buttons()
-        self.btnDiningRoomSetting.Enabled = False
-        #self.btnFunc_1.Show()
-        #self.btnFunc_1.Label = u"餐桌设置"
-        AppManager.switch_to_application(li_func_widget_1[0])
-        self._set_screen_tile()
+        (self.li_buttons[index]).Enabled = False
+        if get_func_number(index) == 1:
+            AppManager.set_app_title(li_func_title_1[index])
+            AppManager.switch_to_application(li_func_widget_1[index])
+        else:
+            AppManager.set_app_title(li_title[index])
+            self._show_function_buttons(index)
 
-    def _show_dishes_publishing(self):
-        self._enable_all_selector()
-        self._hide_all_func_buttons()
-        self.btnDishesPublishing.Enabled = False
-        #self.btnFunc_1.Show()
-        #self.btnFunc_1.Label = u"菜品发布"
-        AppManager.switch_to_application(li_func_widget_1[1])
         self._set_screen_tile()
         self._show_func_buttons()
 
-    def _show_employee_manager(self):
-        self._enable_all_selector()
-        self._hide_all_func_buttons()
-        self.btnStaffMan.Enabled = False
-        self.btnFunc_1.Show()
-        self.btnFunc_1.Label = u"员工管理"
-        self.btnFunc_2.Show()
-        self.btnFunc_2.Label = u"权限管理"
-        self.btnFunc_3.Show()
-        self.btnFunc_3.Label = u"员工排班"
-        self._set_screen_tile()
-        self._show_func_buttons()
-
-    def _show_kitchen_printer(self):
-        self._enable_all_selector()
-        self._hide_all_func_buttons()
-        self.btnPrinter.Enabled = False
-        self.btnFunc_1.Show()
-        self.btnFunc_1.Label = u"厨打方案"
-        self.btnFunc_2.Show()
-        self.btnFunc_2.Label = u"菜品关联"
-        self._set_screen_tile()
-        self._show_func_buttons()
-
-    def _show_report_forms(self):
-        self._enable_all_selector()
-        self._hide_all_func_buttons()
-        self.btnReportForms.Enabled = False
-        self.btnFunc_1.Show()
-        self.btnFunc_1.Label = u"菜品销售查询"
-        self.btnFunc_2.Show()
-        self.btnFunc_2.Label = u"收银情况查询"
-        self.btnFunc_3.Show()
-        self.btnFunc_3.Label = u"营业情况查询"
-        self.btnFunc_4.Show()
-        self.btnFunc_4.Label = u"消费查询"
-        self.btnFunc_5.Show()
-        self.btnFunc_5.Label = u"菜品排行榜"
-        self._set_screen_tile()
-        self._show_func_buttons()
-
-    def _show_system_setting(self):
-        self._enable_all_selector()
-        self._hide_all_func_buttons()
-        self.btnSysSetting.Enabled = False
-        self.btnFunc_1.Show()
-        self.btnFunc_1.Label = u"公司信息"
-        self.btnFunc_2.Show()
-        self.btnFunc_2.Label = u"注册"
-        self.btnFunc_3.Show()
-        self.btnFunc_3.Label = u"数据备份"
-        self._set_screen_tile()
-        self._show_func_buttons()
+    def _show_function_buttons(self, index):
+        func_button_index = 0
+        for li_func_title in li_func_titles:
+            if li_func_title[index] != u'':
+                (self.liFuncButtons[func_button_index]).Show()
+                (self.liFuncButtons[func_button_index]).Label = li_func_title[index]
+            func_button_index += 1
 
     def _enable_all_selector(self):
         self.btnDiningRoomSetting.Enabled = True
@@ -366,19 +330,7 @@ class WgtHomePage (wx.Panel):
 
     def _show_func_buttons(self):
         select_item = CtrlHomePage.get_selected_item()  
-        self.func_num = 1
-        if select_item == 0:
-            self.func_num = 1
-        elif select_item == 1:
-            self.func_num = 1
-        elif select_item == 2:
-            self.func_num = 3
-        elif select_item == 3:
-            self.func_num = 2
-        elif select_item == 4:
-            self.func_num = 5
-        elif select_item == 5:
-            self.func_num = 3 
+        self.func_num = get_func_number(select_item)
             
         x, y = self.GetSize()
         btn_y = ((y - 50) - 100) / 2
@@ -388,8 +340,7 @@ class WgtHomePage (wx.Panel):
             self.di_funcButtons[i].SetSize(wx.Size(100, 100))
 
     def _set_screen_tile(self):
-        select_item = CtrlHomePage.get_selected_item()  
-        self.GetParent().SetTitle(li_title[select_item])
+        self.GetParent().SetTitle(AppManager.get_app_title())
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

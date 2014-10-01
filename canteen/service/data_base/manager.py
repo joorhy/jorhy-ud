@@ -1,1025 +1,335 @@
 #!/usr/bin/env python
 #_*_ encoding=utf-8 _*_
-
-from framework.core import Singleton
-from service.data_base.canteen import *
+from service.data_base.mode import *
 
 
-class SvcAreaSetting(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
+class SvcCanteenInfo():
+    def __init__(self, type_):
+        self.type = type_
+
+    def get_id(self):
         session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(TableInfoArea).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(TableInfoArea.num_id).all()
+        result = None
+        if self.type == 'AreaInfo':
+            result = session.query(TableInfoArea.id).all()
+        elif self.type == 'CategoryInfo':
+            result = session.query(DishCategory.id).all()
+        elif self.type == 'DepartmentInfo':
+            result = session.query(UDept.id).all()
+        elif self.type == 'SpecInfo':
+            result = session.query(DishSpec.id).all()
+        elif self.type == 'StyleInfo':
+            result = session.query(DishStyle.id).all()
+        elif self.type == 'MinExpenseInfo':
+            result = session.query(TableInfoMinexpense.id).all()
+        elif self.type == 'SchemeTypeInfo':
+            result = session.query(PrinterSchemeType.id).all()
+        elif self.type == 'TableTypeInfo':
+            result = session.query(TableInfoType.id).all()
+        elif self.type == 'UnitInfo':
+            result = session.query(Unit.id).all()
+        elif self.type == 'RoleInfo':
+            result = session.query(UPermission.id).all()
+
         result.reverse()
         return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        table_info_area = TableInfoArea()
-        table_info_area.vch_name = data[1]
-            
+
+    def get_all(self):
         session = SqlManager.session
-        session.add(table_info_area)
         session.flush()
         session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
+
+        data = list()
+        if self.type == 'AreaInfo':
+            result = session.query(TableInfoArea).all()
+            for item in result:
+                data.append(ModeTableInfoArea(item))
+        elif self.type == 'CategoryInfo':
+            result = session.query(DishCategory).all()
+            for item in result:
+                data.append(ModeDishCategory(item))
+        elif self.type == 'DepartmentInfo':
+            result = session.query(UDept).all()
+            for item in result:
+                data.append(ModeUDept(item))
+        elif self.type == 'SpecInfo':
+            result = session.query(DishSpec).all()
+            for item in result:
+                data.append(ModeDishSpec(item))
+        elif self.type == 'StyleInfo':
+            result = session.query(DishStyle).all()
+            for item in result:
+                data.append(ModeDishStyle(item))
+        elif self.type == 'MinExponseInfo':
+            result = session.query(TableInfoMinexpense).all()
+            for item in result:
+                data.append(ModeTableInfoExpense(item))
+        elif self.type == 'SchemeTypeInfo':
+            result = session.query(PrinterSchemeType).all()
+            for item in result:
+                data.append(ModePrintSchemeType(item))
+        elif self.type == 'TableTypeInfo':
+            result = session.query(TableInfoType).all()
+            for item in result:
+                data.append(ModeTableInfoType(item))
+        elif self.type == 'UnitInfo':
+            result = session.query(Unit).all()
+            for item in result:
+                data.append(ModeUnit(item))
+        elif self.type == 'RoleInfo':
+            result = session.query(UPermission).all()
+            for item in result:
+                data.append(ModeUPermission(item))
+        elif self.type == 'DishInfo':
+            result = session.query(DishPublish).all()
+            for item in result:
+                data.append(ModeDishPublish(item))
+        elif self.type == 'EmployeeInfo':
+            result = session.query(UUserinfo).all()
+            for item in result:
+                data.append(ModeUUserInfo(item))
+        elif self.type == 'PrintSchemeInfo':
+            result = session.query(PrinterScheme).all()
+            for item in result:
+                data.append(ModePrintScheme(item))
+        elif self.type == 'TableInfo':
+            result = session.query(TableInfo).all()
+            for item in result:
+                data.append(ModeTableInfo(item))
+
+        return data
+
+    def add_item(self, data):
+        if data is None:
             return
-        
+
         session = SqlManager.session
-        session.query(TableInfoArea).filter(TableInfoArea.num_id == data[0]).delete()
+        item = None
+        if self.type == 'AreaInfo':
+            item = TableInfoArea()
+            item.vch_name = data.name
+        elif self.type == 'CategoryInfo':
+            item = DishCategory()
+            item.vch_name = data.name
+        elif self.type == 'DepartmentInfo':
+            item = UDept()
+            item.vch_name = data.name
+        elif self.type == 'SpecInfo':
+            item = DishSpec()
+            item.vch_name = data.name
+            item.num_price = data.price
+        elif self.type == 'StyleInfo':
+            item = DishStyle()
+            item.vch_name = data.name
+            item.num_priceadd = data.price_add
+            item.ch_mountadd = data.amount_add
+        elif self.type == 'MinExpenseInfo':
+            item = TableInfoMinexpense()
+            item.vch_name = data.name
+            item.num_amount = data.price
+        elif self.type == 'SchemeTypeInfo':
+            item = PrinterSchemeType()
+            item.vch_name = data.name
+        elif self.type == 'TableTypeInfo':
+            item = TableInfoType()
+            item.vch_name = data.name
+        elif self.type == 'UnitInfo':
+            item = Unit()
+            item.vch_name = data.name
+        elif self.type == 'RoleInfo':
+            item = UPermission()
+            item.num_perm_code = data.code
+            item.vch_perm_desc = data.name
+        elif self.type == 'DishInfo':
+            item = DishPublish()
+            item.num_code = data.code
+            item.vch_name = data.name
+            item.vch_spell = data.spell
+            item.num_spec_id = data.spec
+            item.num_category = data.category
+            item.num_default_price = data.price
+            item.num_unit = data.unit
+            item.num_style_id = data.style
+            item.num_ticheng = data.commisssion
+            item.num_discount = data.discount
+            item.ch_disabled = data.stop
+            item.vch_picname = data.image_url
+            item.num_printer_scheme_id = data.printer_scheme
+        elif self.type == 'EmployeeInfo':
+            item = UUserdetail()
+            item.vch_realname = data.name
+            item.vch_englishname = ''
+            item.dt_birthday = data.birthday
+            item.num_dept = data.department
+            item.num_gender = data.sex
+            item.num_phone = data.telephone
+            item.vch_idcard = data.id_card
+            item.num_status = data.state
+            item.vch_address = data.address
+            item.vch_email = data.email
+            item.vch_memo = data.note
+        elif self.type == 'PrintSchemeInfo':
+            item = PrinterScheme()
+            item.id = data.id
+            item.vch_name = data.name
+            item.num_valid = data.valid
+            item.num_bill_type = data.scheme_type
+            item.num_print_count = data.print_count
+            item.num_backup_scheme_id = data.backup
+        elif self.type == 'TableInfo':
+            item = TableInfo()
+            item.vch_name = data.name
+            item.num_type = data.table_type
+            item.num_area = data.area
+            item.num_people_amount = data.people_num
+            item.num_minexpense_type = data.min_type
+
+        session.add(item)
         session.flush()
         session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
+
+        if self.type == 'EmployeeInfo':
+            user_info = UUserinfo()
+            user_info.vch_name = data.code
+            user_info.vch_psw = "0000"
+            li_id_item = session.query(UUserdetail.id).all()
+            li_id = list()
+            for id_item in li_id_item:
+                li_id.append(id_item[0])
+            user_info.num_userdetails_id = int(max(li_id))
+
+            session.add(user_info)
+            session.flush()
+            session.commit()
+
+    def delete_item(self, data):
+        if data is None:
             return
-        
+
         session = SqlManager.session
-        session.query(TableInfoArea).filter(TableInfoArea.num_id == data[0]).update({TableInfoArea.vch_name: data[1]})
+        if self.type == 'AreaInfo':
+            session.query(TableInfoArea).filter(TableInfoArea.id == data.id).delete()
+        elif self.type == 'CategoryInfo':
+            session.query(DishCategory).filter(DishCategory.id == data.id).delete()
+        elif self.type == 'DepartmentInfo':
+            session.query(UDept).filter(UDept.id == data.id).delete()
+        elif self.type == 'SpecInfo':
+            session.query(DishSpec).filter(DishSpec.id == data.id).delete()
+        elif self.type == 'StyleInfo':
+            session.query(DishStyle).filter(DishStyle.id == data.id).delete()
+        elif self.type == 'MinExpenseInfo':
+            session.query(TableInfoMinexpense).filter(TableInfoMinexpense.id == data.id).delete()
+        elif self.type == 'SchemeTypeInfo':
+            session.query(PrinterSchemeType).filter(PrinterSchemeType.id == data.id).delete()
+        elif self.type == 'TableTypeInfo':
+            session.query(TableInfoType).filter(TableInfoType.id == data.id).delete()
+        elif self.type == 'UnitInfo':
+            session.query(Unit).filter(Unit.id == data.id).delete()
+        elif self.type == 'RoleInfo':
+            session.query(UPermission).filter(UPermission.id == data.id).delete()
+        elif self.type == 'DishInfo':
+            session.query(DishPublish).filter(DishPublish.id == data.id).delete()
+        elif self.type == 'EmployeeInfo':
+            session.query(UUserinfo).filter(UUserinfo.id == data.id).delete()
+        elif self.type == 'PrintSchemeInfo':
+            session.query(PrinterScheme).filter(PrinterScheme.id == data.id).delete()
+        elif self.type == 'TableInfo':
+            session.query(TableInfo).filter(TableInfo.id == data.id).delete()
+
+        session.flush()
+        session.commit()
+
+    def update_item(self, data):
+        if data is None:
+            return
+
+        session = SqlManager.session
+        if self.type == 'AreaInfo':
+            session.query(TableInfoArea).filter(TableInfoArea.id == data.id).update({TableInfoArea.vch_name: data.name})
+        elif self.type == 'CategoryInfo':
+            session.query(DishCategory).filter(DishCategory.id == data.id).update({DishCategory.vch_name: data.name})
+        elif self.type == 'DepartmentInfo':
+            session.query(UDept).filter(UDept.id == data.id).update({UDept.vch_name: data.name})
+        elif self.type == 'SpecInfo':
+            session.query(DishSpec).filter(DishSpec.id == data.id).update({DishSpec.vch_name: data.name,
+                                                                           DishSpec.num_price: data.price})
+        elif self.type == 'StyleInfo':
+            session.query(DishStyle).filter(DishStyle.id == data.id).update({DishStyle.vch_name: data.name,
+                                                                             DishStyle.num_priceadd: data.price_add,
+                                                                             DishStyle.ch_mountadd: data.amount_add})
+        elif self.type == 'MinExpenseInfo':
+            session.query(TableInfoMinexpense).filter(TableInfoMinexpense.id == data.id) \
+                .update({TableInfoMinexpense.vch_name: data.name, TableInfoMinexpense.num_amount: data.price})
+        elif self.type == 'SchemeTypeInfo':
+            session.query(PrinterSchemeType).filter(PrinterSchemeType.id == data.id) \
+                .update({PrinterSchemeType.vch_name: data.name})
+        elif self.type == 'TableTypeInfo':
+            session.query(TableInfoType).filter(TableInfoType.id == data.id).update({TableInfoType.vch_name: data.name})
+        elif self.type == 'UnitInfo':
+            session.query(Unit).filter(Unit.id == data.id).update({Unit.vch_name: data.name})
+        elif self.type == 'RoleInfo':
+            session.query(UPermission).filter(UPermission.id == data.id) \
+                .update({UPermission.num_perm_code: data.code, UPermission.vch_perm_desc: data.name})
+        elif self.type == 'DishInfo':
+            session.query(DishPublish).filter(DishPublish.id == data[0]) \
+                .update({DishPublish.num_code: data.code,
+                         DishPublish.vch_name: data.name,
+                         DishPublish.vch_spell: data.spell,
+                         DishPublish.num_spec_id: data.spec,
+                         DishPublish.num_category: data.category,
+                         DishPublish.num_default_price: data.price,
+                         DishPublish.num_unit: data.unit,
+                         DishPublish.num_style_id: data.style,
+                         DishPublish.num_ticheng: data.commisssion,
+                         DishPublish.num_discount: data.discount,
+                         DishPublish.vch_picname: data.image_url,
+                         DishPublish.item.ch_disabled: data.stop,
+                         DishPublish.num_printer_scheme_id: data.printer_scheme})
+        elif self.type == 'EmployeeInfo':
+            session.query(UUserinfo).filter(UUserinfo.id == data.id).update({UUserinfo.vch_name: data.code})
+
+            detail_id = session.query(UUserinfo.num_userdetails_id).filter(UUserinfo.id == data.id).all()
+            session.query(UUserdetail).filter(UUserdetail.id == int(detail_id[0][0])) \
+                .update({UUserdetail.vch_realname: data.name,
+                         UUserdetail.dt_birthday: data.birthday,
+                         UUserdetail.num_dept: data.department,
+                         UUserdetail.num_gender: data.sex,
+                         UUserdetail.num_phone: data.telephone,
+                         UUserdetail.vch_idcard: data.id_card,
+                         UUserdetail.vch_address: data.address,
+                         UUserdetail.vch_email: data.email,
+                         UUserdetail.vch_memo: data.note})
+        elif self.type == 'PrintSchemeInfo':
+            session.query(PrinterScheme).filter(PrinterScheme.id == data.id).\
+                update({PrinterScheme.vch_name: data.name,
+                        PrinterScheme.num_valid: data.valid,
+                        PrinterScheme.num_bill_type: data.scheme_type,
+                        PrinterScheme.num_print_count: data.print_count})
+        elif self.type == 'TableInfo':
+            session.query(TableInfo).filter(TableInfo.id == data[0]) \
+                .update({TableInfo.vch_name: data.name,
+                         TableInfo.num_type: data.table_type,
+                         TableInfo.num_area: data.area,
+                         TableInfo.num_people_amount: data.people_num,
+                         TableInfo.num_minexpense_type: data.min_type})
+
         session.flush()
         session.commit()
 
 
-class SvcCategorySetting(Singleton):
+class SvcPrintScheme():
     def __init__(self):
         pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(DishCategory).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(DishCategory.num_id).all()
-        result.reverse()
-        print result[0][0]
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        unit = DishCategory()
-        unit.vch_name = data[1]
-            
-        session = SqlManager.session
-        session.add(unit)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(DishCategory).filter(DishCategory.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(DishCategory).filter(DishCategory.num_id == data[0]).update({DishCategory.vch_name: data[1]})
-        session.flush()
-        session.commit()
 
+    def update_print_scheme(self, data):
+        if not data:
+            return
 
-class SvcDepartment(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(UDept).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(UDept.num_id).all()
-        result.reverse()
-        print result[0][0]
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
+        if self.type != 'DishInfo':
             return
-        
-        department = UDept()
-        department.vch_name = data[1]
-            
-        session = SqlManager.session
-        session.add(department)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(UDept).filter(UDept.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(UDept).filter(UDept.num_id == data[0]).update({UDept.vch_name: data[1]})
-        session.flush()
-        session.commit()
 
-
-class SvcDishesInfo(Singleton):
-    def __init__(self):
-        pass
-
-    @classmethod
-    def get_all(cls):
         session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(DishPublish).all()   
-                               
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), 
-                         int(item.num_code),
-                         item.vch_name, 
-                         item.vch_spell,
-                         item.num_spec.vch_name, 
-                         item.dish_category.vch_name, 
-                         int(item.num_default_price), 
-                         item.unit.vch_name,
-                         item.num_style.vch_name,
-                         item.num_ticheng,
-                         item.num_discount,
-                         True,
-                         item.vch_picname,
-                         "" if item.num_printer_scheme is None else item.num_printer_scheme.vch_name])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_items(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(DishPublish).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), 
-                         int(item.num_code),
-                         item.vch_name, 
-                         item.vch_spell,
-                         item.num_spec_id, 
-                         item.num_category, 
-                         int(item.num_default_price), 
-                         item.num_unit,
-                         item.num_style_id,
-                         item.num_ticheng,
-                         item.num_discount,
-                         True,
-                         item.vch_picname,
-                         item.num_printer_scheme_id])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        dish_publish = DishPublish()
-        dish_publish.num_code = data[0]
-        dish_publish.vch_name = data[1]
-        dish_publish.vch_spell = data[2]
-        dish_publish.num_spec_id = data[3]
-        dish_publish.num_category = data[4]
-        dish_publish.num_default_price = data[5]
-        dish_publish.num_unit = data[6]
-        dish_publish.num_style_id = data[7]
-        dish_publish.num_ticheng = data[8]
-        dish_publish.num_discount = data[9]
-        dish_publish.vch_picname = data[11]
-            
-        session = SqlManager.session
-        session.add(dish_publish)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(DishPublish).filter(DishPublish.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(DishPublish).filter(DishPublish.num_id == data[0]) \
-            .update({DishPublish.num_code: data[1],
-                     DishPublish.vch_name: data[2],
-                     DishPublish.vch_spell: data[3],
-                     DishPublish.num_spec_id: data[4],
-                     DishPublish.num_category: data[5],
-                     DishPublish.num_default_price: data[6],
-                     DishPublish.num_unit: data[7],
-                     DishPublish.num_style_id: data[8],
-                     DishPublish.num_ticheng: data[9],
-                     DishPublish.num_discount: data[10],
-                     DishPublish.vch_picname: data[12],
-                     DishPublish.num_printer_scheme_id: data[13]})
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def update_print_scheme(cls, data):
-        if not data:
-            return
-            
-        session = SqlManager.session
-        session.query(DishPublish).filter(DishPublish.num_id == data[0]) \
+        session.query(DishPublish).filter(DishPublish.id == data[0]) \
             .update({DishPublish.num_printer_scheme_id: data[1]})
-        session.flush()
-        session.commit()
-
-
-class SvcDishSpec(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(DishSpec).all()
-        data = list()
-        for item in result:
-            data.append([int(item.num_id), item.vch_name, int(item.num_price)])
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(DishSpec.num_id).all()
-        result.reverse()
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        dish_spec = DishSpec()
-        dish_spec.vch_name = data[1]
-        dish_spec.num_price = data[2]
-            
-        session = SqlManager.session
-        session.add(dish_spec)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(DishSpec).filter(DishSpec.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(DishSpec).filter(DishSpec.num_id == data[0]).update({DishSpec.vch_name: data[1],
-                                                                           DishSpec.num_price: data[2]})
-        session.flush()
-        session.commit()
-
-
-class SvcDishStyle(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(DishStyle).all()
-        data = list()
-        for item in result:
-            data.append([int(item.num_id), item.vch_name, int(item.num_priceadd), item.ch_mountadd])
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(DishStyle.num_id).all()
-        result.reverse()
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        dish_style = DishStyle()
-        dish_style.vch_name = data[1]
-        dish_style.num_priceadd = data[2]
-        dish_style.ch_mountadd = data[3]
-            
-        session = SqlManager.session
-        session.add(dish_style)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(DishStyle).filter(DishStyle.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(DishStyle).filter(DishStyle.num_id == data[0]).update({DishStyle.vch_name: data[1],
-                                                                             DishStyle.num_priceadd: data[2],
-                                                                             DishStyle.ch_mountadd: data[3]})
-        session.flush()
-        session.commit()
-
-
-class SvcEmployee(Singleton):
-    def __init__(self):
-        pass
-
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(UUserinfo).all()        
-
-        index = 0
-        data = list()
-        for item in result:
-            data.append([int(item.num_id), index, item.vch_name, item.num_userdetails.vch_realname, 
-                         item.num_userdetails.dt_birthday, "", 
-                         item.num_userdetails.u_dept.vch_name, int(item.num_userdetails.num_gender), 
-                         int(item.num_userdetails.num_phone), item.num_userdetails.vch_idcard,
-                         0, item.num_userdetails.vch_address,
-                         item.num_userdetails.vch_email, item.num_userdetails.vch_memo])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_items(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(UUserinfo).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([int(item.num_id), index, item.vch_name, item.num_userdetails.vch_realname, 
-                         item.num_userdetails.dt_birthday, "", 
-                         item.num_userdetails.num_dept, int(item.num_userdetails.num_gender), 
-                         int(item.num_userdetails.num_phone), item.num_userdetails.vch_idcard,
-                         0, item.num_userdetails.vch_address,
-                         item.num_userdetails.vch_email, item.num_userdetails.vch_memo])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        user_details = UUserdetail()
-        user_details.vch_realname = data[1]    
-        user_details.vch_englishname = ""       
-        user_details.dt_birthday = data[2]      
-        user_details.num_dept = data[4]   
-        user_details.num_gender = data[5]
-        user_details.num_phone = data[6]
-        user_details.vch_idcard = data[7]
-        #user_details.num_status = data[8]
-        user_details.vch_address = data[9]
-        user_details.vch_email = data[10]
-        user_details.vch_memo = data[11]
-
-        session = SqlManager.session
-        session.add(user_details)
-        session.flush()
-        session.commit()
-        
-        user_info = UUserinfo()
-        user_info.vch_name = data[0]
-        user_info.vch_psw = "0000"
-        li_id_item = session.query(UUserdetail.num_id).all()
-        li_id = list()
-        for id_item in li_id_item:
-            li_id.append(id_item[0])
-        user_info.num_userdetails_id = int(max(li_id))
-        
-        session.add(user_info)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(UUserinfo).filter(UUserinfo.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(UUserinfo).filter(UUserinfo.num_id == data[0]).update({UUserinfo.vch_name: data[1]})
-                                           
-        detail_id = session.query(UUserinfo.num_userdetails_id).filter(UUserinfo.num_id == data[0]).all()
-        session.query(UUserdetail).filter(UUserdetail.num_id == int(detail_id[0][0])) \
-            .update({UUserdetail.vch_realname: data[2],
-                     UUserdetail.dt_birthday: data[3],
-                     UUserdetail.num_dept: data[5],
-                     UUserdetail.num_gender: data[6],
-                     UUserdetail.num_phone: data[7],
-                     UUserdetail.vch_idcard: data[8],
-                     UUserdetail.vch_address: data[10],
-                     UUserdetail.vch_email: data[11],
-                     UUserdetail.vch_memo: data[12]})
-        session.flush()
-        session.commit()
-
-
-class SvcMinExpenseSetting(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(TableInfoMinexpense).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name, int(item.num_amount)])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(TableInfoMinexpense.num_id).all()
-        result.reverse()
-        print result[0][0]
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        table_info_min_expense = TableInfoMinexpense()
-        table_info_min_expense.vch_name = data[1]
-        table_info_min_expense.num_amount = data[2]
-            
-        session = SqlManager.session
-        session.add(table_info_min_expense)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(TableInfoMinexpense).filter(TableInfoMinexpense.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(TableInfoMinexpense).filter(TableInfoMinexpense.num_id == data[0]) \
-            .update({TableInfoMinexpense.vch_name: data[1], TableInfoMinexpense.num_amount: data[2]})
-        session.flush()
-        session.commit()
-
-
-class SvcPrinterScheme(Singleton):
-    def __init__(self):
-        pass
-
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(PrinterScheme).all()   
-                               
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name, item.num_valid, 
-                         item.printer_scheme_type.vch_name, int(item.num_print_count), u"无"])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_items(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(PrinterScheme).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name, item.num_valid, 
-                         int(item.num_bill_type), int(item.num_print_count), u"无"])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        print_scheme = PrinterScheme()
-        print_scheme.num_id = data[0]
-        print_scheme.vch_name = data[1]
-        print_scheme.num_valid = data[2]
-        print_scheme.num_bill_type = data[3]
-        print_scheme.num_print_count = data[4]
-            
-        session = SqlManager.session
-        session.add(print_scheme)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(PrinterScheme).filter(PrinterScheme.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(PrinterScheme).filter(PrinterScheme.num_id == data[0]).\
-            update({PrinterScheme.vch_name: data[1],
-                    PrinterScheme.num_valid: data[2],
-                    PrinterScheme.num_bill_type: data[3],
-                    PrinterScheme.num_print_count: data[4]})
-        session.flush()
-        session.commit()
-
-
-class SvcSchemeType(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(PrinterSchemeType).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(PrinterSchemeType.num_id).all()
-        result.reverse()
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        scheme_type = PrinterSchemeType()
-        scheme_type.vch_name = data[1]
-            
-        session = SqlManager.session
-        session.add(scheme_type)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(PrinterSchemeType).filter(PrinterSchemeType.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(PrinterSchemeType).filter(PrinterSchemeType.num_id == data[0]) \
-            .update({PrinterSchemeType.vch_name: data[1]})
-        session.flush()
-        session.commit()
-
-
-class SvcTableInfo(Singleton):
-    def __init__(self):
-        pass
-
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(TableInfo).all()   
-                               
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name, item.table_info_type.vch_name, 
-                         item.table_info_area.vch_name, int(item.num_people_amount),
-                         item.table_info_minexpense.vch_name])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_items(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(TableInfo.num_id, 
-                               TableInfo.vch_name, 
-                               TableInfo.num_people_amount, 
-                               TableInfo.num_minexpense_type, 
-                               TableInfo.num_area, 
-                               TableInfo.num_type
-                               ).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item[0]), item[1], int(item[5]), int(item[4]), int(item[2]), int(item[3])])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        table_info = TableInfo()
-        table_info.vch_name = data[1]
-        table_info.num_type = data[2]
-        table_info.num_area = data[3]
-        table_info.num_people_amount = data[4]
-        table_info.num_minexpense_type = data[5]
-            
-        session = SqlManager.session
-        session.add(table_info)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(TableInfo).filter(TableInfo.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(TableInfo).filter(TableInfo.num_id == data[0]) \
-            .update({TableInfo.vch_name: data[1],
-                     TableInfo.num_type: data[2],
-                     TableInfo.num_area: data[3],
-                     TableInfo.num_people_amount: data[4],
-                     TableInfo.num_minexpense_type: data[5]})
-        session.flush()
-        session.commit()
-
-
-class SvcTypeSetting(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(TableInfoType).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(TableInfoType.num_id).all()
-        result.reverse()
-        print result[0][0]
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        table_info_type = TableInfoType()
-        table_info_type.vch_name = data[1]
-            
-        session = SqlManager.session
-        session.add(table_info_type)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(TableInfoType).filter(TableInfoType.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(TableInfoType).filter(TableInfoType.num_id == data[0]).update({TableInfoType.vch_name: data[1]})
-        session.flush()
-        session.commit()
-
-
-class SvcUnitSetting(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(Unit).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), item.vch_name])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(Unit.num_id).all()
-        result.reverse()
-        print result[0][0]
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        unit = Unit()
-        unit.vch_name = data[1]
-            
-        session = SqlManager.session
-        session.add(unit)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(Unit).filter(Unit.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(Unit).filter(Unit.num_id == data[0]).update({Unit.vch_name: data[1]})
-        session.flush()
-        session.commit()
-
-
-class SvcUserRole(Singleton):
-    def __init__(self):
-        pass
-    
-    @classmethod
-    def get_all(cls):
-        session = SqlManager.session
-        session.flush()
-        session.commit()
-        
-        result = session.query(UPermission).all()
-        index = 0
-        data = list()
-        for item in result:
-            data.append([index, int(item.num_id), int(item.num_perm_code), item.vch_perm_desc])
-            index += 1
-            
-        return data
-    
-    @classmethod
-    def get_id(cls):
-        session = SqlManager.session
-        result = session.query(UPermission.num_id).all()
-        result.reverse()
-        print result[0][0]
-        return int(result[0][0])
-    
-    @classmethod
-    def add_item(cls, data):
-        if not data:
-            return
-        
-        user_role = UPermission()
-        user_role.num_perm_code = data[1]
-        user_role.vch_perm_desc = data[2]
-            
-        session = SqlManager.session
-        session.add(user_role)
-        session.flush()
-        session.commit()
-        
-    @classmethod
-    def delete_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(UPermission).filter(UPermission.num_id == data[0]).delete()
-        session.flush()
-        session.commit()
-    
-    @classmethod
-    def update_item(cls, data):
-        if not data:
-            return
-        
-        session = SqlManager.session
-        session.query(UPermission).filter(UPermission.num_id == data[0]) \
-            .update({UPermission.num_perm_code: data[1], UPermission.vch_perm_desc: data[2]})
         session.flush()
         session.commit()

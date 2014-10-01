@@ -1,5 +1,5 @@
 # coding: utf-8
-from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Table
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Table, text
 from sqlalchemy.orm import relationship
 from service.data_base.SqlManager import SqlManager
 
@@ -10,7 +10,8 @@ metadata = Base.metadata
 class CompanyInfo(Base):
     __tablename__ = 'company_info'
 
-    vch_uid = Column(String(45), primary_key=True)
+    id = Column(Integer, primary_key=True)
+    vch_uid = Column(String(45), nullable=False)
     vch_name = Column(String(45))
     vch_boss_name = Column(String(45))
     num_boss_phone = Column(Integer)
@@ -18,30 +19,55 @@ class CompanyInfo(Base):
     vch_address = Column(String(45))
 
 
+class DeprecatedUUserScheduleStatu(Base):
+    __tablename__ = 'deprecated_u_user_schedule_status'
+
+    id = Column(Integer, primary_key=True)
+    vch_name = Column(String(45))
+
+
+class DeprecatedUUserStatu(Base):
+    __tablename__ = 'deprecated_u_user_status'
+
+    id = Column(Integer, primary_key=True)
+    vch_name = Column(String(45))
+
+
+class DeviceRegistration(Base):
+    __tablename__ = 'device_registration'
+
+    id = Column(Integer, primary_key=True)
+    vch_device_mac = Column(String(45))
+    vch_device_name = Column(String(45))
+
+
 class DishCategory(Base):
     __tablename__ = 'dish_category'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
 
 
 class DishPublish(Base):
     __tablename__ = 'dish_publish'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_code = Column(Integer)
+    num_code = Column(Integer, nullable=False)
     vch_spell = Column(String(45))
     num_default_price = Column(Integer)
     vch_picname = Column(String(45))
-    num_style_id = Column(ForeignKey(u'dish_style.num_id'), index=True)
-    num_spec_id = Column(ForeignKey(u'dish_spec.num_id'), index=True)
-    num_category = Column(ForeignKey(u'dish_category.num_id'), index=True)
-    num_unit = Column(ForeignKey(u'unit.num_id'), index=True)
+    num_style_id = Column(ForeignKey(u'dish_style.id'), index=True)
+    num_spec_id = Column(ForeignKey(u'dish_spec.id'), index=True)
+    num_category = Column(ForeignKey(u'dish_category.id'), index=True)
+    num_unit = Column(ForeignKey(u'unit.id'), index=True)
     num_ticheng = Column(Float)
     num_discount = Column(Float)
     num_change_code = Column(Integer)
-    num_printer_scheme_id = Column(ForeignKey(u'printer_scheme.num_id'), index=True)
+    num_printer_scheme_id = Column(ForeignKey(u'printer_scheme.id'), index=True)
+    num_recommend = Column(Integer)
+    ch_disabled = Column(String(1))
+    ch_is_print = Column(String(1))
 
     dish_category = relationship(u'DishCategory')
     num_printer_scheme = relationship(u'PrinterScheme')
@@ -53,11 +79,11 @@ class DishPublish(Base):
 class DishPublishLog(Base):
     __tablename__ = 'dish_publish_log'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_code = Column(Integer)
+    num_code = Column(Integer, nullable=False)
     vch_spell = Column(String(45))
-    num_default_price = Column(Integer)
+    num_default_price = Column(Float)
     vch_picname = Column(String(45))
     num_style_id = Column(Integer)
     num_spec_id = Column(Integer)
@@ -67,14 +93,26 @@ class DishPublishLog(Base):
     num_discount = Column(Float)
     num_change_code = Column(Integer)
     num_printer_scheme_id = Column(Integer)
+    num_recommend = Column(Integer)
+    vch_customized_style = Column(String(100))
+    num_dish_withdraw_id = Column(ForeignKey(u'dish_publish_log_withdraw.id'), index=True)
+
+    num_dish_withdraw = relationship(u'DishPublishLogWithdraw')
+
+
+class DishPublishLogWithdraw(Base):
+    __tablename__ = 'dish_publish_log_withdraw'
+
+    id = Column(Integer, primary_key=True)
+    vch_desc = Column(String(45))
 
 
 class DishServer(Base):
     __tablename__ = 'dish_server'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_code = Column(Integer)
+    num_code = Column(Integer, nullable=False)
     vch_spell = Column(String(45))
     num_default_price = Column(Integer)
     vch_picname = Column(String(45))
@@ -86,33 +124,36 @@ class DishServer(Base):
     num_discount = Column(Float)
     num_change_code = Column(Integer)
     num_printer_scheme_id = Column(Integer)
+    num_recommend = Column(Integer)
+    ch_disabled = Column(String(1))
+    ch_is_print = Column(String(1))
 
 
 class DishSpec(Base):
     __tablename__ = 'dish_spec'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_price = Column(Integer)
+    num_price = Column(Float)
 
 
 class DishStyle(Base):
     __tablename__ = 'dish_style'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_priceadd = Column(Integer)
+    num_priceadd = Column(Float)
     ch_mountadd = Column(String(1))
 
 
 class MeterialStock(Base):
     __tablename__ = 'meterial_stock'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     num_meterial_cat_id = Column(Integer)
     num_meterial_id = Column(Integer)
     num_amount = Column(Integer)
-    num_unit_id = Column(ForeignKey(u'unit.num_id'), index=True)
+    num_unit_id = Column(ForeignKey(u'unit.id'), index=True)
     dt_date = Column(DateTime)
 
     num_unit = relationship(u'Unit')
@@ -121,12 +162,13 @@ class MeterialStock(Base):
 class PrinterScheme(Base):
     __tablename__ = 'printer_scheme'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
     num_valid = Column(Integer)
-    num_bill_type = Column(ForeignKey(u'printer_scheme_type.num_id'), index=True)
+    num_scheme_type = Column(ForeignKey(u'printer_scheme_type.id'), index=True)
     num_print_count = Column(Integer)
-    num_produced_count = Column(Integer)
+    num_backup_scheme_id = Column(Integer)
+    num_produced_count = Column(Integer, server_default=text("'1'"))
 
     printer_scheme_type = relationship(u'PrinterSchemeType')
 
@@ -134,18 +176,18 @@ class PrinterScheme(Base):
 class PrinterSchemeType(Base):
     __tablename__ = 'printer_scheme_type'
 
-    num_id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
 
 
 class Purchase(Base):
     __tablename__ = 'purchase'
 
-    num_id = Column(Integer, primary_key=True)
-    num_userinfo_id = Column(ForeignKey(u'purchase_userinfo.num_id'), index=True)
-    num_meterial_id = Column(ForeignKey(u'purchase_meterial.num_id'), index=True)
+    id = Column(Integer, primary_key=True)
+    num_userinfo_id = Column(ForeignKey(u'purchase_userinfo.id'), index=True)
+    num_meterial_id = Column(ForeignKey(u'purchase_meterial.id'), index=True)
     num_meterial_price = Column(Integer)
-    num_meterial_unit = Column(ForeignKey(u'unit.num_id'), index=True)
+    num_meterial_unit = Column(ForeignKey(u'unit.id'), index=True)
     num_meterial_amount = Column(Integer)
     num_pay_status = Column(Integer)
     dt_date = Column(DateTime)
@@ -158,8 +200,8 @@ class Purchase(Base):
 class PurchaseMeterial(Base):
     __tablename__ = 'purchase_meterial'
 
-    num_id = Column(Integer, primary_key=True)
-    num_cat_id = Column(ForeignKey(u'purchase_meterial_cat.num_id'), index=True)
+    id = Column(Integer, primary_key=True)
+    num_cat_id = Column(ForeignKey(u'purchase_meterial_cat.id'), index=True)
     vch_name = Column(String(45))
 
     num_cat = relationship(u'PurchaseMeterialCat')
@@ -168,14 +210,14 @@ class PurchaseMeterial(Base):
 class PurchaseMeterialCat(Base):
     __tablename__ = 'purchase_meterial_cat'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
 
 
 class PurchaseUserinfo(Base):
     __tablename__ = 'purchase_userinfo'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
     num_phone = Column(Integer)
 
@@ -183,60 +225,62 @@ class PurchaseUserinfo(Base):
 class TableBook(Base):
     __tablename__ = 'table_book'
 
-    num_bookuid = Column(Integer, primary_key=True)
-    num_table_id = Column(ForeignKey(u'table_info.num_id'), index=True)
+    id = Column(Integer, primary_key=True)
+    num_table_id = Column(ForeignKey(u'table_info.id'), index=True)
     ch_openflag = Column(String(1))
     num_consumers = Column(Integer)
 
     num_table = relationship(u'TableInfo')
 
 
-t_table_booked_info = Table(
-    'table_booked_info', metadata,
-    Column('vch_uid', String(45), nullable=False),
-    Column('num_price', Integer),
-    Column('num_price_add', Integer),
-    Column('num_price_fix', Integer),
-    Column('vch_print_memo', String(45))
-)
+class TableBookedInfo(Base):
+    __tablename__ = 'table_booked_info'
+
+    id = Column(Integer, primary_key=True)
+    vch_uid = Column(String(45), nullable=False)
+    num_price = Column(Integer)
+    num_price_add = Column(Integer)
+    num_price_fix = Column(Integer)
+    vch_print_memo = Column(String(45))
 
 
 class TableDish(Base):
     __tablename__ = 'table_dish'
 
-    num_id = Column(Integer, primary_key=True)
-    num_dish_id = Column(ForeignKey(u'dish_publish_log.num_id'), index=True)
+    id = Column(Integer, primary_key=True)
+    num_batch_id = Column(Integer, nullable=False, index=True)
+    num_dish_publish_log_id = Column(ForeignKey(u'dish_publish_log.id'), index=True)
     num_dish_num = Column(Integer)
 
-    num_dish = relationship(u'DishPublishLog')
+    num_dish_publish_log = relationship(u'DishPublishLog')
 
 
 class TableInfo(Base):
     __tablename__ = 'table_info'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_type = Column(ForeignKey(u'table_info_type.num_id'), index=True)
-    num_area = Column(ForeignKey(u'table_info_area.num_id'), index=True)
+    num_type = Column(ForeignKey(u'table_info_type.id'), index=True)
+    num_area = Column(ForeignKey(u'table_info_area.id'), index=True)
     num_people_amount = Column(Integer)
-    num_minexpense_type = Column(ForeignKey(u'table_info_minexpense.num_id'), index=True)
+    num_minexpense_id = Column(ForeignKey(u'table_info_minexpense.id'), index=True)
 
     table_info_area = relationship(u'TableInfoArea')
-    table_info_minexpense = relationship(u'TableInfoMinexpense')
+    num_minexpense = relationship(u'TableInfoMinexpense')
     table_info_type = relationship(u'TableInfoType')
 
 
 class TableInfoArea(Base):
     __tablename__ = 'table_info_area'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
 
 
 class TableInfoMinexpense(Base):
     __tablename__ = 'table_info_minexpense'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
     num_amount = Column(Integer)
 
@@ -244,146 +288,156 @@ class TableInfoMinexpense(Base):
 class TableInfoType(Base):
     __tablename__ = 'table_info_type'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
 
 
 class TableOrder(Base):
     __tablename__ = 'table_order'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     num_table_id = Column(Integer)
-    num_price = Column(Integer)
-    num_price_add = Column(Integer)
-    num_price_fix = Column(Integer)
+    num_price = Column(Float)
+    num_price_add = Column(Float)
+    num_price_fix = Column(Float)
     vch_print_memo = Column(String(45))
-    dt_checkin = Column(DateTime)
-    dt_order_food = Column(DateTime)
+    dt_checkin_start = Column(DateTime)
+    dt_checkin_end = Column(DateTime)
     dt_checkout = Column(DateTime)
     num_people_amount = Column(Integer)
-    num_open_user_id = Column(ForeignKey(u'u_userinfo.num_id'), index=True)
-    num_table_book_id = Column(ForeignKey(u'table_book.num_bookuid'), index=True)
-    num_table_dish_id = Column(ForeignKey(u'table_dish.num_dish_id'), index=True)
+    num_open_user_id = Column(ForeignKey(u'u_userinfo.id'), index=True)
+    num_table_book_id = Column(ForeignKey(u'table_book.id'), index=True)
+    num_table_dish_batch_id = Column(Integer)
 
     num_open_user = relationship(u'UUserinfo')
     num_table_book = relationship(u'TableBook')
-    num_table_dish = relationship(u'TableDish')
 
 
 class UDept(Base):
     __tablename__ = 'u_dept'
 
-    num_id = Column(Integer, primary_key=True)
-    vch_name = Column(String(45))
-
-
-class UDuty(Base):
-    __tablename__ = 'u_duty'
-
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
 
 
 class UPermList(Base):
     __tablename__ = 'u_perm_list'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
+    pid = Column(ForeignKey(u'u_perm_list.id'), index=True)
     vch_name = Column(String(45))
 
+    parent = relationship(u'UPermList', remote_side=[id])
+    u_types = relationship(u'UType', secondary='u_perm_list_has_u_type')
 
-class UPermListCopy(Base):
-    __tablename__ = 'u_perm_list_copy'
 
-    num_id = Column(Integer, primary_key=True)
-    vch_name = Column(String(45))
+t_u_perm_list_has_u_type = Table(
+    'u_perm_list_has_u_type', metadata,
+    Column('u_perm_list_id', ForeignKey(u'u_perm_list.id'), primary_key=True, nullable=False, index=True),
+    Column('u_type_id', ForeignKey(u'u_type.id'), primary_key=True, nullable=False, index=True)
+)
 
 
 class UPermission(Base):
     __tablename__ = 'u_permission'
 
-    num_id = Column(Integer, primary_key=True)
-    num_perm_code = Column(ForeignKey(u'u_perm_list.num_id'), index=True)
+    id = Column(Integer, primary_key=True)
+    num_batch_id = Column(Integer)
+    num_perm_code = Column(Integer)
     vch_perm_desc = Column(String(45))
 
-    u_perm_list = relationship(u'UPermList')
+
+class UScheduleOndutyType(Base):
+    __tablename__ = 'u_schedule_onduty_type'
+
+    id = Column(Integer, primary_key=True)
+    num_name = Column(String(45))
 
 
 class UType(Base):
     __tablename__ = 'u_type'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_perm_id = Column(ForeignKey(u'u_permission.num_id'), index=True)
 
-    num_perm = relationship(u'UPermission')
+    u_userinfos = relationship(u'UUserinfo', secondary='u_userinfo_has_u_type')
+
+
+class UUserLeave(Base):
+    __tablename__ = 'u_user_leave'
+
+    id = Column(Integer, primary_key=True)
+    num_leave_user_id = Column(ForeignKey(u'u_userinfo.id'), index=True)
+    dt_leave = Column(DateTime)
+
+    num_leave_user = relationship(u'UUserinfo')
 
 
 class UUserSchedule(Base):
     __tablename__ = 'u_user_schedule'
 
-    num_id = Column(Integer, primary_key=True)
-    num_user_id = Column(ForeignKey(u'u_userinfo.num_id'), index=True)
+    id = Column(Integer, primary_key=True)
+    num_user_id = Column(ForeignKey(u'u_userinfo.id'), index=True)
     dt_onduty = Column(DateTime)
-    num_status_id = Column(ForeignKey(u'u_user_schedule_status.num_id'), index=True)
+    num_status_id = Column(Integer)
+    num_onduty_type_id = Column(ForeignKey(u'u_schedule_onduty_type.id'), index=True)
 
-    num_status = relationship(u'UUserScheduleStatu')
+    num_onduty_type = relationship(u'UScheduleOndutyType')
     num_user = relationship(u'UUserinfo')
-
-
-class UUserScheduleStatu(Base):
-    __tablename__ = 'u_user_schedule_status'
-
-    num_id = Column(Integer, primary_key=True)
-    vch_name = Column(String(45))
-
-
-class UUserStatu(Base):
-    __tablename__ = 'u_user_status'
-
-    num_id = Column(Integer, primary_key=True)
-    vch_name = Column(String(45))
 
 
 class UUserdetail(Base):
     __tablename__ = 'u_userdetails'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_realname = Column(String(45))
     vch_englishname = Column(String(45))
     vch_email = Column(String(45))
-    vch_hobbies = Column(String(45))
-    num_dept = Column(ForeignKey(u'u_dept.num_id'), index=True)
-    num_duty = Column(ForeignKey(u'u_duty.num_id'), index=True)
-    num_phone = Column(Integer)
+    num_dept_id = Column(ForeignKey(u'u_dept.id'), index=True)
+    vch_duty = Column(String(45))
+    num_userdetails_type_id = Column(ForeignKey(u'u_userdetails_type.id'), index=True)
+    vch_phone = Column(String(45))
     num_gender = Column(Integer)
     dt_birthday = Column(DateTime)
-    num_status = Column(ForeignKey(u'u_user_status.num_id'), index=True)
+    num_status = Column(Integer)
     vch_idcard = Column(String(45))
     vch_address = Column(String(45))
     vch_memo = Column(String(45))
 
-    u_dept = relationship(u'UDept')
-    u_duty = relationship(u'UDuty')
-    u_user_statu = relationship(u'UUserStatu')
+    num_dept = relationship(u'UDept')
+    num_userdetails_type = relationship(u'UUserdetailsType')
+
+
+class UUserdetailsType(Base):
+    __tablename__ = 'u_userdetails_type'
+
+    id = Column(Integer, primary_key=True)
+    vch_name = Column(String(45))
 
 
 class UUserinfo(Base):
     __tablename__ = 'u_userinfo'
 
-    num_id = Column(Integer, primary_key=True)
-    vch_name = Column(String(45))
+    id = Column(Integer, primary_key=True)
+    vch_name = Column(String(45), nullable=False)
     vch_psw = Column(String(45))
-    num_user_type = Column(ForeignKey(u'u_type.num_id'), index=True)
-    num_userdetails_id = Column(ForeignKey(u'u_userdetails.num_id'), index=True)
+    num_user_type = Column(Integer)
+    num_userdetails_id = Column(ForeignKey(u'u_userdetails.id'), index=True)
 
-    u_type = relationship(u'UType')
     num_userdetails = relationship(u'UUserdetail')
+
+
+t_u_userinfo_has_u_type = Table(
+    'u_userinfo_has_u_type', metadata,
+    Column('u_userinfo_id', ForeignKey(u'u_userinfo.id'), primary_key=True, nullable=False, index=True),
+    Column('u_type_id', ForeignKey(u'u_type.id'), primary_key=True, nullable=False, index=True)
+)
 
 
 class UVipCard(Base):
     __tablename__ = 'u_vip_card'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     ch_type = Column(String(1))
     dt_deadline = Column(DateTime)
 
@@ -391,5 +445,5 @@ class UVipCard(Base):
 class Unit(Base):
     __tablename__ = 'unit'
 
-    num_id = Column(Integer, primary_key=True)
+    id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))

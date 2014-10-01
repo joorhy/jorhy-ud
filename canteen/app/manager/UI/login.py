@@ -260,7 +260,7 @@ class WgtLogin(wx.Panel):
         
     def on_login(self, event):
         event.Skip()
-        CtrlLogin().login(self.txtUser.GetValue(), self.txtPassword.GetValue())
+        CtrlLogin.login(self.txtUser.GetValue(), self.txtPassword.GetValue())
         
     def on_set_user_focus(self, event):
         event.Skip()
@@ -272,7 +272,7 @@ class WgtLogin(wx.Panel):
         
     def on_evt_login(self, event):
         event.Skip()
-        if CtrlLogin().get_result():
+        if CtrlLogin.get_result():
             AppManager.switch_to_application('HomePage')
         else:
             dlg = wx.MessageDialog(self, u"用户名或密码错误", caption=u"登陆")

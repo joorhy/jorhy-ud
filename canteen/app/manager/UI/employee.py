@@ -598,6 +598,90 @@ class PopEmployee (wx.Dialog):
     def on_btn_exit(self, event):
         event.Skip()
         self.Close()
+
+###########################################################################
+## Class PopPermission
+###########################################################################
+
+
+class PopPermission (wx.Dialog):
+    def _init_data_view_sizer(self, parent):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.SetMinSize(wx.Size(600, 400))
+
+        # Create tree control sizer
+        left_sizer = wx.BoxSizer(wx.VERTICAL)
+        left_sizer.SetMinSize(wx.Size(200, 400))
+
+        self.m_treeCtrl = wx.TreeCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+        self.m_treeCtrl.SetMinSize(wx.Size(-1, 400))
+        left_sizer.Add(self.m_treeCtrl, 0, wx.EXPAND, 5)
+
+        sizer.Add(left_sizer, 1, 0, 5)
+
+        # Create data view list sizer
+        right_sizer = wx.BoxSizer(wx.VERTICAL)
+        right_sizer.SetMinSize(wx.Size(400, 400))
+
+        self.dataViewListCtrl = wx.dataview.DataViewCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
+        self.dataViewListCtrl.SetMinSize(wx.Size(-1, 400))
+
+        self.dataViewListCtrl.AppendTextColumn(u"行号", 0)
+        self.dataViewListCtrl.AppendTextColumn(u"类别", 1)
+        self.dataViewListCtrl.AppendTextColumn(u"权限", 2)
+        self.dataViewListCtrl.AppendToggleColumn(u"状态", 3, width=100)
+        right_sizer.Add(self.dataViewListCtrl, 0, wx.EXPAND | wx.LEFT, 5)
+
+        sizer.Add(right_sizer, 1, 0, 5)
+
+        # Layout data view sizer
+        parent.Add(sizer, 1, wx.EXPAND, 5)
+
+    def _init_ctrl_sizer(self, parent):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.SetMinSize(wx.Size(600, 50))
+
+        panel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        panel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+
+        sizer.Add(panel, 1, wx.EXPAND, 5)
+        # Add save button
+        self.btnSave = wx.Button(self, wx.ID_ANY, u"保存", wx.DefaultPosition, wx.DefaultSize, 0)
+        sizer.Add(self.btnSave, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add exit button
+        self.btnExit = wx.Button(self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
+        sizer.Add(self.btnExit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        parent.Add(sizer, 1, wx.EXPAND, 5)
+
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"权限设置", pos=wx.DefaultPosition,
+                           size=wx.Size(600, 470), style=wx.CAPTION)
+        self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self._init_data_view_sizer(sizer)
+        self._init_ctrl_sizer(sizer)
+
+        self.SetSizer(sizer)
+        self.Layout()
+        self.Centre(wx.BOTH)
+
+        # Connect Events
+        self.btnSave.Bind(wx.EVT_BUTTON, self.on_btn_save)
+        self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
+
+    def __del__(self):
+        pass
+
+    # Virtual event handlers, override them in your derived class
+    def on_btn_save(self, event):
+        event.Skip()
+        self.Close()
+
+    def on_btn_exit(self, event):
+        event.Skip()
+        self.Close()
         
 ###########################################################################
 ## Class CWgtEmployee
@@ -830,10 +914,184 @@ class WgtEmployee (wx.Panel):
         event.Skip()
         self.Hide()
         AppManager.switch_to_application('HomePage')
+
+###########################################################################
+## Class WgtPermission
+###########################################################################
+li_group_type = [u"默认组", u"自定义组"]
+li_default_role = [u"服务员", u"销售员", u"出品员", u"仓管员", u"采购员", u"营销员"]
+
+
+class WgtPermission (wx.Panel):
+    def _init_status_bar_sizer(self, parent):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.SetMinSize(wx.Size(800, 50))
+        # Add new button
+        self.btnNew = wx.Button(self, wx.ID_ANY, u"新增", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnNew.SetMinSize(wx.Size(50, 50))
+        sizer.Add(self.btnNew, 0, wx.EXPAND, 5)
+        # Add modify button
+        self.btnModify = wx.Button(self, wx.ID_ANY, u"修改", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnModify.SetMinSize(wx.Size(50, 50))
+        sizer.Add(self.btnModify, 0, 0, 5)
+        # Add delete button
+        self.btnDelete = wx.Button(self, wx.ID_ANY, u"删除", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnDelete.SetMinSize(wx.Size(50, 50))
+        sizer.Add(self.btnDelete, 0, 0, 5)
+        # Add refresh button
+        self.btnRefresh = wx.Button(self, wx.ID_ANY, u"刷新", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnRefresh.SetMinSize(wx.Size(50, 50))
+        sizer.Add(self.btnRefresh, 0, 0, 5)
+        # Add exit button
+        self.btnExit = wx.Button(self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnExit.SetMinSize(wx.Size(50, 50))
+        sizer.Add(self.btnExit, 0, 0, 5)
+        # Add fix space panel
+        self.topPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        self.topPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        sizer.Add(self.topPanel, 1, wx.EXPAND, 5)
+
+        # Layout buttons
+        parent.Add(sizer, 1, wx.EXPAND, 5)
+
+    def _init_data_view_sizer(self, parent):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        sizer.SetMinSize(wx.Size(800, 550))
+
+        # Add tree control sizer
+        left_sizer = wx.BoxSizer(wx.VERTICAL)
+        left_sizer.SetMinSize(wx.Size(200, 550))
+        self.treeCtrl = wx.TreeCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+        self.treeCtrl.SetMinSize(wx.Size(-1, 600))
+        left_sizer.Add(self.treeCtrl, 0, wx.EXPAND, 5)
+
+        sizer.Add(left_sizer, 1, 0, 5)
+
+        # Add data view list sizer
+        right_sizer = wx.BoxSizer(wx.VERTICAL)
+        right_sizer.SetMinSize(wx.Size(600, 550))
+        self.dataViewListCtrl = wx.dataview.DataViewCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
+        self.dataViewListCtrl.SetMinSize(wx.Size(-1, 600))
+
+        self.dataViewListCtrl.AppendTextColumn(u"行号", 0)
+        self.dataViewListCtrl.AppendTextColumn(u"类型", 1)
+        self.dataViewListCtrl.AppendTextColumn(u"编码", 2)
+        self.dataViewListCtrl.AppendTextColumn(u"名称", 3)
+        self.dataViewListCtrl.AppendTextColumn(u"备注", 4)
+        right_sizer.Add(self.dataViewListCtrl, 0, wx.EXPAND | wx.LEFT, 5)
+
+        sizer.Add(right_sizer, 1, 0, 5)
+
+        # Layout
+        parent.Add(sizer, 1, wx.EXPAND, 5)
+
+    def __init__(self, parent):
+        wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
+                          size=wx.Size(800, 600), style=wx.DEFAULT_FRAME_STYLE | wx.TAB_TRAVERSAL)
+        self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self._init_status_bar_sizer(sizer)
+        self._init_data_view_sizer(sizer)
+
+        self.SetSizer(sizer)
+        self.Layout()
+        self.Centre(wx.BOTH)
+
+        # Connect Events
+        self.Bind(wx.EVT_SIZE, self.on_size)
+        self.btnNew.Bind(wx.EVT_BUTTON, self.on_btn_new)
+        self.btnModify.Bind(wx.EVT_BUTTON, self.on_btn_modify)
+        self.btnDelete.Bind(wx.EVT_BUTTON, self.on_btn_delete)
+        self.btnRefresh.Bind(wx.EVT_BUTTON, self.on_btn_refresh)
+        self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
+
+        # Show tree control
+        self._show_tree_ctrl()
+
+    def __del__(self):
+        pass
+
+    def initialize(self):
+        # Add event listener
+        #EvtManager.add_listener(self, EnumEvent.EVT_EMPLOYEE_REFRESH, self.on_btn_refresh)
+
+        x, y = CtrlHomePage.get_screen_size()
+        self.SetSize(wx.Size(x, y))
+
+    def un_initialize(self):
+        # Remove event listener
+        EvtManager.remove_listener(self, EnumEvent.EVT_EMPLOYEE_REFRESH, self.on_btn_refresh)
+
+    def _show_tree_ctrl(self):
+        isz = (16, 16)
+        il = wx.ImageList(isz[0], isz[1])
+        fl_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER, isz))
+        fl_open_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_OTHER, isz))
+        file_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
+
+        self.treeCtrl.SetImageList(il)
+        self.il = il
+
+        self.root = self.treeCtrl.AddRoot(u"全部分组")
+        self.treeCtrl.SetPyData(self.root, None)
+        self.treeCtrl.SetItemImage(self.root, fl_idx, wx.TreeItemIcon_Normal)
+        self.treeCtrl.SetItemImage(self.root, fl_open_idx, wx.TreeItemIcon_Expanded)
+
+        for group_type in li_group_type:
+            child = self.treeCtrl.AppendItem(self.root, group_type)
+            self.treeCtrl.SetPyData(child, None)
+            self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
+            self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
+            if group_type == u"默认组":
+                for role in li_default_role:
+                    sub_child = self.treeCtrl.AppendItem(child, role)
+                    self.treeCtrl.SetPyData(sub_child, None)
+                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Normal)
+                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Selected)
+
+        self.treeCtrl.Expand(self.root)
+
+    # Virtual event handlers, override them in your derived class
+    def on_size(self, event):
+        event.Skip()
+        x, y = self.GetSize()
+
+        self.btnNew.SetMaxSize(wx.Size(50, 50))
+        self.btnModify.SetMaxSize(wx.Size(50, 50))
+        self.btnDelete.SetMaxSize(wx.Size(50, 50))
+        self.btnRefresh.SetMaxSize(wx.Size(50, 50))
+        self.btnExit.SetMaxSize(wx.Size(50, 50))
+        self.topPanel.SetMaxSize(wx.Size(x-250, 50))
+        self.treeCtrl.SetMinSize(wx.Size(200, y-50))
+        self.dataViewListCtrl.SetMinSize(wx.Size(x-200, y-50))
+
+    def on_btn_new(self, event):
+        event.Skip()
+        pop_permission = PopPermission(self)
+        pop_permission.ShowModal()
+
+    def on_btn_modify(self, event):
+        event.Skip()
+        self.Close()
+
+    def on_btn_delete(self, event):
+        event.Skip()
+        self.Close()
+
+    def on_btn_refresh(self, event):
+        event.Skip()
+        self.Close()
+
+    def on_btn_exit(self, event):
+        event.Skip()
+        self.Hide()
+        AppManager.switch_to_application('HomePage')
     
 if __name__ == '__main__':
     app = wx.PySimpleApp()
     frame = WgtEmployee(None)
+    frame = WgtPermission(None)
     frame.Show(True)
     frame.Center()
     app.MainLoop()

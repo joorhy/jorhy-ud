@@ -7,6 +7,7 @@ from app.manager.MainScreen import MainScreen
 class AppManager(Singleton):
     mainScreen = None
     panel = None
+    app_title = ""
     
     @classmethod
     def initialize(cls):
@@ -14,6 +15,14 @@ class AppManager(Singleton):
             AppManager.mainScreen = MainScreen(None)
             AppManager.mainScreen.Show(True)
             AppManager.mainScreen.Center()
+
+    @classmethod
+    def get_app_title(cls):
+        return AppManager.app_title
+
+    @classmethod
+    def set_app_title(cls, title):
+        AppManager.app_title = title
     
     @classmethod
     def switch_to_application(cls, app):
@@ -42,6 +51,9 @@ class AppManager(Singleton):
         elif app == 'SchemeRelated':
             from app.manager.UI.kitchen_printer import WgtSchemeRelated
             AppManager.panel = WgtSchemeRelated(AppManager.mainScreen)
+        elif app == 'UserPermission':
+            from app.manager.UI.employee import WgtPermission
+            AppManager.panel = WgtPermission(AppManager.mainScreen)
         
         AppManager.mainScreen.set_panel(AppManager.panel)
         AppManager.panel.initialize()
