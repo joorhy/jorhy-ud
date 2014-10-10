@@ -53,7 +53,7 @@ class DishPublish(Base):
 
     id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_code = Column(Integer, nullable=False)
+    vch_code = Column(String(45), nullable=False)
     vch_spell = Column(String(45))
     num_default_price = Column(Integer)
     vch_picname = Column(String(45))
@@ -81,7 +81,7 @@ class DishPublishLog(Base):
 
     id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_code = Column(Integer, nullable=False)
+    vch_code = Column(String(45), nullable=False)
     vch_spell = Column(String(45))
     num_default_price = Column(Float)
     vch_picname = Column(String(45))
@@ -135,6 +135,7 @@ class DishSpec(Base):
     id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
     num_price = Column(Float)
+    vch_dish_code = Column(String(45))
 
 
 class DishStyle(Base):
@@ -144,6 +145,7 @@ class DishStyle(Base):
     vch_name = Column(String(45))
     num_priceadd = Column(Float)
     ch_mountadd = Column(String(1))
+    vch_dish_code = Column(String(45))
 
 
 class MeterialStock(Base):
@@ -169,6 +171,7 @@ class PrinterScheme(Base):
     num_print_count = Column(Integer)
     num_backup_scheme_id = Column(Integer)
     num_produced_count = Column(Integer, server_default=text("'1'"))
+    vch_code = Column(String(45))
 
     printer_scheme_type = relationship(u'PrinterSchemeType')
 
@@ -259,6 +262,7 @@ class TableInfo(Base):
     __tablename__ = 'table_info'
 
     id = Column(Integer, primary_key=True)
+    vch_code = Column(String(45))
     vch_name = Column(String(45))
     num_type = Column(ForeignKey(u'table_info_type.id'), index=True)
     num_area = Column(ForeignKey(u'table_info_area.id'), index=True)
@@ -282,7 +286,7 @@ class TableInfoMinexpense(Base):
 
     id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-    num_amount = Column(Integer)
+    num_amount = Column(Float)
 
 
 class TableInfoType(Base):
@@ -320,31 +324,31 @@ class UDept(Base):
     vch_name = Column(String(45))
 
 
+class UPermGroup(Base):
+    __tablename__ = 'u_perm_group'
+
+    id = Column(Integer, primary_key=True)
+    vch_name = Column(String(45))
+    vch_type = Column(String(1))
+    vch_perm_desc = Column(String(45))
+
+    u_perm_lists = relationship(u'UPermList', secondary='u_perm_group_has_u_perm_list')
+
+
+t_u_perm_group_has_u_perm_list = Table(
+    'u_perm_group_has_u_perm_list', metadata,
+    Column('u_perm_group_id', ForeignKey(u'u_perm_group.id', ondelete=u'CASCADE'), primary_key=True, nullable=False, index=True),
+    Column('u_perm_list_id', ForeignKey(u'u_perm_list.id'), primary_key=True, nullable=False, index=True)
+)
+
+
 class UPermList(Base):
     __tablename__ = 'u_perm_list'
 
     id = Column(Integer, primary_key=True)
-    pid = Column(ForeignKey(u'u_perm_list.id'), index=True)
+    vch_code = Column(String(45))
+    vch_pcode = Column(String(45))
     vch_name = Column(String(45))
-
-    parent = relationship(u'UPermList', remote_side=[id])
-    u_types = relationship(u'UType', secondary='u_perm_list_has_u_type')
-
-
-t_u_perm_list_has_u_type = Table(
-    'u_perm_list_has_u_type', metadata,
-    Column('u_perm_list_id', ForeignKey(u'u_perm_list.id'), primary_key=True, nullable=False, index=True),
-    Column('u_type_id', ForeignKey(u'u_type.id'), primary_key=True, nullable=False, index=True)
-)
-
-
-class UPermission(Base):
-    __tablename__ = 'u_permission'
-
-    id = Column(Integer, primary_key=True)
-    num_batch_id = Column(Integer)
-    num_perm_code = Column(Integer)
-    vch_perm_desc = Column(String(45))
 
 
 class UScheduleOndutyType(Base):
@@ -359,8 +363,6 @@ class UType(Base):
 
     id = Column(Integer, primary_key=True)
     vch_name = Column(String(45))
-
-    u_userinfos = relationship(u'UUserinfo', secondary='u_userinfo_has_u_type')
 
 
 class UUserLeave(Base):
@@ -424,13 +426,14 @@ class UUserinfo(Base):
     num_user_type = Column(Integer)
     num_userdetails_id = Column(ForeignKey(u'u_userdetails.id'), index=True)
 
+    u_perm_groups = relationship(u'UPermGroup', secondary='u_userinfo_has_u_perm_group')
     num_userdetails = relationship(u'UUserdetail')
 
 
-t_u_userinfo_has_u_type = Table(
-    'u_userinfo_has_u_type', metadata,
+t_u_userinfo_has_u_perm_group = Table(
+    'u_userinfo_has_u_perm_group', metadata,
     Column('u_userinfo_id', ForeignKey(u'u_userinfo.id'), primary_key=True, nullable=False, index=True),
-    Column('u_type_id', ForeignKey(u'u_type.id'), primary_key=True, nullable=False, index=True)
+    Column('u_perm_group_id', ForeignKey(u'u_perm_group.id'), primary_key=True, nullable=False, index=True)
 )
 
 

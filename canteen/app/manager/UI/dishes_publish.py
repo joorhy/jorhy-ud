@@ -12,6 +12,7 @@ from app.manager.logic.ctrl import *
 from app.manager.logic.model import *
 from app.manager.logic.data import *
 from app.manager.AppManager import AppManager
+from framework.core import TreeImage
 
 import wx
 import wx.xrc
@@ -95,20 +96,23 @@ class PopCategorySetting (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlCategory.add_item(DataCategory(0, 0, ""))
+        CtrlCategory.add_item(DataCategory())
         
-        data = DataCategory(CtrlCategory.get_data_len() + 1, CtrlCategory.get_id(), "")
+        data = DataCategory(CtrlCategory.get_data_len() + 1, CtrlCategory.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlCategory.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlCategory.delete_item(data)
+        except:
+            print 'PopCategorySetting on_btn_delete error'
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -124,9 +128,8 @@ class PopCategorySetting (wx.Dialog):
     
     def on_btn_save(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        CtrlCategory.update_item(data)
+        for data in self.model.data:
+            CtrlCategory.update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -222,38 +225,21 @@ class PopDishesInfo (wx.Dialog):
         self.cbxUnit = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                    wx.Size(110, -1), cbx_unit_choices, 0)
         g_sizer.Add(self.cbxUnit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for dishes price
-        s_txt_price = wx.StaticText(container, wx.ID_ANY, u"售价：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_price.Wrap(-1)
-        g_sizer.Add(s_txt_price, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add text control for dishes price
-        self.txtPrice = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
-        g_sizer.Add(self.txtPrice, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for dishes specification
-        s_txt_spec = wx.StaticText(container, wx.ID_ANY, u"规格：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_spec.Wrap(-1)
-        g_sizer.Add(s_txt_spec, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add comb box for dishes specification
-        cbx_spec_choices = list()
-        self.cbxSpec = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                   wx.Size(110, -1), cbx_spec_choices, 0)
-        g_sizer.Add(self.cbxSpec, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for dishes style
-        s_txt_style = wx.StaticText(container, wx.ID_ANY, u"做法：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_style.Wrap(-1)
-        g_sizer.Add(s_txt_style, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add combo box for dishes style
-        cbx_style_choices = list()
-        self.cbxStyle = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                    wx.Size(110, -1), cbx_style_choices, 0)
-        g_sizer.Add(self.cbxStyle, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for dishes status
-        s_txt_status = wx.StaticText(container, wx.ID_ANY, u"停用：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_status.Wrap(-1)
-        g_sizer.Add(s_txt_status, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add check box for dishes state
-        self.cbxStop = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
-        g_sizer.Add(self.cbxStop, 0, wx.ALIGN_CENTER, 5)
+        # Add label for dishes discount
+        s_txt_discount = wx.StaticText(container, wx.ID_ANY, u"折扣比率：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_discount.Wrap(-1)
+        g_sizer.Add(s_txt_discount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add text control for dishes discount
+        self.txtDiscount = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+        g_sizer.Add(self.txtDiscount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add label for dishes commission
+        s_txt_commission = wx.StaticText(container, wx.ID_ANY, u"提成比率：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_commission.Wrap(-1)
+        g_sizer.Add(s_txt_commission, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add label for dishes commission
+        self.txtCommission = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+        g_sizer.Add(self.txtCommission, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
         # Layout 
         parent.Add(g_sizer, 1, wx.EXPAND, 5)
         
@@ -284,20 +270,13 @@ class PopDishesInfo (wx.Dialog):
         self.cbxCategory = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                        wx.Size(110,  -1), cbx_category_choices, 0)
         g_sizer.Add(self.cbxCategory, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for dishes discount
-        s_txt_discount = wx.StaticText(container, wx.ID_ANY, u"折扣比率：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_discount.Wrap(-1)
-        g_sizer.Add(s_txt_discount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add text control for dishes discount
-        self.txtDiscount = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
-        g_sizer.Add(self.txtDiscount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for dishes commission
-        s_txt_commission = wx.StaticText(container, wx.ID_ANY, u"提成比率：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_commission.Wrap(-1)
-        g_sizer.Add(s_txt_commission, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for dishes commission
-        self.txtCommission = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
-        g_sizer.Add(self.txtCommission, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add label for dishes status
+        s_txt_status = wx.StaticText(container, wx.ID_ANY, u"停用：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_status.Wrap(-1)
+        g_sizer.Add(s_txt_status, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add check box for dishes state
+        self.cbxStop = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
+        g_sizer.Add(self.cbxStop, 0, wx.ALIGN_CENTER, 5)
         # Layout 
         parent.Add(g_sizer, 1, wx.EXPAND, 5)
         
@@ -351,15 +330,14 @@ class PopDishesInfo (wx.Dialog):
         
         ctrl_sizer = wx.BoxSizer(wx.HORIZONTAL)
         ctrl_sizer.SetMinSize(wx.Size(-1, 200))
+        # Add Spacer
+        ctrl_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
         # Add new button
         self.btnNewSpec = wx.Button(self, wx.ID_ANY, u"新增规格", wx.DefaultPosition, wx.DefaultSize, 0)
         ctrl_sizer.Add(self.btnNewSpec, 0, wx.ALL, 5)
         # Add delete button
         self.btnDelSpec = wx.Button(self, wx.ID_ANY, u"删除规格", wx.DefaultPosition, wx.DefaultSize, 0)
         ctrl_sizer.Add(self.btnDelSpec, 0, wx.ALL, 5)
-        # Add save button
-        self.btnSaveSpec = wx.Button(self, wx.ID_ANY, u"保存规格", wx.DefaultPosition, wx.DefaultSize, 0)
-        ctrl_sizer.Add(self.btnSaveSpec, 0, wx.ALL, 5)
         sizer.Add(ctrl_sizer, 1, wx.EXPAND, 5)
 
         # Layout specification sizer
@@ -380,15 +358,14 @@ class PopDishesInfo (wx.Dialog):
         sizer.Add(view_sizer, 1, wx.EXPAND, 5)
         
         ctrl_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add Spacer
+        ctrl_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
         # Add new button
         self.btnNewStyle = wx.Button(self, wx.ID_ANY, u"新增做法", wx.DefaultPosition, wx.DefaultSize, 0)
         ctrl_sizer.Add(self.btnNewStyle, 0, wx.ALL, 5)
         # Add delete button
         self.btnDelStyle = wx.Button(self, wx.ID_ANY, u"删除做法", wx.DefaultPosition, wx.DefaultSize, 0)
         ctrl_sizer.Add(self.btnDelStyle, 0, wx.ALL, 5)
-        # Add save button
-        self.btnSaveStyle = wx.Button(self, wx.ID_ANY, u"保存做法", wx.DefaultPosition, wx.DefaultSize, 0)
-        ctrl_sizer.Add(self.btnSaveStyle, 0, wx.ALL, 5)
         sizer.Add(ctrl_sizer, 1, wx.EXPAND, 5)
         
         # Layout style sizer
@@ -412,18 +389,6 @@ class PopDishesInfo (wx.Dialog):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        # Create an instance of our specification model...
-        self.model_spec = ModelSpec(CtrlSpec.get_data())
-
-        # Tell the DVC to use the specification model
-        self.dataViewListSpec.AssociateModel(self.model_spec)
-
-        # Create an instance of our style model...
-        self.model_style = ModelStyle(CtrlStyle.get_data())
-
-        # Tell the DVC to use the style model
-        self.dataViewListStyle.AssociateModel(self.model_style)
-
         # Connect Events
         self.btnPrev.Bind(wx.EVT_BUTTON, self.on_btn_prev)
         self.btnNext.Bind(wx.EVT_BUTTON, self.on_btn_next)
@@ -434,11 +399,9 @@ class PopDishesInfo (wx.Dialog):
         
         self.btnNewSpec.Bind(wx.EVT_BUTTON, self.on_btn_new_spec)
         self.btnDelSpec.Bind(wx.EVT_BUTTON, self.on_btn_delete_spec)
-        self.btnSaveSpec.Bind(wx.EVT_BUTTON, self.on_btn_save_spec)
         
         self.btnNewStyle.Bind(wx.EVT_BUTTON, self.on_btn_new_style)
         self.btnDelStyle.Bind(wx.EVT_BUTTON, self.on_btn_delete_style)
-        self.btnSaveStyle.Bind(wx.EVT_BUTTON, self.on_btn_save_style)
 
         self.txtDishName.Bind(wx.EVT_TEXT, self.on_dish_name_text)
 
@@ -460,20 +423,22 @@ class PopDishesInfo (wx.Dialog):
             self._init_mod_view()
 
     def _init_add_view(self):
+        # Create an instance of our specification model...
+        self.model_spec = ModelSpec(list())
+
+        # Tell the DVC to use the specification model
+        self.dataViewListSpec.AssociateModel(self.model_spec)
+
+        # Create an instance of our style model...
+        self.model_style = ModelStyle(list())
+
+        # Tell the DVC to use the style model
+        self.dataViewListStyle.AssociateModel(self.model_style)
+
         li_unit = CtrlUnit.get_data()
         for unit in li_unit:
             self.cbxUnit.Append(unit.name, unit)
         self.cbxUnit.SetSelection(0)
-
-        li_spec = CtrlSpec.get_data()
-        for spec in li_spec:
-            self.cbxSpec.Append(spec.name, spec)
-        self.cbxSpec.SetSelection(0)
-
-        li_style = CtrlStyle.get_data()
-        for style in li_style:
-            self.cbxStyle.Append(style.name, style)
-        self.cbxStyle.SetSelection(0)
 
         li_category = CtrlCategory.get_data()
         for category in li_category:
@@ -495,14 +460,26 @@ class PopDishesInfo (wx.Dialog):
             return
 
         data = items[self.index]
-        self.item_id = data.id
-        self.txtDishCode.SetValue(str(data.code))
+
+        # Create an instance of our specification model...
+        self.model_spec = ModelSpec(CtrlSpec.get_data_by_dish_code(data.code))
+
+        # Tell the DVC to use the specification model
+        self.dataViewListSpec.AssociateModel(self.model_spec)
+
+        # Create an instance of our style model...
+        self.model_style = ModelStyle(CtrlStyle.get_data_by_dish_code(data.code))
+
+        # Tell the DVC to use the style model
+        self.dataViewListStyle.AssociateModel(self.model_style)
+
+        self.item_id = data.key
+        self.txtDishCode.SetValue(data.code)
         self.txtDishName.SetValue(data.name)
         self.txtBrevityCode.SetValue(str(data.spell))
-        self.txtPrice.SetValue(str(data.price))
         self.txtCommission.SetValue(str(data.commission))
         self.txtDiscount.SetValue(str(data.discount))
-        self.cbxStop.SetValue(data.stop)
+        self.cbxStop.SetValue(True if data.stop == u'1' else False)
         self.txtTrack.SetLabel(("%d / %d" % (self.index+1, len(items))))
         if data.image_url == "":
             self.bmpImage.SetBitmap(wx.NullBitmap)
@@ -512,36 +489,16 @@ class PopDishesInfo (wx.Dialog):
             self.bmpImage.SetBitmap(img.ConvertToBitmap())
 
         li_unit = CtrlUnit.get_data()
-        unit_selection = 0
         for unit in li_unit:
             self.cbxUnit.Append(unit.name, unit)
-            if unit.code == data.unit:
-                self.cbxUnit.SetSelection(unit_selection)
-            unit_selection += 1
-
-        li_spec = CtrlSpec.get_data()
-        spec_selection = 0
-        for spec in li_spec:
-            self.cbxSpec.Append(spec.name, spec)
-            if spec.code == data.spec:
-                self.cbxSpec.SetSelection(spec_selection)
-            spec_selection += 1
-
-        li_style = CtrlStyle.get_data()
-        style_selection = 0
-        for style in li_style:
-            self.cbxStyle.Append(style.name, style)
-            if style.code == data.style:
-                self.cbxStyle.SetSelection(style_selection)
-            style_selection += 1
+            if unit.key == data.unit:
+                self.cbxUnit.SetSelection(li_unit.index(unit))
 
         li_category = CtrlCategory.get_data()
-        category_selection = 0
         for category in li_category:
             self.cbxCategory.Append(category.name, category)
-            if category.code == data.category:
-                self.cbxCategory.SetSelection(category_selection)
-            category_selection += 1
+            if category.key == data.category:
+                self.cbxCategory.SetSelection(li_category.index(category))
 
     # Virtual event handlers, override them in your derived class
     def on_btn_prev(self, event):
@@ -557,26 +514,38 @@ class PopDishesInfo (wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         unit = self.cbxUnit.GetClientData(self.cbxUnit.GetSelection())
-        spec = self.cbxSpec.GetClientData(self.cbxSpec.GetSelection())
-        style = self.cbxStyle.GetClientData(self.cbxStyle.GetSelection())
         category = self.cbxCategory.GetClientData(self.cbxCategory.GetSelection())
         data = DataDishes(0, self.item_id, 
-                          int(self.txtDishCode.GetValue()),
+                          self.txtDishCode.GetValue(),
                           self.txtDishName.GetValue(),
                           self.txtBrevityCode.GetValue(),
-                          spec.code,
-                          category.code,
-                          int(self.txtPrice.GetValue()),
-                          unit.code,
-                          style.code,
-                          float(self.txtCommission.GetValue()),
-                          float(self.txtDiscount.GetValue()),
+                          category.key,
+                          unit.key,
+                          float(self.txtCommission.GetValue()) if self.txtCommission.GetValue() != '' else 0,
+                          float(self.txtDiscount.GetValue()) if self.txtDiscount.GetValue() != '' else 0,
                           self.cbxStop.GetValue(),
                           self.image_url, "")
         if self.type == "add":
             CtrlDishes.add_item(data)
+            for spec_data in self.model_spec.data:
+                data = DataSpec(dish_code=self.txtDishCode.GetValue(), name=spec_data.name, price=spec_data.price)
+                CtrlSpec.add_item(data)
+
+            for style_data in self.model_style.data:
+                data = DataStyle(dish_code=self.txtDishCode.GetValue(), name=style_data.name,
+                                 price_add=style_data.price_add, amount_add=style_data.amount_add)
+                CtrlStyle.add_item(data)
         elif self.type == "mod":
             CtrlDishes.update_item(data)
+
+            for spec_data in self.model_spec.data:
+                data = DataSpec(dish_code=self.txtDishCode.GetValue(), name=spec_data.name, price=spec_data.price)
+                CtrlSpec.update_item(data)
+
+            for style_data in self.model_style.data:
+                data = DataStyle(dish_code=self.txtDishCode.GetValue(), name=style_data.name,
+                                 price_add=style_data.price_add, amount_add=style_data.amount_add)
+                CtrlStyle.update_item(data)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -609,49 +578,41 @@ class PopDishesInfo (wx.Dialog):
 
     def on_btn_new_spec(self, event):
         event.Skip()
-        CtrlSpec.add_item(DataSpec(0, "", 0))
 
-        data = DataSpec(CtrlSpec.get_id(), "", 0)
+        data = DataSpec()
         self.model_spec.data.append(data)
         item = self.model_spec.ObjectToItem(data)
         self.dataViewListSpec.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
 
     def on_btn_delete_spec(self, event):
         event.Skip()
-        item = self.dataViewListSpec.GetCurrentItem()
-        data = self.model_spec.ItemToObject(item)
-        self.model_spec.data.remove(data)
-        self.dataViewListSpec.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlSpec.delete_item(data)
-
-    def on_btn_save_spec(self, event):
-        event.Skip()
-        item = self.dataViewListSpec.GetCurrentItem()
-        data = self.model_spec.ItemToObject(item)
-        CtrlSpec.update_item(data)
+        try:
+            item = self.dataViewListSpec.GetCurrentItem()
+            data = self.model_spec.ItemToObject(item)
+            self.model_spec.data.remove(data)
+            self.dataViewListSpec.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlSpec.delete_item(data)
+        except:
+            print 'PopDishesInfo on_btn_delete_spec error'
 
     def on_btn_new_style(self, event):
         event.Skip()
-        CtrlStyle.add_item(DataStyle(0, "", 0, "N"))
 
-        data = DataStyle(CtrlStyle.get_id(), "", 0, "N")
+        data = DataStyle()
         self.model_style.data.append(data)
         item = self.model_style.ObjectToItem(data)
         self.dataViewListStyle.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
 
     def on_btn_delete_style(self, event):
         event.Skip()
-        item = self.dataViewListStyle.GetCurrentItem()
-        data = self.model_style.ItemToObject(item)
-        self.model_style.data.remove(data)
-        self.dataViewListStyle.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlStyle.delete_item(data)
-
-    def on_btn_save_style(self, event):
-        event.Skip()
-        item = self.dataViewListStyle.GetCurrentItem()
-        data = self.model_style.ItemToObject(item)
-        CtrlStyle.update_item(data)
+        try:
+            item = self.dataViewListStyle.GetCurrentItem()
+            data = self.model_style.ItemToObject(item)
+            self.model_style.data.remove(data)
+            self.dataViewListStyle.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlStyle.delete_item(data)
+        except:
+            print 'PopDishesInfo on_btn_delete_style error'
 
     def on_dish_name_text(self, event):
         event.Skip()
@@ -734,20 +695,23 @@ class PopUnitSetting (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlUnit.add_item(DataUnit(0, 0, ""))
-        
-        data = DataUnit(CtrlUnit.get_data_len() + 1, CtrlUnit.get_id(), "")
+        CtrlUnit.add_item(DataUnit())
+
+        data = DataUnit(CtrlUnit.get_data_len() + 1, CtrlUnit.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlUnit.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlUnit.delete_item(data)
+        except:
+            print 'PopUnitSetting on_btn_delete error'
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -762,9 +726,8 @@ class PopUnitSetting (wx.Dialog):
     
     def on_btn_save(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        CtrlUnit.update_item(data)
+        for data in self.model.data:
+            CtrlUnit.update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -838,13 +801,10 @@ class WgtDishesPublish (wx.Panel):
         self.dataViewList.AppendTextColumn(u"行号", 0) 
         self.dataViewList.AppendTextColumn(u"品码", 1) 
         self.dataViewList.AppendTextColumn(u"品名", 2) 
-        self.dataViewList.AppendTextColumn(u"拼音简码", 3) 
-        self.dataViewList.AppendTextColumn(u"规格", 4) 
-        self.dataViewList.AppendTextColumn(u"做法", 5) 
-        self.dataViewList.AppendTextColumn(u"所属类", 6) 
-        self.dataViewList.AppendTextColumn(u"单位", 7) 
-        self.dataViewList.AppendTextColumn(u"售价", 8) 
-        self.dataViewList.AppendToggleColumn(u"停用", 9) 
+        self.dataViewList.AppendTextColumn(u"拼音简码", 3)
+        self.dataViewList.AppendTextColumn(u"所属类", 4)
+        self.dataViewList.AppendTextColumn(u"单位", 5)
+        self.dataViewList.AppendToggleColumn(u"停用", 6, width=80)
         right_sizer.Add(self.dataViewList, 0, wx.EXPAND | wx.LEFT, 5)
         # Layout data view list
         sizer.Add(right_sizer, 1, 0, 5)
@@ -882,8 +842,12 @@ class WgtDishesPublish (wx.Panel):
         self.btnUnit.Bind(wx.EVT_BUTTON, self.on_btn_unit)
         self.btnRefresh.Bind(wx.EVT_BUTTON, self.on_btn_refresh)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
+
+        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_sel_changed, self.treeCtrl)
+        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.on_activate, self.treeCtrl)
         
         # Show tree control
+        self.tree_data = None
         self._show_tree_ctrl()
     
     def __del__(self):
@@ -901,19 +865,14 @@ class WgtDishesPublish (wx.Panel):
         EvtManager.remove_listener(self, EnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.on_btn_refresh)
     
     def _show_tree_ctrl(self):
-        isz = (16, 16)
-        il = wx.ImageList(isz[0], isz[1])
-        fl_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER, isz))
-        fl_open_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_OTHER, isz))
-        file_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
-        
-        self.treeCtrl.SetImageList(il)
-        self.il = il
+        tree_image = TreeImage()
+        self.treeCtrl.SetImageList(tree_image.image_list)
+        self.il = tree_image.image_list
 
         self.root = self.treeCtrl.AddRoot(u"全部菜品")
         self.treeCtrl.SetPyData(self.root, None)
-        self.treeCtrl.SetItemImage(self.root, fl_idx, wx.TreeItemIcon_Normal)
-        self.treeCtrl.SetItemImage(self.root, fl_open_idx, wx.TreeItemIcon_Expanded)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
         
         dishes_map = dict()
         li_items = CtrlDishes.get_items()
@@ -928,23 +887,23 @@ class WgtDishesPublish (wx.Panel):
         
         li_category = CtrlCategory.get_data()
         for category in li_category:
-            if category.code in dishes_map:
-                title = "%s(%d)" % (category.name, len(dishes_map[category.code]))
+            if category.key in dishes_map:
+                title = "%s(%d)" % (category.name, len(dishes_map[category.key]))
                 child = self.treeCtrl.AppendItem(self.root, title)
-                self.treeCtrl.SetPyData(child, None)
-                self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
-                self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
-                for dishes in dishes_map[category.code]:
+                self.treeCtrl.SetPyData(child, category)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
+                for dishes in dishes_map[category.key]:
                     sub_child = self.treeCtrl.AppendItem(child, dishes.name)
-                    self.treeCtrl.SetPyData(sub_child, None)
-                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Normal)
-                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Selected)
+                    self.treeCtrl.SetPyData(sub_child, dishes)
+                    self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Normal)
+                    self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Selected)
             else:
                 title = "%s(0)" % category.name
                 child = self.treeCtrl.AppendItem(self.root, title)
                 self.treeCtrl.SetPyData(child, None)
-                self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
-                self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
                 
         self.treeCtrl.Expand(self.root)
     
@@ -987,20 +946,40 @@ class WgtDishesPublish (wx.Panel):
     
     def on_btn_modify(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        index = self.model.data.index(data)
-        CtrlDishes.set_cur_item_index(index)
-        pop_dishes_info = PopDishesInfo(self, "mod")
-        pop_dishes_info.ShowModal()
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            try:
+                data = self.model.ItemToObject(item)
+            except:
+                for item_ in self.model.data:
+                    if item_.key == self.tree_data.key:
+                        data = item_
+
+            index_ = self.model.data.index(data)
+            CtrlDishes.set_cur_item_index(index_)
+            pop_dishes_info = PopDishesInfo(self, "mod")
+            pop_dishes_info.ShowModal()
+        except:
+            print 'WgtDishesPublish: on_btn_modify error'
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlDishes.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            try:
+                data = self.model.ItemToObject(item)
+            except:
+                for item_ in self.model.data:
+                    if item_.key == self.tree_data.key:
+                        data = item_
+
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlDishes.delete_item(data)
+            CtrlSpec.delete_item_by_dish_code(data.code)
+            CtrlStyle.delete_item_by_dish_code(data.code)
+        except:
+            print 'WgtDishesPublish: on_btn_delete error'
     
     def on_btn_type(self, event):
         event.Skip()
@@ -1021,6 +1000,16 @@ class WgtDishesPublish (wx.Panel):
         self.Hide()
         CtrlHomePage.set_selected_item()
         AppManager.switch_to_application('HomePage')
+
+    def on_sel_changed(self, event):
+        event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+
+    def on_activate(self, event):
+        event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+        if isinstance(self.tree_data, DataDishes):
+            self.on_btn_modify(event)
     
 if __name__ == '__main__':
     app = wx.PySimpleApp()

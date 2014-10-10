@@ -12,6 +12,7 @@ from app.manager.logic.ctrl import *
 from app.manager.logic.model import *
 from app.manager.logic.data import *
 from app.manager.AppManager import AppManager
+from framework.core import TreeImage
 
 import wx
 import wx.xrc
@@ -97,20 +98,23 @@ class PopAreaSetting (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlArea.add_item(DataArea(0, 0, ""))
+        CtrlArea.add_item(DataArea())
 
-        data = DataArea(CtrlArea.get_data_len() + 1, CtrlArea.get_id(), "")
+        data = DataArea(CtrlArea.get_data_len() + 1, CtrlArea.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
 
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlArea.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlArea.delete_item(data)
+        except:
+            print 'PopAreaSetting on_btn_delete error'
 
     def on_btn_refresh(self, event):
         event.Skip()
@@ -125,9 +129,8 @@ class PopAreaSetting (wx.Dialog):
 
     def on_btn_save(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        CtrlArea.update_item(data)
+        for data in self.model.data:
+            CtrlArea.update_item(data)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -213,20 +216,23 @@ class PopMinExpenseSetting(wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlMinExpense.add_item(DataMinExpense(0, 0, "", 0))
+        CtrlMinExpense.add_item(DataMinExpense())
         
-        data = DataMinExpense(CtrlMinExpense.get_data_len() + 1, CtrlMinExpense.get_id(), "", 0)
+        data = DataMinExpense(CtrlMinExpense.get_data_len() + 1, CtrlMinExpense.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlMinExpense.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlMinExpense.delete_item(data)
+        except:
+            print 'PopMinExpenseSetting on_btn_delete error'
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -241,9 +247,8 @@ class PopMinExpenseSetting(wx.Dialog):
     
     def on_btn_save(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        CtrlMinExpense.update_item(data)
+        for data in self.model.data:
+            CtrlMinExpense.update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -284,7 +289,7 @@ class PopTableBatAdd (wx.Dialog):
         # Add combo box for area
         cbx_area_choices = list()
         self.cbxArea = wx.ComboBox(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                   wx.DefaultSize, cbx_area_choices, 0)
+                                   wx.Size(110, -1), cbx_area_choices, 0)
         g_sizer_left.Add(self.cbxArea, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add label for consumer type 
         s_txt_type = wx.StaticText(self, wx.ID_ANY, u"消费类型：", wx.DefaultPosition, wx.DefaultSize, 0)
@@ -293,7 +298,7 @@ class PopTableBatAdd (wx.Dialog):
         # Add combo box for consumer type 
         cbx_min_expense_choices = list()
         self.cbxMinExpense = wx.ComboBox(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                         wx.DefaultSize, cbx_min_expense_choices, 0)
+                                         wx.Size(110, -1), cbx_min_expense_choices, 0)
         g_sizer_left.Add(self.cbxMinExpense, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Layout column 1
         g_sizer.Add(g_sizer_left, 1, wx.EXPAND, 5)
@@ -317,7 +322,7 @@ class PopTableBatAdd (wx.Dialog):
         # Add combo box for dining table type
         cbx_type_choices = list()
         self.cbxType = wx.ComboBox(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                   wx.DefaultSize, cbx_type_choices, 0)
+                                   wx.Size(110, -1), cbx_type_choices, 0)
         g_sizer_right.Add(self.cbxType, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add label for people number
         s_txt_people_number = wx.StaticText(self, wx.ID_ANY, u"人数：", wx.DefaultPosition, wx.DefaultSize, 0)
@@ -365,12 +370,12 @@ class PopTableBatAdd (wx.Dialog):
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
 
         # Initialize data on view list
-        self._initailize_view()
+        self._initialize_view()
 
     def __del__(self):
         pass
 
-    def _initailize_view(self):
+    def _initialize_view(self):
         li_area = CtrlArea.get_data()
         for area in li_area:
             self.cbxArea.Append(area.name, area)
@@ -381,7 +386,7 @@ class PopTableBatAdd (wx.Dialog):
             self.cbxType.Append(table_type.name, table_type)
         self.cbxType.SetSelection(0)
 
-        li_min_expense = CtrlTable.get_data()
+        li_min_expense = CtrlMinExpense.get_data()
         for min_expense in li_min_expense:
             self.cbxMinExpense.Append(min_expense.name, min_expense)
         self.cbxMinExpense.SetSelection(0)
@@ -395,12 +400,9 @@ class PopTableBatAdd (wx.Dialog):
         i_from = int(self.txtFrom.GetValue())
         i_to = int(self.txtTo.GetValue())
         i_people_num = int(self.txtPeopleNum.GetValue())
-        table_items = list()
-        for index in range(i_from, i_to + 1):
-            table_items.append(DataTable(0, 0, ("餐桌%d" % index), table_type.code, area.code,
-                                         i_people_num, min_expense.code))
-
-        CtrlTable.add_items(table_items)
+        for index_ in range(i_from, i_to + 1):
+            CtrlTable.add_item(DataTable(0, 0, ("餐桌%d" % index_), table_type.key, area.key,
+                                         i_people_num, min_expense.key))
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -573,34 +575,28 @@ class PopTableInfo (wx.Dialog):
             return
 
         data = items[self.index]
-        self.txtCode.SetValue(str(data.code))
+        self.txtCode.SetValue(str(data.key))
         self.txtName.SetValue(data.name)
         self.txtPeople.SetValue(str(data.people_num))
         self.txtTrack.SetLabel(("%d / %d" % (self.index+1, len(items))))
 
         li_area = CtrlArea.get_data()
-        area_selection = 0
         for area in li_area:
             self.cbxArea.Append(area.name, area)
-            if area.code == data.area:
-                self.cbxArea.SetSelection(area_selection)
-            area_selection += 1
+            if area.key == data.area:
+                self.cbxArea.SetSelection(li_area.index(area))
 
         li_table_type = CtrlType.get_data()
-        table_type_selection = 0
         for table_type in li_table_type:
             self.cbxType.Append(table_type.name, table_type)
-            if table_type.code == data.table_type:
-                self.cbxType.SetSelection(table_type_selection)
-            table_type_selection += 1
+            if table_type.key == data.table_type:
+                self.cbxType.SetSelection(li_table_type.index(table_type))
 
         li_min_expense = CtrlMinExpense.get_data()
-        min_expense_selection = 0
         for min_expense in li_min_expense:
             self.cbxMinExpense.Append(min_expense.name, min_expense)
-            if min_expense.code == data.min_type:
-                self.cbxMinExpense.SetSelection(min_expense_selection)
-            min_expense_selection += 1
+            if min_expense.key == data.min_type:
+                self.cbxMinExpense.SetSelection(li_min_expense.index(min_expense))
 
     # Virtual event handlers, override them in your derived class        
     def on_btn_prev(self, event):
@@ -621,10 +617,10 @@ class PopTableInfo (wx.Dialog):
         data = DataTable(0,
                          int(self.txtCode.GetValue()),
                          self.txtName.GetValue(),
-                         type_.code,
-                         area.code,
+                         type_.key,
+                         area.key,
                          int(self.txtPeople.GetValue()),
-                         min_expense.code)
+                         min_expense.key)
         if self.type == "add":
             CtrlTable.add_item(data)
         elif self.type == "mod":
@@ -711,20 +707,23 @@ class PopTypeSetting (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlType.add_item(DataType(0, 0, ""))
+        CtrlType.add_item(DataType())
         
-        data = DataType(CtrlType.get_data_len() + 1, CtrlType.get_id(), "")
+        data = DataType(CtrlType.get_data_len() + 1, CtrlType.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlType.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlType.delete_item(data)
+        except:
+            print 'PopTypeSetting on_btn_delete error'
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -739,16 +738,15 @@ class PopTypeSetting (wx.Dialog):
     
     def on_btn_save(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        CtrlType.update_item(data)
+        for data in self.model.data:
+            CtrlType.update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
         self.Close()
 
 ###########################################################################
-## Class DiningTable
+## Class WgtDiningTable
 ###########################################################################
 
 
@@ -879,8 +877,12 @@ class WgtDiningTable (wx.Panel):
         self.btnMinExpense.Bind(wx.EVT_BUTTON, self.on_btn_min_expense)
         self.btnRefresh.Bind(wx.EVT_BUTTON, self.on_btn_refresh)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
+
+        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_sel_changed, self.treeCtrl)
+        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.on_activate, self.treeCtrl)
         
         # Show tree control
+        self.tree_data = None
         self._show_tree_ctrl()
     
     def __del__(self):
@@ -898,19 +900,14 @@ class WgtDiningTable (wx.Panel):
         EvtManager.remove_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
     
     def _show_tree_ctrl(self):
-        isz = (16, 16)
-        il = wx.ImageList(isz[0], isz[1])
-        fl_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER, isz))
-        fl_open_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_OTHER, isz))
-        file_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
-        
-        self.treeCtrl.SetImageList(il)
-        self.il = il
+        tree_image = TreeImage()
+        self.treeCtrl.SetImageList(tree_image.image_list)
+        self.il = tree_image.image_list
 
         self.root = self.treeCtrl.AddRoot(u"全部桌类")
         self.treeCtrl.SetPyData(self.root, None)
-        self.treeCtrl.SetItemImage(self.root, fl_idx, wx.TreeItemIcon_Normal)
-        self.treeCtrl.SetItemImage(self.root, fl_open_idx, wx.TreeItemIcon_Expanded)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
         
         table_type_map = dict()
         li_items = CtrlTable.get_items()
@@ -923,25 +920,25 @@ class WgtDiningTable (wx.Panel):
                 table_type_map_tmp = {item.table_type: list_tmp}
                 table_type_map.update(table_type_map_tmp)
         
-        li_table_type = CtrlTable.get_data()
+        li_table_type = CtrlType.get_data()
         for table_type in li_table_type:
-            if table_type.code in table_type_map:
-                title = "%s(%d)" % (table_type.name, len(table_type_map[table_type.code]))
+            if table_type.key in table_type_map:
+                title = "%s(%d)" % (table_type.name, len(table_type_map[table_type.key]))
                 child = self.treeCtrl.AppendItem(self.root, title)
-                self.treeCtrl.SetPyData(child, None)
-                self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
-                self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
-                for table_info in table_type_map[table_type.code]:
+                self.treeCtrl.SetPyData(child, table_type)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
+                for table_info in table_type_map[table_type.key]:
                     sub_child = self.treeCtrl.AppendItem(child, table_info.name)
-                    self.treeCtrl.SetPyData(sub_child, None)
-                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Normal)
-                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Selected)
+                    self.treeCtrl.SetPyData(sub_child, table_info)
+                    self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Normal)
+                    self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Selected)
             else:
                 title = "%s(0)" % table_type.name
                 child = self.treeCtrl.AppendItem(self.root, title)
                 self.treeCtrl.SetPyData(child, None)
-                self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
-                self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
                 
         self.treeCtrl.Expand(self.root)
                 
@@ -986,20 +983,37 @@ class WgtDiningTable (wx.Panel):
     
     def on_btn_modify(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        index = self.model.data.index(data)
-        CtrlTable.set_cur_item_index(index)
-        pop_table_info = PopTableInfo(self, "mod")
-        pop_table_info.ShowModal()
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            try:
+                    data = self.model.ItemToObject(item)
+            except:
+                for item_ in self.model.data:
+                    if item_.key == self.tree_data.key:
+                        data = item_
+            index_ = self.model.data.index(data)
+            CtrlTable.set_cur_item_index(index_)
+            pop_table_info = PopTableInfo(self, "mod")
+            pop_table_info.ShowModal()
+        except:
+            print 'WgtDiningTable: on_btn_modify error'
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlTable.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            try:
+                data = self.model.ItemToObject(item)
+            except:
+                for item_ in self.model.data:
+                    if item_.key == self.tree_data.key:
+                        data = item_
+
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlTable.delete_item(data)
+        except:
+            print 'WgtDiningTable: on_btn_delete error'
     
     def on_btn_bat_add(self, event):
         event.Skip()
@@ -1030,6 +1044,16 @@ class WgtDiningTable (wx.Panel):
         self.Hide()
         CtrlHomePage.set_selected_item()
         AppManager.switch_to_application('HomePage')
+
+    def on_sel_changed(self, event):
+        event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+
+    def on_activate(self, event):
+        event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+        if isinstance(self.tree_data, DataTable):
+            self.on_btn_modify(event)
     
 if __name__ == '__main__':
     app = wx.PySimpleApp()

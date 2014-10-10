@@ -23,6 +23,12 @@ class AppManager(Singleton):
     @classmethod
     def set_app_title(cls, title):
         AppManager.app_title = title
+
+    @classmethod
+    def destroy_panel(cls):
+        if AppManager.panel is not None:
+            AppManager.panel.Hide()
+            #AppManager.panel = None
     
     @classmethod
     def switch_to_application(cls, app):
@@ -32,7 +38,7 @@ class AppManager(Singleton):
                      
         if app == 'Login':
             from app.manager.UI.login import WgtLogin
-            AppManager.panel = WgtLogin(AppManager.mainScreen) 
+            AppManager.panel = WgtLogin(AppManager.mainScreen)
         elif app == 'HomePage':
             from app.manager.UI.home_page import WgtHomePage
             AppManager.panel = WgtHomePage(AppManager.mainScreen)

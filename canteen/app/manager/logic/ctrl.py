@@ -2,8 +2,8 @@
 #_*_ encoding=utf-8 _*_
 from framework.core import EvtManager
 from app.manager.logic.data import *
-from service.data_base.manager import *
 from app.manager.EnumEvent import EnumEvent
+from service.data_base.manager import *
 
 
 class CtrlHomePage():
@@ -53,11 +53,10 @@ class CtrlArea():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('AreaInfo')
-        result = svc_obj.get_all()
+        result = get_all('AreaInfo')
         data = list()
         for item in result:
-            data.append(DataArea(result.index(item), item.id_, item.name))
+            data.append(DataArea(result.index(item) + 1, item.id_, item.name))
             
         CtrlArea.data_len = len(data)
             
@@ -65,27 +64,23 @@ class CtrlArea():
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('AreaInfo')
-        return svc_obj.get_id()
+        return get_id('AreaInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataArea):
-            svc_obj = SvcCanteenInfo('AreaInfo')
-            svc_obj.add_item(data)
+            add_item('AreaInfo', data)
             CtrlArea.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataArea):
-            svc_obj = SvcCanteenInfo('AreaInfo')
-            svc_obj.delete_item(data)
+            delete_item('AreaInfo', data)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataArea):
-            svc_obj = SvcCanteenInfo('AreaInfo')
-            svc_obj.update_item(data)
+            update_item('AreaInfo', data)
 
 
 class CtrlMinExpense():
@@ -100,11 +95,10 @@ class CtrlMinExpense():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('MinExpenseInfo')
-        result = svc_obj.get_all()
+        result = get_all('MinExpenseInfo')
         data = list()
         for item in result:
-            data_item = DataMinExpense(result.index(item), item.id_, item.name, item.min_price)
+            data_item = DataMinExpense(result.index(item) + 1, item.id_, item.name, item.min_price)
             data.append(data_item)
             
         CtrlMinExpense.data_len = len(data)
@@ -113,27 +107,23 @@ class CtrlMinExpense():
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('MinExpenseInfo')
-        return svc_obj.get_id()
+        return get_id('MinExpenseInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataMinExpense):
-            svc_obj = SvcCanteenInfo('MinExpenseInfo')
-            svc_obj.add_item(data)
+            add_item('MinExpenseInfo', data)
             CtrlMinExpense.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataMinExpense):
-            svc_obj = SvcCanteenInfo('MinExpenseInfo')
-            svc_obj.delete_item(data)
+            delete_item('MinExpenseInfo', data)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataMinExpense):
-            svc_obj = SvcCanteenInfo('MinExpenseInfo')
-            svc_obj.update_item(data)
+            update_item('MinExpenseInfo', data)
 
 
 class CtrlTable():
@@ -148,16 +138,15 @@ class CtrlTable():
         return CtrlTable.cur_item_index
     
     @classmethod
-    def set_cur_item_index(cls, index):
-        CtrlTable.cur_item_index = index
+    def set_cur_item_index(cls, index_):
+        CtrlTable.cur_item_index = index_
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('TableInfo')
-        result = svc_obj.get_all()
+        result = get_all('TableInfo')
         data = list()
         for item in result:
-            data_item = DataTable(result.index(item), item.id_, item.name, item.type_name,
+            data_item = DataTable(result.index(item) + 1, item.id_, item.name, item.type_name,
                                   item.area_name, item.people_num, item.expense_name)
             data.append(data_item)
             
@@ -166,10 +155,9 @@ class CtrlTable():
     @classmethod
     def refresh_items(cls):
         del CtrlTable.table_items[0:len(CtrlTable.table_items)]
-        svc_obj = SvcCanteenInfo('TableInfo')
-        result = svc_obj.get_all()
+        result = get_all('TableInfo')
         for item in result:
-            data_item = DataTable(result.index(item), item.id_, item.name, item.type_id,
+            data_item = DataTable(result.index(item) + 1, item.id_, item.name, item.type_id,
                                   item.area_id, item.people_num, item.expense_id)
             CtrlTable.table_items.append(data_item)
             
@@ -180,30 +168,26 @@ class CtrlTable():
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataTable):
-            svc_obj = SvcCanteenInfo('TableInfo')
-            svc_obj.add_item(data)
+            add_item('TableInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_DINING_ROOM_REFRESH)
     
     @classmethod      
-    def add_items(cls, data):
-        for obj in data:
-            if isinstance(obj, DataTable):
-                svc_obj = SvcCanteenInfo('TableInfo')
-                svc_obj.add_item(data)
+    def add_items(cls, li_data):
+        for data in li_data:
+            if isinstance(data, DataTable):
+                add_item('TableInfo', data)
         EvtManager.dispatch_event(EnumEvent.EVT_DINING_ROOM_REFRESH)
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataTable):
-            svc_obj = SvcCanteenInfo('TableInfo')
-            svc_obj.delete_item(data)
+            delete_item('TableInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_DINING_ROOM_REFRESH)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataTable):
-            svc_obj = SvcCanteenInfo('TableInfo')
-            svc_obj.update_item(data)
+            update_item('TableInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_DINING_ROOM_REFRESH)
 
 
@@ -219,11 +203,10 @@ class CtrlType():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('TableTypeInfo')
-        result = svc_obj.get_all()
+        result = get_all('TableTypeInfo')
         data = list()
         for item in result:
-            data.append(DataType(result.index(item), item.id_, item.name))
+            data.append(DataType(result.index(item) + 1, item.id_, item.name))
             
         CtrlType.data_len = len(data)
             
@@ -231,27 +214,23 @@ class CtrlType():
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('TableTypeInfo')
-        return svc_obj.get_id()
+        return get_id('TableTypeInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataType):
-            svc_obj = SvcCanteenInfo('TableTypeInfo')
-            svc_obj.add_item(data)
+            add_item('TableTypeInfo', data)
             CtrlType.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataType):
-            svc_obj = SvcCanteenInfo('TableTypeInfo')
-            svc_obj.delete_item(data)
+            delete_item('TableTypeInfo', data)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataType):
-            svc_obj = SvcCanteenInfo('TableTypeInfo')
-            svc_obj.update_item(data)
+            update_item('TableTypeInfo', data)
 
 
 class CtrlCategory():
@@ -266,11 +245,10 @@ class CtrlCategory():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('CategoryInfo')
-        result = svc_obj.get_all()
+        result = get_all('CategoryInfo')
         data = list()
         for item in result:
-            data.append(DataCategory(result.index(item), item.id_, item.name))
+            data.append(DataCategory(result.index(item) + 1, item.id_, item.name))
             
         CtrlCategory.data_len = len(data)
             
@@ -278,27 +256,23 @@ class CtrlCategory():
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('CategoryInfo')
-        return svc_obj.get_id()
+        return get_id('CategoryInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataCategory):
-            svc_obj = SvcCanteenInfo('CategoryInfo')
-            svc_obj.add_item(data)
+            add_item('CategoryInfo', data)
             CtrlCategory.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataCategory):
-            svc_obj = SvcCanteenInfo('CategoryInfo')
-            svc_obj.delete_item(data)
+            delete_item('CategoryInfo', data)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataCategory):
-            svc_obj = SvcCanteenInfo('CategoryInfo')
-            svc_obj.update_item(data)
+            update_item('CategoryInfo', data)
 
 
 class CtrlDishes():
@@ -314,11 +288,11 @@ class CtrlDishes():
         return CtrlDishes.cur_item_index
     
     @classmethod
-    def set_cur_item_index(cls, index):
-        CtrlDishes.cur_item_index = index
+    def set_cur_item_index(cls, index_):
+        CtrlDishes.cur_item_index = index_
         
     @classmethod
-    def get_cur_item_index_2(cls, item):
+    def set_cur_item_index_2(cls, item):
         CtrlDishes.cur_item_index = CtrlDishes.table_items.index(item)
     
     @classmethod
@@ -331,14 +305,12 @@ class CtrlDishes():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('DishInfo')
-        result = svc_obj.get_all()
+        result = get_all('DishInfo')
         data = list()
         for item in result:
-            data_item = DataDishes(result.index(item), item.id_, item.code, item.name, item.brevity,
-                                   item.spec_name, item.category_name, item.default_price, item.unit_name,
-                                   item.style_name, item.commission, item.discount, item.enable,
-                                   item.picture_url, item.print_scheme_name)
+            data_item = DataDishes(result.index(item) + 1, item.id_, item.code, item.name, item.brevity,
+                                   item.category_name, item.unit_name, item.commission, item.discount, item.enable,
+                                   item.picture_url, item.print_scheme_name, item.is_print)
             data.append(data_item)
             
         return data
@@ -346,13 +318,11 @@ class CtrlDishes():
     @classmethod
     def refresh_items(cls):
         del CtrlDishes.table_items[0:len(CtrlDishes.table_items)]
-        svc_obj = SvcCanteenInfo('DishInfo')
-        result = svc_obj.get_all()
+        result = get_all('DishInfo')
         for item in result:
-            data_item = DataDishes(result.index(item), item.id_, item.code, item.name, item.brevity,
-                                   item.spec_id, item.category_id, item.default_price, item.unit_id,
-                                   item.style_id, item.commission, item.discount, item.enable,
-                                   item.picture_url, item.print_scheme_id)
+            data_item = DataDishes(result.index(item) + 1, item.id_, item.code, item.name, item.brevity,
+                                   item.category_id, item.unit_id, item.commission, item.discount, item.enable,
+                                   item.picture_url, item.print_scheme_id, item.is_print)
             CtrlDishes.table_items.append(data_item)
             
     @classmethod
@@ -362,29 +332,25 @@ class CtrlDishes():
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataDishes):
-            svc_obj = SvcCanteenInfo('DishInfo')
-            svc_obj.add_item(data)
+            add_item('DishInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_DISHES_PUBLISH_REFRESH)
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataDishes):
-            svc_obj = SvcCanteenInfo('DishInfo')
-            svc_obj.delete_item(data)
+            delete_item('DishInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_DISHES_PUBLISH_REFRESH)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataDishes):
-            svc_obj = SvcCanteenInfo('DishInfo')
-            svc_obj.update_item(data)
+            update_item('DishInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_DISHES_PUBLISH_REFRESH)
             
     @classmethod        
     def update_print_scheme(cls, data):
         if isinstance(data, DataDishes):
-            svc_obj = SvcPrintScheme()
-            svc_obj.update_print_scheme(data)
+            update_print_scheme(data)
             EvtManager.dispatch_event(EnumEvent.EVT_DISHES_PUBLISH_REFRESH)
 
 
@@ -400,40 +366,51 @@ class CtrlSpec():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('SpecInfo')
-        result = svc_obj.get_all()
+        result = get_all('SpecInfo')
         data = list()
         for item in result:
-            data_item = DataSpec(result.index(item), item.id_, item.name)
+            data_item = DataSpec(result.index(item) + 1, item.id_, item.dish_code, item.name, item.price)
             data.append(data_item)
             
         CtrlSpec.data_len = len(data)
             
         return data
+
+    @classmethod
+    def get_data_by_dish_code(cls, dish_code):
+        result = get_spec_by_dish_code(dish_code)
+        data = list()
+        for item in result:
+            data_item = DataSpec(result.index(item) + 1, item.id_, item.dish_code, item.name, item.price)
+            data.append(data_item)
+
+        CtrlSpec.data_len = len(data)
+
+        return data
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('SpecInfo')
-        return svc_obj.get_id()
+        return get_id('SpecInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataSpec):
-            svc_obj = SvcCanteenInfo('SpecInfo')
-            svc_obj.add_item(data)
+            add_item('SpecInfo', data)
             CtrlSpec.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataSpec):
-            svc_obj = SvcCanteenInfo('SpecInfo')
-            svc_obj.delete_item(data)
+            delete_item('SpecInfo', data)
+
+    @classmethod
+    def delete_item_by_dish_code(cls, dish_code):
+        delete_spec_by_dish_code(dish_code)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataSpec):
-            svc_obj = SvcCanteenInfo('SpecInfo')
-            svc_obj.update_item(data)
+            update_item('SpecInfo', data)
 
 
 class CtrlStyle():
@@ -448,39 +425,51 @@ class CtrlStyle():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('StyleInfo')
-        result = svc_obj.get_all()
+        result = get_all('StyleInfo')
         data = list()
         for item in result:
-            data.append(DataStyle(result.index(item), item.id_, item.name, item.is_add_price))
+            data.append(DataStyle(result.index(item) + 1, item.id_, item.dish_code,
+                                  item.name, item.price, item.is_add_price))
             
         CtrlStyle.data_len = len(data)
             
         return data
+
+    @classmethod
+    def get_data_by_dish_code(cls, dish_code):
+        result = get_style_by_dish_code(dish_code)
+        data = list()
+        for item in result:
+            data.append(DataStyle(result.index(item) + 1, item.id_, item.dish_code,
+                                  item.name, item.price, item.is_add_price))
+
+        CtrlStyle.data_len = len(data)
+
+        return data
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('StyleInfo')
-        return svc_obj.get_id()
+        return get_id('StyleInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataStyle):
-            svc_obj = SvcCanteenInfo('StyleInfo')
-            svc_obj.add_item(data)
+            add_item('StyleInfo', data)
             CtrlStyle.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataStyle):
-            svc_obj = SvcCanteenInfo('StyleInfo')
-            svc_obj.delete_item(data)
+            delete_item('StyleInfo', data)
+
+    @classmethod
+    def delete_item_by_dish_code(cls, dish_code):
+        delete_style_by_dish_code(dish_code)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataStyle):
-            svc_obj = SvcCanteenInfo('StyleInfo')
-            svc_obj.update_item(data)
+            update_item('StyleInfo', data)
 
 
 class CtrlUnit():
@@ -495,11 +484,10 @@ class CtrlUnit():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('UnitInfo')
-        result = svc_obj.get_all()
+        result = get_all('UnitInfo')
         data = list()
         for item in result:
-            data_item = DataUnit(result.index(item), item.id_, item.name)
+            data_item = DataUnit(result.index(item) + 1, item.id_, item.name)
             data.append(data_item)
             
         CtrlUnit.data_len = len(data)
@@ -508,27 +496,23 @@ class CtrlUnit():
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('UnitInfo')
-        return svc_obj.get_id()
+        return get_id('UnitInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataUnit):
-            svc_obj = SvcCanteenInfo('UnitInfo')
-            svc_obj.add_item(data)
+            add_item('UnitInfo', data)
             CtrlUnit.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataUnit):
-            svc_obj = SvcCanteenInfo('UnitInfo')
-            svc_obj.delete_item(data)
+            delete_item('UnitInfo', data)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataUnit):
-            svc_obj = SvcCanteenInfo('UnitInfo')
-            svc_obj.update_item(data)
+            update_item('UnitInfo', data)
 
 
 class CtrlDepartment():
@@ -543,11 +527,10 @@ class CtrlDepartment():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('DepartmentInfo')
-        result = svc_obj.get_all()
+        result = get_all('DepartmentInfo')
         data = list()
         for item in result:
-            data.append(DataDepartment(result.index(item), item.id_, item.name))
+            data.append(DataDepartment(result.index(item) + 1, item.id_, item.name))
             
         CtrlDepartment.data_len = len(data)
             
@@ -555,27 +538,23 @@ class CtrlDepartment():
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('DepartmentInfo')
-        return svc_obj.get_id()
+        return get_id('DepartmentInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataDepartment):
-            svc_obj = SvcCanteenInfo('DepartmentInfo')
-            svc_obj.add_item(data)
+            add_item('DepartmentInfo', data)
             CtrlDepartment.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataDepartment):
-            svc_obj = SvcCanteenInfo('DepartmentInfo')
-            svc_obj.delete_item(data)
+            delete_item('DepartmentInfo', data)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataDepartment):
-            svc_obj = SvcCanteenInfo('DepartmentInfo')
-            svc_obj.update_item(data)
+            update_item('DepartmentInfo', data)
 
 
 class CtrlEmployee():
@@ -590,16 +569,15 @@ class CtrlEmployee():
         return CtrlEmployee.cur_item_index
     
     @classmethod
-    def set_cur_item_index(cls, index):
-        CtrlEmployee.cur_item_index = index
+    def set_cur_item_index(cls, index_):
+        CtrlEmployee.cur_item_index = index_
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('EmployeeInfo')
-        result = svc_obj.get_all()
+        result = get_all('EmployeeInfo')
         data = list()
         for item in result:
-            data_item = DataEmployee(item.id_, result.index(item), item.code, item.name, item.birthday,
+            data_item = DataEmployee(result.index(item) + 1, item.id_, item.code, item.name, item.birthday,
                                      item.duty, item.dept_name, item.gender, item.telephone, item.id_card,
                                      item.status, item.address, item.email, item.memo)
             data.append(data_item)
@@ -609,10 +587,9 @@ class CtrlEmployee():
     @classmethod
     def refresh_items(cls):
         del CtrlEmployee.table_items[0:len(CtrlEmployee.table_items)]
-        svc_obj = SvcCanteenInfo('EmployeeInfo')
-        result = svc_obj.get_all()
+        result = get_all('EmployeeInfo')
         for item in result:
-            data_item = DataEmployee(item.id_, result.index(item), item.code, item.name, item.birthday,
+            data_item = DataEmployee(result.index(item) + 1, item.id_, item.code, item.name, item.birthday,
                                      item.duty, item.dept_id, item.gender, item.telephone, item.id_card,
                                      item.status, item.address, item.email, item.memo)
             CtrlEmployee.table_items.append(data_item)
@@ -622,72 +599,96 @@ class CtrlEmployee():
         return CtrlEmployee.table_items
     
     @classmethod
-    def add_item(cls, data):
+    def add_item(cls, data, group_list):
         if isinstance(data, DataEmployee):
-            svc_obj = SvcCanteenInfo('EmployeeInfo')
-            svc_obj.add_item(data)
+            add_user_info(data, group_list)
             EvtManager.dispatch_event(EnumEvent.EVT_EMPLOYEE_REFRESH)
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataEmployee):
-            svc_obj = SvcCanteenInfo('EmployeeInfo')
-            svc_obj.delete_item(data)
+            delete_item('EmployeeInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_EMPLOYEE_REFRESH)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataEmployee):
-            svc_obj = SvcCanteenInfo('EmployeeInfo')
-            svc_obj.update_item(data)
+            update_item('EmployeeInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_EMPLOYEE_REFRESH)
 
 
 class CtrlUserRole():
     data_len = 0
+    cur_item_index = 0
+    table_items = list()
     
     def __init__(self):
         pass
-    
+
+    @classmethod
+    def get_cur_item_index(cls):
+        return CtrlEmployee.cur_item_index
+
+    @classmethod
+    def set_cur_item_index(cls, index_):
+        CtrlEmployee.cur_item_index = index_
+
     @classmethod
     def get_data_len(cls):
         return CtrlUserRole.data_len - 2
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('RoleInfo')
-        result = svc_obj.get_all()
+        result = get_all('RoleInfo')
         data = list()
         for item in result:
-            data.append(DataUserRole(result.index(item), item.id_, item.code, item.name))
+            data.append(DataUserRole(result.index(item) + 1, item.id_, item.type, item.name, item.desc, item.selected))
             
         CtrlUserRole.data_len = len(data)
             
         return data
+
+    @classmethod
+    def get_data_by_user(cls, user):
+        result = get_group_by_user(user)
+        data = list()
+        for item in result:
+            data.append(DataUserRole(result.index(item) + 1, item.id_, item.type, item.name, item.desc, item.selected))
+
+        CtrlUserRole.data_len = len(data)
+
+        return data
+
+    @classmethod
+    def refresh_items(cls):
+        del CtrlTable.table_items[0:len(CtrlTable.table_items)]
+        result = get_all('RoleInfo')
+        for item in result:
+            data_item = DataUserRole(result.index(item) + 1, item.id_, item.type, item.name, item.desc, item.selected)
+            CtrlUserRole.table_items.append(data_item)
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('RoleInfo')
-        return svc_obj.get_id()
+        return get_id('RoleInfo')
     
     @classmethod
-    def add_item(cls, data):
+    def add_item(cls, data, perm_list):
         if isinstance(data, DataUserRole):
-            svc_obj = SvcCanteenInfo('RoleInfo')
-            svc_obj.add_item(data)
+            add_role_info(data, perm_list)
             CtrlUserRole.data_len += 1
+            EvtManager.dispatch_event(EnumEvent.EVT_PERMISSION_REFRESH)
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataUserRole):
-            svc_obj = SvcCanteenInfo('RoleInfo')
-            svc_obj.delete_item(data)
+            delete_item('RoleInfo', data)
+            EvtManager.dispatch_event(EnumEvent.EVT_PERMISSION_REFRESH)
             
     @classmethod
-    def update_item(cls, data):
+    def update_item(cls, data, perm_list):
         if isinstance(data, DataUserRole):
-            svc_obj = SvcCanteenInfo('RoleInfo')
-            svc_obj.update_item(data)
+            update_role_info(data, perm_list)
+            EvtManager.dispatch_event(EnumEvent.EVT_PERMISSION_REFRESH)
 
 
 class CtrlLogin():
@@ -698,8 +699,13 @@ class CtrlLogin():
 
     @classmethod
     def login(cls, user, password):
-        if user == '0000' and password == '0000':
-            cls.check_result = True
+        try:
+            if user == 'admin' and password == 'admin':
+                cls.check_result = True
+            elif get_password_by_user_name(user) == password:
+                cls.check_result = True
+        except:
+            cls.check_result = False
             
         EvtManager.dispatch_event(EnumEvent.EVT_LOGIN)
 
@@ -720,16 +726,15 @@ class CtrlPrinterScheme():
         return CtrlPrinterScheme.cur_item_index
     
     @classmethod
-    def set_cur_item_index(cls, index):
-        CtrlPrinterScheme.cur_item_index = index
+    def set_cur_item_index(cls, index_):
+        CtrlPrinterScheme.cur_item_index = index_
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('PrintSchemeInfo')
-        result = svc_obj.get_all()
+        result = get_all('PrintSchemeInfo')
         data = list()
         for item in result:
-            data_item = DataPrinterScheme(result.index(item), item.id_, item.name, item.valid,
+            data_item = DataPrinterScheme(result.index(item) + 1, item.id_, item.code, item.name, item.valid,
                                           item.type_name, item.count, item.backup_id)
             data.append(data_item)
             
@@ -738,10 +743,9 @@ class CtrlPrinterScheme():
     @classmethod
     def refresh_items(cls):
         del CtrlPrinterScheme.table_items[0:len(CtrlPrinterScheme.table_items)]
-        svc_obj = SvcCanteenInfo('PrintSchemeInfo')
-        result = svc_obj.get_all()
+        result = get_all('PrintSchemeInfo')
         for item in result:
-            data_item = DataPrinterScheme(result.index(item), item.id_, item.name, item.valid,
+            data_item = DataPrinterScheme(result.index(item) + 1, item.id_, item.code, item.name, item.valid,
                                           item.type_id, item.count, item.backup_id)
             CtrlPrinterScheme.table_items.append(data_item)
             
@@ -752,22 +756,19 @@ class CtrlPrinterScheme():
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataPrinterScheme):
-            svc_obj = SvcCanteenInfo('PrintSchemeInfo')
-            svc_obj.add_item(data)
+            add_item('PrintSchemeInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_PRINTER_SCHEME_REFRESH)
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataPrinterScheme):
-            svc_obj = SvcCanteenInfo('PrintSchemeInfo')
-            svc_obj.delete_item(data)
+            delete_item('PrintSchemeInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_PRINTER_SCHEME_REFRESH)
             
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataPrinterScheme):
-            svc_obj = SvcCanteenInfo('PrintSchemeInfo')
-            svc_obj.update_item(data)
+            update_item('PrintSchemeInfo', data)
             EvtManager.dispatch_event(EnumEvent.EVT_PRINTER_SCHEME_REFRESH)
 
 
@@ -783,11 +784,10 @@ class CtrlSchemeType():
     
     @classmethod
     def get_data(cls):
-        svc_obj = SvcCanteenInfo('SchemeTypeInfo')
-        result = svc_obj.get_all()
+        result = get_all('SchemeTypeInfo')
         data = list()
         for item in result:
-            data.append(DataSchemeType(result.index(item), item.id_, item.name))
+            data.append(DataSchemeType(result.index(item) + 1, item.id_, item.name))
             
         CtrlSchemeType.data_len = len(data)
             
@@ -795,24 +795,75 @@ class CtrlSchemeType():
     
     @classmethod
     def get_id(cls):
-        svc_obj = SvcCanteenInfo('SchemeTypeInfo')
-        return svc_obj.get_id()
+        return get_id('SchemeTypeInfo')
     
     @classmethod
     def add_item(cls, data):
         if isinstance(data, DataSchemeType):
-            svc_obj = SvcCanteenInfo('SchemeTypeInfo')
-            svc_obj.add_item(data)
+            add_item('SchemeTypeInfo', data)
             CtrlSchemeType.data_len += 1
             
     @classmethod
     def delete_item(cls, data):
         if isinstance(data, DataSchemeType):
-            svc_obj = SvcCanteenInfo('SchemeTypeInfo')
-            svc_obj.delete_item(data)
+            delete_item('SchemeTypeInfo', data)
 
     @classmethod
     def update_item(cls, data):
         if isinstance(data, DataSchemeType):
-            svc_obj = SvcCanteenInfo('SchemeTypeInfo')
-            svc_obj.update_item(data)
+            update_item('SchemeTypeInfo', data)
+
+
+class CtrlPermList():
+    data_len = 0
+
+    def __init__(self):
+        pass
+
+    @classmethod
+    def get_data_len(cls):
+        return CtrlPermList.data_len - 2
+
+    @classmethod
+    def get_data(cls):
+        result = get_all('PermList')
+        data = list()
+        for item in result:
+            data.append(DataPermList(result.index(item) + 1, item.id_, item.code,
+                                     item.p_code, item.name, item.selected))
+
+        CtrlPermList.data_len = len(data)
+
+        return data
+
+    @classmethod
+    def get_data_by_group(cls, group):
+        result = get_perm_by_group(group)
+        data = list()
+        for item in result:
+            data.append(DataPermList(result.index(item) + 1, item.id_, item.code,
+                                     item.p_code, item.name, item.selected))
+
+        CtrlPermList.data_len = len(data)
+
+        return data
+
+    @classmethod
+    def get_id(cls):
+        return get_id('PermList')
+
+    @classmethod
+    def add_item(cls, data):
+        if isinstance(data, DataType):
+            add_item('PermList', data)
+            CtrlPermList.data_len += 1
+
+    @classmethod
+    def delete_item(cls, data):
+        if isinstance(data, DataType):
+            delete_item('PermList', data)
+
+    @classmethod
+    def update_item(cls, data):
+        if isinstance(data, DataType):
+            update_item('PermList', data)

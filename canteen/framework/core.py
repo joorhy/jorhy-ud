@@ -127,3 +127,22 @@ class EvtManager(Singleton):
         if evt_id in evt_map:
             for item in evt_map[evt_id]:
                 wx.PostEvent(item, MyEvent(evt_id, evt_data))
+
+
+class TreeImage(Singleton):
+    def __init__(self):
+        isz = (16, 16)
+        self.il = wx.ImageList(isz[0], isz[1])
+        self.fl_idx = self.il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER, isz))
+        self.fl_open_idx = self.il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_OTHER, isz))
+        self.fi_idx = self.il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
+
+    def __getattr__(self, item):
+        if item == 'image_list':
+            return self.il
+        elif item == 'folder_idx':
+            return self.fl_idx
+        elif item == 'folder_open_idx':
+            return self.fl_open_idx
+        elif item == 'file_idx':
+            return self.fi_idx

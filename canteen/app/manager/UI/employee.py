@@ -11,6 +11,7 @@ from app.manager.logic.ctrl import *
 from app.manager.logic.model import *
 from app.manager.logic.data import *
 from app.manager.AppManager import AppManager
+from framework.core import TreeImage
 
 import wx
 import wx.xrc
@@ -103,11 +104,14 @@ class PopDepartment (wx.Dialog):
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlDepartment.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlDepartment.delete_item(data)
+        except:
+            print 'PopDepartment on_btn_delete error'
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -122,9 +126,8 @@ class PopDepartment (wx.Dialog):
     
     def on_btn_save(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        CtrlDepartment.update_item(data)
+        for data in self.model.data:
+            CtrlDepartment.update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -168,7 +171,7 @@ class PopEmployee (wx.Dialog):
         role_panel.SetSizer(role_sizer)
         role_panel.Layout()
         # Add role info panel into note book
-        notebook.AddPage(role_panel, u"角色设置", False)
+        notebook.AddPage(role_panel, u"权限设置", False)
 
         # Layout note book 
         parent.Add(notebook, 1, wx.EXPAND | wx.ALL, 5)
@@ -293,8 +296,7 @@ class PopEmployee (wx.Dialog):
         birth_sizer.Add(s_txt_birthday, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add birthday picker control
         self.dateBirthDay = wx.DatePickerCtrl(container, size=(120, -1),
-                                              style=wx.TAB_TRAVERSAL | wx.DP_DROPDOWN |
-                                              wx.DP_SHOWCENTURY | wx.DP_ALLOWNONE)
+                                              style=wx.DP_DROPDOWN | wx.DP_SHOWCENTURY)
         birth_sizer.Add(self.dateBirthDay, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Layout birthday
         g_sizer.Add(birth_sizer, 1, wx.EXPAND, 5)
@@ -321,7 +323,7 @@ class PopEmployee (wx.Dialog):
         sex_panel.SetSizer(sex_select_sizer)
         sex_panel.Layout()
         sex_sizer.Add(sex_panel, 1, wx.ALIGN_CENTER | wx.ALL, 5)
-        g_sizer.Add(sex_panel, 1, wx.EXPAND, 5)
+        g_sizer.Add(sex_sizer, 1, wx.EXPAND, 5)
 
         # Add employee's job status sizer
         state_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -352,7 +354,7 @@ class PopEmployee (wx.Dialog):
     def _init_main_info_3_rows_sizer(self, container, parent):
         # Create 3 rows and 1 column grid sizer
         g_sizer = wx.GridSizer(3, 1, 0, 0)
-        
+
         # Add employee's address sizer
         addr_sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add address label
@@ -407,8 +409,8 @@ class PopEmployee (wx.Dialog):
         # Add items into data view list
         self.dataViewRole.AppendTextColumn(u"行号", 0) 
         self.dataViewRole.AppendTextColumn(u"编码", 1) 
-        self.dataViewRole.AppendTextColumn(u"员工角色", 2) 
-        self.dataViewRole.AppendTextColumn(u"状态", 3) 
+        self.dataViewRole.AppendTextColumn(u"员工角色", 3)
+        self.dataViewRole.AppendToggleColumn(u"状态", 5, width=80, mode=wx.dataview.DATAVIEW_CELL_ACTIVATABLE)
         data_sizer.Add(self.dataViewRole, 0, wx.EXPAND, 5)
         # Layout data view list
         parent.Add(data_sizer, 1, wx.EXPAND, 5)
@@ -416,15 +418,6 @@ class PopEmployee (wx.Dialog):
         # Add control buttons sizer
         ctrl_sizer = wx.BoxSizer(wx.VERTICAL)
         ctrl_sizer.SetMinSize(wx.Size(600, 300))
-        # Add new role button
-        self.btnNewRole = wx.Button(container, wx.ID_ANY, u"新增角色", wx.DefaultPosition, wx.DefaultSize, 0)
-        ctrl_sizer.Add(self.btnNewRole, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add delete role button
-        self.btnDeleteRole = wx.Button(container, wx.ID_ANY, u"删除角色", wx.DefaultPosition, wx.DefaultSize, 0)
-        ctrl_sizer.Add(self.btnDeleteRole, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add save role button
-        self.btnSaveRole = wx.Button(container, wx.ID_ANY, u"保存角色", wx.DefaultPosition, wx.DefaultSize, 0)
-        ctrl_sizer.Add(self.btnSaveRole, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Layout control buttons
         parent.Add(ctrl_sizer, 1, wx.EXPAND, 5)
 
@@ -454,17 +447,8 @@ class PopEmployee (wx.Dialog):
         self.SetSizer(sizer)
         self.Layout() 
         self.Centre(wx.BOTH)
-
-        # Create an instance of our model...
-        self.model = ModelUserRole(CtrlUserRole.get_data())
-        
-        # Tell the DVC to use the model
-        self.dataViewRole.AssociateModel(self.model)
         
         # Connect Events
-        self.btnNewRole.Bind(wx.EVT_BUTTON, self.on_btn_new_role)
-        self.btnDeleteRole.Bind(wx.EVT_BUTTON, self.on_btn_delete_role)
-        self.btnSaveRole.Bind(wx.EVT_BUTTON, self.on_btn_save_role)
         self.btnSave.Bind(wx.EVT_BUTTON, self.on_btn_save)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
         
@@ -473,7 +457,7 @@ class PopEmployee (wx.Dialog):
         self.type = type_
         self.user_id = 0
         self._initialize_view()
-    
+
     def __del__(self):
         pass
     
@@ -492,6 +476,12 @@ class PopEmployee (wx.Dialog):
         
         self.radioBtnMale.SetValue(True)
         self.radioBtnOnDuty.SetValue(True)
+
+        # Create an instance of our model...
+        self.model = ModelUserRole(CtrlUserRole.get_data())
+
+        # Tell the DVC to use the model
+        self.dataViewRole.AssociateModel(self.model)
         
     def _init_mod_view(self):
         self.txtCode.Enable(False)
@@ -505,13 +495,19 @@ class PopEmployee (wx.Dialog):
             return
         
         data = items[self.index]
-        self.user_id = data.id
-        self.txtCode.SetValue(str(data.code))
+        # Create an instance of our model...
+        self.model = ModelUserRole(CtrlUserRole.get_data_by_user(data))
+
+        # Tell the DVC to use the model
+        self.dataViewRole.AssociateModel(self.model)
+
+        self.user_id = data.key
+        self.txtCode.SetValue(str(data.key))
         self.txtName.SetValue(data.name)
         self.txtDuty.SetValue(data.duty)
         self.txtTelephone.SetValue(str(data.telephone))
         self.txtIdCard.SetValue(data.id_card)
-        self.txtAddress.SetValue(data.addr)
+        self.txtAddress.SetValue(data.address)
         self.txtEmail.SetValue(data.email)
         self.txtNote.SetValue(data.note)
         if data.sex == 0:
@@ -528,41 +524,16 @@ class PopEmployee (wx.Dialog):
             self.radioBtnOnDuty.SetValue(False)
             self.radioBtnOffDuty.SetValue(True)
         
-        birth_day = wx.DateTime()    
+        birth_day = wx.DateTimeFromDMY(data.birthday.day, data.birthday.month - 1, data.birthday.year)
         self.dateBirthDay.SetValue(birth_day)
 
         li_department = CtrlDepartment.get_data()
-        dept_selection = 0
         for dept in li_department:
             self.cbxDepartment.Append(dept.name, dept)
-            if dept.code == data.department:
-                self.cbxDepartment.SetSelection(dept_selection)
-            dept_selection += 1
+            if dept.key == data.department:
+                self.cbxDepartment.SetSelection(li_department.index(dept))
     
     # Virtual event handlers, override them in your derived class
-    def on_btn_new_role(self, event):
-        event.Skip()
-        CtrlUserRole.add_item(DataUserRole(0, 0, 1, ""))
-        
-        data = DataUserRole(CtrlUserRole.get_data_len() + 1, CtrlUserRole.get_id(), 0, "")
-        self.model.data.append(data)
-        item = self.model.ObjectToItem(data)
-        self.dataViewRole.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
-    
-    def on_btn_delete_role(self, event):
-        event.Skip()
-        item = self.dataViewRole.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewRole.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlUserRole.delete_item(data)
-    
-    def on_btn_save_role(self, event):
-        event.Skip()
-        item = self.dataViewRole.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        CtrlUserRole.update_item(data)
-    
     def on_btn_save(self, event):
         event.Skip()
         department = self.cbxDepartment.GetClientData(self.cbxDepartment.GetSelection())
@@ -575,15 +546,15 @@ class PopEmployee (wx.Dialog):
             state_type = 0
         else:
             state_type = 1
-            
-        data = DataEmployee(self.user_id, 0,
+
+        data = DataEmployee(0, self.user_id,
                             self.txtCode.GetValue(),
                             self.txtName.GetValue(),
                             self.dateBirthDay.GetValue().Format("%Y-%m-%d %H:%M:%S"),
                             self.txtDuty.GetValue(),
-                            department.code,
+                            department.key,
                             sex_type,
-                            int(self.txtTelephone.GetValue()),
+                            self.txtTelephone.GetValue(),
                             self.txtIdCard.GetValue(),
                             state_type,
                             self.txtAddress.GetValue(),
@@ -591,7 +562,7 @@ class PopEmployee (wx.Dialog):
                             self.txtNote.GetValue())
         
         if self.type == "add":
-            CtrlEmployee.add_item(data)
+            CtrlEmployee.add_item(data, self.model.data)
         elif self.type == "mod":
             CtrlEmployee.update_item(data)
     
@@ -602,35 +573,58 @@ class PopEmployee (wx.Dialog):
 ###########################################################################
 ## Class PopPermission
 ###########################################################################
+li_func_type = [u"餐厅设置", u"菜品发布", u"员工管理", u"报表中心", u"打印设置", u"系统设置"]
 
 
 class PopPermission (wx.Dialog):
+    def _init_info_sizer(self, parent):
+        sizer = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u""), wx.HORIZONTAL)
+        sizer.SetMinSize(wx.Size(600, 50))
+
+        # Add label for dishes code
+        s_txt_name = wx.StaticText(self, wx.ID_ANY, u"名称：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_name.Wrap(-1)
+        sizer.Add(s_txt_name, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add text control for dishes code
+        self.txtRoleName = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+        sizer.Add(self.txtRoleName, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        # Add label for dishes code
+        s_txt_desc = wx.StaticText(self, wx.ID_ANY, u"备注：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_desc.Wrap(-1)
+        sizer.Add(s_txt_desc, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add text control for dishes code
+        self.txtRoleDesc = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(200, -1), 0)
+        sizer.Add(self.txtRoleDesc, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        parent.Add(sizer, 1, wx.EXPAND, 5)
+
     def _init_data_view_sizer(self, parent):
-        sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.SetMinSize(wx.Size(600, 400))
+        sizer = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u""), wx.HORIZONTAL)
+        sizer.SetMinSize(wx.Size(600, 300))
 
         # Create tree control sizer
         left_sizer = wx.BoxSizer(wx.VERTICAL)
-        left_sizer.SetMinSize(wx.Size(200, 400))
+        left_sizer.SetMinSize(wx.Size(200, 300))
 
-        self.m_treeCtrl = wx.TreeCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TR_DEFAULT_STYLE)
-        self.m_treeCtrl.SetMinSize(wx.Size(-1, 400))
-        left_sizer.Add(self.m_treeCtrl, 0, wx.EXPAND, 5)
+        self.treeCtrl = wx.TreeCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+        self.treeCtrl.SetMinSize(wx.Size(-1, 300))
+        left_sizer.Add(self.treeCtrl, 0, wx.EXPAND, 5)
 
         sizer.Add(left_sizer, 1, 0, 5)
 
         # Create data view list sizer
         right_sizer = wx.BoxSizer(wx.VERTICAL)
-        right_sizer.SetMinSize(wx.Size(400, 400))
+        right_sizer.SetMinSize(wx.Size(400, 300))
 
-        self.dataViewListCtrl = wx.dataview.DataViewCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
-        self.dataViewListCtrl.SetMinSize(wx.Size(-1, 400))
+        self.dataViewList = wx.dataview.DataViewCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
+        self.dataViewList.SetMinSize(wx.Size(-1, 300))
 
-        self.dataViewListCtrl.AppendTextColumn(u"行号", 0)
-        self.dataViewListCtrl.AppendTextColumn(u"类别", 1)
-        self.dataViewListCtrl.AppendTextColumn(u"权限", 2)
-        self.dataViewListCtrl.AppendToggleColumn(u"状态", 3, width=100)
-        right_sizer.Add(self.dataViewListCtrl, 0, wx.EXPAND | wx.LEFT, 5)
+        self.dataViewList.AppendTextColumn(u"行号", 0)
+        self.dataViewList.AppendTextColumn(u"所属类别", 1)
+        self.dataViewList.AppendTextColumn(u"权限名称", 2)
+        self.dataViewList.AppendToggleColumn(u"状态", 3, width=100, mode=wx.dataview.DATAVIEW_CELL_ACTIVATABLE)
+        right_sizer.Add(self.dataViewList, 0, wx.EXPAND | wx.LEFT, 5)
 
         sizer.Add(right_sizer, 1, 0, 5)
 
@@ -654,12 +648,13 @@ class PopPermission (wx.Dialog):
 
         parent.Add(sizer, 1, wx.EXPAND, 5)
 
-    def __init__(self, parent):
+    def __init__(self, parent, type_="add"):
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"权限设置", pos=wx.DefaultPosition,
                            size=wx.Size(600, 470), style=wx.CAPTION)
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
+        self._init_info_sizer(sizer)
         self._init_data_view_sizer(sizer)
         self._init_ctrl_sizer(sizer)
 
@@ -671,20 +666,88 @@ class PopPermission (wx.Dialog):
         self.btnSave.Bind(wx.EVT_BUTTON, self.on_btn_save)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
 
+        # Initialize
+        self.perm_id = 0
+        self.index = 0
+        self.type = type_
+        self._initialize_view()
+        self._show_tree_ctrl()
+
     def __del__(self):
         pass
+
+    def _initialize_view(self):
+        if self.type == "add":
+            self._init_add_view()
+        elif self.type == "mod":
+            self.index = CtrlUserRole.get_cur_item_index()
+            self._init_mod_view()
+
+    def _init_add_view(self):
+        # Create an instance of our model...
+        self.model = ModelPermList(CtrlPermList.get_data())
+
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+
+    def _init_mod_view(self):
+        self.txtRoleName.Enable(False)
+        if self.index < 0:
+            self.index = 0
+            return
+
+        items = CtrlUserRole.get_data()
+        if self.index >= len(items):
+            self.index = len(items) - 1
+            return
+
+        data = items[self.index]
+        self.perm_id = data.key
+        # Create an instance of our model...
+        self.model = ModelPermList(CtrlPermList.get_data_by_group(data))
+
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+
+        self.txtRoleName.SetValue(data.name)
+        self.txtRoleDesc.SetValue(data.desc if data.desc is not None else '')
+
+    def _show_tree_ctrl(self):
+        tree_image = TreeImage()
+        self.treeCtrl.SetImageList(tree_image.image_list)
+        self.il = tree_image.image_list
+
+        self.root = self.treeCtrl.AddRoot(u"全部功能类别")
+        self.treeCtrl.SetPyData(self.root, None)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
+
+        for func_type in li_func_type:
+            child = self.treeCtrl.AppendItem(self.root, func_type)
+            self.treeCtrl.SetPyData(child, None)
+            self.treeCtrl.SetItemImage(child, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+            self.treeCtrl.SetItemImage(child, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
+
+        self.treeCtrl.Expand(self.root)
 
     # Virtual event handlers, override them in your derived class
     def on_btn_save(self, event):
         event.Skip()
-        self.Close()
+        data = DataUserRole(0, self.perm_id, '0',
+                            self.txtRoleName.GetValue(),
+                            self.txtRoleDesc.GetValue())
+
+        if self.type == "add":
+            CtrlUserRole.add_item(data, self.model.data)
+        elif self.type == "mod":
+            CtrlUserRole.update_item(data, self.model.data)
 
     def on_btn_exit(self, event):
         event.Skip()
         self.Close()
         
 ###########################################################################
-## Class CWgtEmployee
+## Class WgtEmployee
 ###########################################################################
 
 
@@ -782,8 +845,12 @@ class WgtEmployee (wx.Panel):
         self.btnDepartment.Bind(wx.EVT_BUTTON, self.on_btn_department)
         self.btnRefresh.Bind(wx.EVT_BUTTON, self.on_btn_refresh)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
+
+        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_sel_changed, self.treeCtrl)
+        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.on_activate, self.treeCtrl)
         
         # Show tree control
+        self.tree_data = None
         self._show_tree_ctrl()
     
     def __del__(self):
@@ -801,19 +868,14 @@ class WgtEmployee (wx.Panel):
         EvtManager.remove_listener(self, EnumEvent.EVT_EMPLOYEE_REFRESH, self.on_btn_refresh)
     
     def _show_tree_ctrl(self):
-        isz = (16, 16)
-        il = wx.ImageList(isz[0], isz[1])
-        fl_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER, isz))
-        fl_open_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_OTHER, isz))
-        file_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
-        
-        self.treeCtrl.SetImageList(il)
-        self.il = il
+        tree_image = TreeImage()
+        self.treeCtrl.SetImageList(tree_image.image_list)
+        self.il = tree_image.image_list
 
         self.root = self.treeCtrl.AddRoot(u"全部行政部门")
         self.treeCtrl.SetPyData(self.root, None)
-        self.treeCtrl.SetItemImage(self.root, fl_idx, wx.TreeItemIcon_Normal)
-        self.treeCtrl.SetItemImage(self.root, fl_open_idx, wx.TreeItemIcon_Expanded)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
         
         department_map = dict()
         li_items = CtrlEmployee.get_items()
@@ -828,23 +890,23 @@ class WgtEmployee (wx.Panel):
         
         li_department = CtrlDepartment.get_data()
         for dept in li_department:
-            if dept.code in department_map:
-                title = "%s(%d)" % (dept.name, len(department_map[dept.code]))
+            if dept.key in department_map:
+                title = "%s(%d)" % (dept.name, len(department_map[dept.key]))
                 child = self.treeCtrl.AppendItem(self.root, title)
-                self.treeCtrl.SetPyData(child, None)
-                self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
-                self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
-                for employee_info in department_map[dept.code]:
+                self.treeCtrl.SetPyData(child, dept)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
+                for employee_info in department_map[dept.key]:
                     sub_child = self.treeCtrl.AppendItem(child, employee_info.name)
-                    self.treeCtrl.SetPyData(sub_child, None)
-                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Normal)
-                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Selected)
+                    self.treeCtrl.SetPyData(sub_child, employee_info)
+                    self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Normal)
+                    self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Selected)
             else:
                 title = "%s(0)" % dept.name
                 child = self.treeCtrl.AppendItem(self.root, title)
                 self.treeCtrl.SetPyData(child, None)
-                self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
-                self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+                self.treeCtrl.SetItemImage(child, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
                 
         self.treeCtrl.Expand(self.root)
         
@@ -886,20 +948,36 @@ class WgtEmployee (wx.Panel):
     
     def on_btn_modify(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        index = self.model.data.index(data)
-        CtrlEmployee.set_cur_item_index(index)
-        pop_employee = PopEmployee(self, "mod")
-        pop_employee.ShowModal()
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            try:
+                data = self.model.ItemToObject(item)
+            except:
+                for item_ in self.model.data:
+                    if item_.key == self.tree_data.key:
+                        data = item_
+            index = self.model.data.index(data)
+            CtrlEmployee.set_cur_item_index(index)
+            pop_employee = PopEmployee(self, "mod")
+            pop_employee.ShowModal()
+        except:
+            print 'WgtEmployee: on_btn_modify error'
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlEmployee.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            try:
+                data = self.model.ItemToObject(item)
+            except:
+                for item_ in self.model.data:
+                    if item_.key == self.tree_data.key:
+                        data = item_
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlEmployee.delete_item(data)
+        except:
+            print 'WgtEmployee: on_btn_delete error'
     
     def on_btn_department(self, event):
         event.Skip()
@@ -915,11 +993,20 @@ class WgtEmployee (wx.Panel):
         self.Hide()
         AppManager.switch_to_application('HomePage')
 
+    def on_sel_changed(self, event):
+        event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+
+    def on_activate(self, event):
+        event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+        if isinstance(self.tree_data, DataEmployee):
+            self.on_btn_modify(event)
+
 ###########################################################################
 ## Class WgtPermission
 ###########################################################################
 li_group_type = [u"默认组", u"自定义组"]
-li_default_role = [u"服务员", u"销售员", u"出品员", u"仓管员", u"采购员", u"营销员"]
 
 
 class WgtPermission (wx.Panel):
@@ -970,15 +1057,15 @@ class WgtPermission (wx.Panel):
         # Add data view list sizer
         right_sizer = wx.BoxSizer(wx.VERTICAL)
         right_sizer.SetMinSize(wx.Size(600, 550))
-        self.dataViewListCtrl = wx.dataview.DataViewCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
-        self.dataViewListCtrl.SetMinSize(wx.Size(-1, 600))
+        self.dataViewList = wx.dataview.DataViewCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
+        self.dataViewList.SetMinSize(wx.Size(-1, 600))
 
-        self.dataViewListCtrl.AppendTextColumn(u"行号", 0)
-        self.dataViewListCtrl.AppendTextColumn(u"类型", 1)
-        self.dataViewListCtrl.AppendTextColumn(u"编码", 2)
-        self.dataViewListCtrl.AppendTextColumn(u"名称", 3)
-        self.dataViewListCtrl.AppendTextColumn(u"备注", 4)
-        right_sizer.Add(self.dataViewListCtrl, 0, wx.EXPAND | wx.LEFT, 5)
+        self.dataViewList.AppendTextColumn(u"行号", 0)
+        self.dataViewList.AppendTextColumn(u"编码", 1)
+        self.dataViewList.AppendTextColumn(u"类型", 2)
+        self.dataViewList.AppendTextColumn(u"名称", 3)
+        self.dataViewList.AppendTextColumn(u"备注", 4)
+        right_sizer.Add(self.dataViewList, 0, wx.EXPAND | wx.LEFT, 5)
 
         sizer.Add(right_sizer, 1, 0, 5)
 
@@ -998,6 +1085,13 @@ class WgtPermission (wx.Panel):
         self.Layout()
         self.Centre(wx.BOTH)
 
+        # Create an instance of our model...
+        self.model = ModelUserRole(CtrlUserRole.get_data())
+        CtrlTable.refresh_items()
+
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+
         # Connect Events
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.btnNew.Bind(wx.EVT_BUTTON, self.on_btn_new)
@@ -1006,7 +1100,11 @@ class WgtPermission (wx.Panel):
         self.btnRefresh.Bind(wx.EVT_BUTTON, self.on_btn_refresh)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
 
+        self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_sel_changed, self.treeCtrl)
+        self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.on_activate, self.treeCtrl)
+
         # Show tree control
+        self.tree_data = None
         self._show_tree_ctrl()
 
     def __del__(self):
@@ -1014,43 +1112,63 @@ class WgtPermission (wx.Panel):
 
     def initialize(self):
         # Add event listener
-        #EvtManager.add_listener(self, EnumEvent.EVT_EMPLOYEE_REFRESH, self.on_btn_refresh)
+        EvtManager.add_listener(self, EnumEvent.EVT_PERMISSION_REFRESH, self.on_btn_refresh)
 
         x, y = CtrlHomePage.get_screen_size()
         self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
         # Remove event listener
-        EvtManager.remove_listener(self, EnumEvent.EVT_EMPLOYEE_REFRESH, self.on_btn_refresh)
+        EvtManager.remove_listener(self, EnumEvent.EVT_PERMISSION_REFRESH, self.on_btn_refresh)
 
     def _show_tree_ctrl(self):
-        isz = (16, 16)
-        il = wx.ImageList(isz[0], isz[1])
-        fl_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER, isz))
-        fl_open_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER_OPEN, wx.ART_OTHER, isz))
-        file_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_NORMAL_FILE, wx.ART_OTHER, isz))
-
-        self.treeCtrl.SetImageList(il)
-        self.il = il
+        tree_image = TreeImage()
+        self.treeCtrl.SetImageList(tree_image.image_list)
+        self.il = tree_image.image_list
 
         self.root = self.treeCtrl.AddRoot(u"全部分组")
         self.treeCtrl.SetPyData(self.root, None)
-        self.treeCtrl.SetItemImage(self.root, fl_idx, wx.TreeItemIcon_Normal)
-        self.treeCtrl.SetItemImage(self.root, fl_open_idx, wx.TreeItemIcon_Expanded)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+        self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
 
+        li_role = CtrlUserRole.get_data()
         for group_type in li_group_type:
             child = self.treeCtrl.AppendItem(self.root, group_type)
             self.treeCtrl.SetPyData(child, None)
-            self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
-            self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
+            self.treeCtrl.SetItemImage(child, tree_image.folder_idx, wx.TreeItemIcon_Normal)
+            self.treeCtrl.SetItemImage(child, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
             if group_type == u"默认组":
-                for role in li_default_role:
-                    sub_child = self.treeCtrl.AppendItem(child, role)
-                    self.treeCtrl.SetPyData(sub_child, None)
-                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Normal)
-                    self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Selected)
+                for role in li_role:
+                    if role.type == '1':
+                        sub_child = self.treeCtrl.AppendItem(child, role.name)
+                        self.treeCtrl.SetPyData(sub_child, role)
+                        self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Normal)
+                        self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Selected)
+            else:
+                for role in li_role:
+                    if role.type == '0':
+                        sub_child = self.treeCtrl.AppendItem(child, role.name)
+                        self.treeCtrl.SetPyData(sub_child, role)
+                        self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Normal)
+                        self.treeCtrl.SetItemImage(sub_child, tree_image.file_idx, wx.TreeItemIcon_Selected)
 
         self.treeCtrl.Expand(self.root)
+
+    def _refresh_ui(self):
+        # Refresh treeCtrl
+        CtrlUserRole.refresh_items()
+        self.treeCtrl.DeleteAllItems()
+        self._show_tree_ctrl()
+
+        # Refresh data view list
+        result = CtrlUserRole.get_data()
+        del self.model.data[0:len(self.model.data)]
+        for new_obj in result:
+            item = self.model.ObjectToItem(new_obj)
+            self.model.data.append(new_obj)
+            self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
+
+        self.model.Cleared()
 
     # Virtual event handlers, override them in your derived class
     def on_size(self, event):
@@ -1064,29 +1182,66 @@ class WgtPermission (wx.Panel):
         self.btnExit.SetMaxSize(wx.Size(50, 50))
         self.topPanel.SetMaxSize(wx.Size(x-250, 50))
         self.treeCtrl.SetMinSize(wx.Size(200, y-50))
-        self.dataViewListCtrl.SetMinSize(wx.Size(x-200, y-50))
+        self.dataViewList.SetMinSize(wx.Size(x-200, y-50))
 
     def on_btn_new(self, event):
         event.Skip()
-        pop_permission = PopPermission(self)
+        pop_permission = PopPermission(self, "add")
         pop_permission.ShowModal()
 
     def on_btn_modify(self, event):
         event.Skip()
-        self.Close()
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            try:
+                    data = self.model.ItemToObject(item)
+            except:
+                for item_ in self.model.data:
+                    if item_.key == self.tree_data.key:
+                        data = item_
+            index_ = self.model.data.index(data)
+            CtrlUserRole.set_cur_item_index(index_)
+            pop_permission = PopPermission(self, "mod")
+            pop_permission.ShowModal()
+        except:
+            print 'WgtDiningTable: on_btn_modify error'
 
     def on_btn_delete(self, event):
         event.Skip()
-        self.Close()
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            try:
+                data = self.model.ItemToObject(item)
+            except:
+                for item_ in self.model.data:
+                    if item_.key == self.tree_data.key:
+                        data = item_
+
+            if data.type == '0':
+                self.model.data.remove(data)
+                self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+                CtrlUserRole.delete_item(data)
+        except:
+            print 'WgtPermission: on_btn_delete error'
 
     def on_btn_refresh(self, event):
         event.Skip()
-        self.Close()
+        self._refresh_ui()
 
     def on_btn_exit(self, event):
         event.Skip()
         self.Hide()
         AppManager.switch_to_application('HomePage')
+
+    def on_sel_changed(self, event):
+        event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+
+    def on_activate(self, event):
+        event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+        if isinstance(self.tree_data, DataUserRole):
+            self.on_btn_modify(event)
     
 if __name__ == '__main__':
     app = wx.PySimpleApp()

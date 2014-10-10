@@ -93,8 +93,10 @@ class PopPrinterScheme(wx.Dialog):
         s_txt_reserve.Wrap(-1)
         backup_sizer.Add(s_txt_reserve, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        self.txtBackup = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
-        backup_sizer.Add(self.txtBackup, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        cbx_type_backup = list()
+        self.cbxBackup = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                     wx.Size(110, -1), cbx_type_backup, 0)
+        backup_sizer.Add(self.cbxBackup, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         g_sizer.Add(backup_sizer, 1, wx.EXPAND, 5)
         
@@ -196,8 +198,8 @@ class PopPrinterScheme(wx.Dialog):
         pass
 
     def _initialize_view(self):
-        for index in range(4):
-            self.cbxPrintNum.Append("%d" % (index + 1))
+        for index_ in range(4):
+            self.cbxPrintNum.Append("%d" % (index_ + 1))
 
         if self.type == "add":
             self._init_add_view()
@@ -209,7 +211,13 @@ class PopPrinterScheme(wx.Dialog):
         li_scheme_type = CtrlSchemeType.get_data()
         for scheme_type in li_scheme_type:
             self.cbxType.Append(scheme_type.name, scheme_type)
+
         self.cbxType.SetSelection(0)
+
+        li_print_scheme = CtrlPrinterScheme.get_data()
+        for print_scheme in li_print_scheme:
+            self.cbxBackup.Append(print_scheme.name, print_scheme)
+        #self.cbxBackup.SetSelection(0)
 
         self.cbxPrintNum.SetSelection(0)
 
@@ -229,19 +237,22 @@ class PopPrinterScheme(wx.Dialog):
             return
 
         data = items[self.index]
-        self.txtCode.SetValue(str(data.code))
+        self.txtCode.SetValue(str(data.key))
         self.txtName.SetValue(data.name)
         self.ckxValid.SetValue(data.valid)
-        self.txtBackup.SetValue(data.backup)
         self.txtTrack.SetLabel(("%d / %d" % (self.index+1, len(items))))
 
         li_scheme_type = CtrlSchemeType.get_data()
-        scheme_type_selection = 0
         for scheme_type in li_scheme_type:
             self.cbxType.Append(scheme_type.name, scheme_type)
-            if scheme_type.code == data.scheme_type:
-                self.cbxType.SetSelection(scheme_type_selection)
-            scheme_type_selection += 1
+            if scheme_type.key == data.scheme_type:
+                self.cbxType.SetSelection(li_scheme_type.index(scheme_type))
+
+        li_print_scheme = CtrlPrinterScheme.get_data()
+        for print_scheme in li_print_scheme:
+            self.cbxBackup.Append(print_scheme.name, print_scheme)
+            if print_scheme.key == data.backup:
+                self.cbxBackup.SetSelection(li_print_scheme.index(print_scheme))
 
         self.cbxPrintNum.SetSelection(data.print_count - 1)
 
@@ -258,15 +269,23 @@ class PopPrinterScheme(wx.Dialog):
 
     def on_btn_save(self, event):
         event.Skip()
+
         scheme_type = self.cbxType.GetClientData(self.cbxType.GetSelection())
         print_count = int(self.cbxPrintNum.GetValue())
-        data = DataPrinterScheme(0, 
-                                 int(self.txtCode.GetValue()),
+        try:
+            if not self.cbxBackup.IsEmpty():
+                scheme_backup = self.cbxBackup.GetClientData(self.cbxBackup.GetSelection())
+            else:
+                scheme_backup = None
+        except:
+            scheme_backup = None
+        data = DataPrinterScheme(0, int(self.txtCode.GetValue()),
+                                 self.txtCode.GetValue(),
                                  self.txtName.GetValue(),
                                  self.ckxValid.GetValue(),
-                                 scheme_type.code,
+                                 scheme_type.key,
                                  print_count,
-                                 self.txtBackup.GetValue())
+                                 scheme_backup.key if scheme_backup is not None else 0)
         if self.type == "add":
             CtrlPrinterScheme.add_item(data)
         elif self.type == "mod":
@@ -277,7 +296,7 @@ class PopPrinterScheme(wx.Dialog):
         self.Close()
 
 ###########################################################################
-## Class CPopSchemeRelated
+## Class PopSchemeRelated
 ###########################################################################
 
 
@@ -390,8 +409,6 @@ class PopSchemeRelated (wx.Dialog):
     def _initialize_view(self):
         self.txtCode.Enable(False)
         self.txtName.Enable(False)
-        self.radioBtnPrintOn.SetValue(False)
-        self.radioBtnPrintOff.SetValue(True)
         if self.index < 0:
             self.index = 0
             return
@@ -402,15 +419,20 @@ class PopSchemeRelated (wx.Dialog):
             return
         
         data = items[self.index]
-        self.txtCode.SetValue(str(data.code))
+        if data.is_print == '0':
+            self.radioBtnPrintOn.SetValue(False)
+            self.radioBtnPrintOff.SetValue(True)
+        else:
+            self.radioBtnPrintOn.SetValue(True)
+            self.radioBtnPrintOff.SetValue(False)
+
+        self.txtCode.SetValue(str(data.key))
         self.txtName.SetValue(data.name)
         li_scheme = CtrlPrinterScheme.get_data()
-        scheme_selection = 0
         for scheme in li_scheme:
             self.cbxScheme.Append(scheme.name, scheme)
-            if scheme.code == data.printer_scheme:
-                self.cbxScheme.SetSelection(scheme_selection)
-            scheme_selection += 1    
+            if scheme.key == data.printer_scheme:
+                self.cbxScheme.SetSelection(li_scheme.index(scheme))
             
     # Virtual event handlers, override them in your derived class
     def on_btn_prev(self, event):
@@ -432,7 +454,8 @@ class PopSchemeRelated (wx.Dialog):
             return
         
         data = items[self.index]
-        data.printer_scheme = scheme_type.code
+        data.printer_scheme = scheme_type.key
+        data.is_print = u'1' if self.radioBtnPrintOn.GetValue() else u'0'
         CtrlDishes.update_print_scheme(data)
     
     def on_btn_exit(self, event):
@@ -533,7 +556,7 @@ class PopSchemeRelatedBat (wx.Dialog):
         scheme_type = self.cbxSchemeName.GetClientData(self.cbxSchemeName.GetSelection())
         for item in self.list_data:
             if isinstance(item, DataDishes):
-                item.printer_scheme = scheme_type.code
+                item.printer_scheme = scheme_type.key
                 CtrlDishes.update_print_scheme(item)
                 
     def on_btn_exit(self, event):
@@ -624,11 +647,14 @@ class PopSchemeType (wx.Dialog):
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlSchemeType.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlSchemeType.delete_item(data)
+        except:
+            print 'PopSchemeType on_btn_delete error'
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -643,9 +669,8 @@ class PopSchemeType (wx.Dialog):
     
     def on_btn_save(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        CtrlSchemeType.update_item(data)
+        for data in self.model.data:
+            CtrlSchemeType.update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -783,20 +808,26 @@ class WgtPrinterScheme(wx.Panel):
     
     def on_btn_modify(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        index = self.model.data.index(data)
-        CtrlPrinterScheme.set_cur_item_index(index)
-        pop_printer_scheme = PopPrinterScheme(self, "mod")
-        pop_printer_scheme.ShowModal()
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            index = self.model.data.index(data)
+            CtrlPrinterScheme.set_cur_item_index(index)
+            pop_printer_scheme = PopPrinterScheme(self, "mod")
+            pop_printer_scheme.ShowModal()
+        except:
+            print 'WgtPrinterScheme on_btn_modify error'
     
     def on_btn_delete(self, event):
         event.Skip()
-        item = self.dataViewList.GetCurrentItem()
-        data = self.model.ItemToObject(item)
-        self.model.data.remove(data)
-        self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-        CtrlPrinterScheme.delete_item(data)
+        try:
+            item = self.dataViewList.GetCurrentItem()
+            data = self.model.ItemToObject(item)
+            self.model.data.remove(data)
+            self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
+            CtrlPrinterScheme.delete_item(data)
+        except:
+            print 'WgtPrinterScheme on_btn_delete error'
         
     def pn_btn_scheme_type(self, event):
         event.Skip()  
@@ -942,13 +973,13 @@ class WgtSchemeRelated (wx.Panel):
         
         li_category = CtrlCategory.get_data()
         for category in li_category:
-            if category.code in dishes_map:
-                title = "%s(%d)" % (category.name, len(dishes_map[category.code]))
+            if category.key in dishes_map:
+                title = "%s(%d)" % (category.name, len(dishes_map[category.key]))
                 child = self.treeCtrl.AppendItem(self.root, title)
-                self.treeCtrl.SetPyData(child, dishes_map[category.code])
+                self.treeCtrl.SetPyData(child, dishes_map[category.key])
                 self.treeCtrl.SetItemImage(child, fl_idx, wx.TreeItemIcon_Normal)
                 self.treeCtrl.SetItemImage(child, fl_open_idx, wx.TreeItemIcon_Expanded)
-                for dishes in dishes_map[category.code]:
+                for dishes in dishes_map[category.key]:
                     sub_child = self.treeCtrl.AppendItem(child, dishes.name)
                     self.treeCtrl.SetPyData(sub_child, dishes)
                     self.treeCtrl.SetItemImage(sub_child, file_idx, wx.TreeItemIcon_Normal)
@@ -976,10 +1007,17 @@ class WgtSchemeRelated (wx.Panel):
         
     def on_btn_setting(self, event):
         event.Skip()
-        if isinstance(self.tree_data, DataDishes):
-            CtrlDishes.set_cur_item_index(self.tree_data)
-            pop_related_setting = PopSchemeRelated(self)
-            pop_related_setting.ShowModal()
+        item = self.dataViewList.GetCurrentItem()
+        try:
+            data = self.model.ItemToObject(item)
+        except:
+            for item_ in self.model.data:
+                if item_.key == self.tree_data.key:
+                    data = item_
+        index_ = self.model.data.index(data)
+        CtrlDishes.set_cur_item_index(index_)
+        pop_related_setting = PopSchemeRelated(self)
+        pop_related_setting.ShowModal()
     
     def on_btn_batch_setting(self, event):
         event.Skip()
@@ -998,8 +1036,10 @@ class WgtSchemeRelated (wx.Panel):
         self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
 
     def on_activate(self, event):
-        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
         event.Skip()
+        self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
+        if isinstance(self.tree_data, DataDishes):
+            self.on_btn_setting(event)
         
     def on_refresh(self, event):
         event.Skip()

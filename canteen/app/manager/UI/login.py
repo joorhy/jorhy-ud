@@ -7,7 +7,7 @@
 ##
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
-from app.manager.logic.ctrl import CtrlLogin
+from app.manager.logic.ctrl import CtrlLogin, CtrlHomePage
 from framework.core import EvtManager
 from app.manager.EnumEvent import EnumEvent
 from app.manager.AppManager import AppManager
@@ -22,7 +22,7 @@ import wx.xrc
 
 class WgtLogin(wx.Panel):
     def _init_keyboard_sizer(self, parent):
-        sizer = wx.GridSizer(1, 1, 0, 0)
+        sizer = wx.GridSizer(3, 1, 0, 0)
 
         keyboard_sizer = wx.FlexGridSizer(4, 3, 0, 0)
         keyboard_sizer.SetFlexibleDirection(wx.BOTH)
@@ -79,19 +79,20 @@ class WgtLogin(wx.Panel):
         self.key_back.SetMinSize(wx.Size(60, 50))
         keyboard_sizer.Add(self.key_back, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.LEFT, 5)
 
+        sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
         # Layout keyboard 
         sizer.Add(keyboard_sizer, 1, wx.EXPAND, 5)
         parent.Add(sizer, 1, wx.EXPAND, 5)
 
     def _init_login_sizer(self, parent):
-        g_sizer = wx.GridSizer(3, 1, 0, 0)
+        g_sizer = wx.GridSizer(4, 1, 0, 0)
 
         # Add spacer sizer
-        spacer = wx.BoxSizer(wx.VERTICAL)
-        g_sizer.Add(spacer, 1, wx.EXPAND, 5)
+        g_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
+        g_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
 
         # Add login info sizer
-        login_sizer = wx.FlexGridSizer(2, 2, 0, 0)
+        login_sizer = wx.FlexGridSizer(3, 2, 0, 0)
         login_sizer.SetFlexibleDirection(wx.BOTH)
         login_sizer.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_SPECIFIED)
         # Add user name label
@@ -109,25 +110,18 @@ class WgtLogin(wx.Panel):
         self.txtPassword = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                        wx.DefaultSize, wx.TE_PASSWORD)
         login_sizer.Add(self.txtPassword, 0, wx.ALL, 5)
+        # Add login button
+        s_txt_null = wx.StaticText(self, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_null.Wrap(-1)
+        login_sizer.Add(s_txt_null, 0, wx.ALL, 5)
+
+        self.btnLogin = wx.Button(self, wx.ID_ANY, u"登录", wx.DefaultPosition, wx.DefaultSize, 0)
+        login_sizer.Add(self.btnLogin, 0, wx.ALL, 5)
+
         # Layout login info sizer
         g_sizer.Add(login_sizer, 1, wx.EXPAND, 5)
 
-        # Add login buttons sizer
-        btn_sizer = wx.GridSizer(1, 3, 0, 0)
-        # Add a spacer on left
-        btn_left_spacer = wx.BoxSizer(wx.VERTICAL)
-        btn_sizer.Add(btn_left_spacer, 1, wx.EXPAND, 5)
-        # Add login button 
-        btn_login_sizer = wx.BoxSizer(wx.VERTICAL)
-        self.btnLogin = wx.Button(self, wx.ID_ANY, u"登录", wx.DefaultPosition, wx.DefaultSize, 0)
-        btn_login_sizer.Add(self.btnLogin, 0, wx.ALL, 5)
-        btn_sizer.Add(btn_login_sizer, 1, wx.EXPAND, 5)
-        # Add a spacer on right
-        btn_right_spacer = wx.GridSizer(0, 2, 0, 0)
-        btn_sizer.Add(btn_right_spacer, 1, wx.EXPAND, 5)
-
         # Layout login sizer
-        g_sizer.Add(btn_sizer, 1, wx.EXPAND, 5)
         parent.Add(g_sizer, 1, wx.EXPAND, 5)
 
     def __init__(self, parent):
@@ -136,7 +130,8 @@ class WgtLogin(wx.Panel):
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
         self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DLIGHT))
         
-        sizer = wx.GridSizer(1, 2, 0, 0)
+        sizer = wx.GridSizer(1, 3, 0, 0)
+        sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
         self._init_keyboard_sizer(sizer)
         self._init_login_sizer(sizer)
         
@@ -146,6 +141,7 @@ class WgtLogin(wx.Panel):
         self.focus = ''
         
         # Connect Events
+        self.Bind(wx.EVT_SIZE, self.on_size)
         self.key_1.Bind(wx.EVT_LEFT_DOWN, self.on_key_1)
         self.key_2.Bind(wx.EVT_LEFT_DOWN, self.on_key_2)
         self.key_3.Bind(wx.EVT_LEFT_DOWN, self.on_key_3)
@@ -171,12 +167,18 @@ class WgtLogin(wx.Panel):
         EvtManager.add_listener(self, EnumEvent.EVT_LOGIN, self.on_evt_login)
         
         self.GetParent().SetTitle(u"登陆")
+        x, y = CtrlHomePage.get_screen_size()
+        self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
         # Remove event listener
         EvtManager.remove_listener(self, EnumEvent.EVT_LOGIN, self.on_evt_login)
 
     # Virtual event handlers, override them in your derived class
+    def on_size(self, event):
+        event.Skip()
+        self.GetSize()
+
     def on_key_1(self, event):
         event.Skip()
         if self.focus == 'User':

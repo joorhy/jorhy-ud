@@ -126,16 +126,10 @@ class PopCompany (wx.Dialog):
     def on_btn_exit(self, event):
         event.Skip()
         self.Close()
-        AppManager.switch_to_application('HomePage')
 
 ###########################################################################
 ## Class PopRegister
 ###########################################################################
-
-
-def on_close(event):
-    event.Skip()
-    AppManager.switch_to_application('HomePage')
 
 
 class PopRegister (wx.Dialog):
@@ -205,7 +199,6 @@ class PopRegister (wx.Dialog):
         self.Centre(wx.BOTH)
         
         # Connect Events
-        self.Bind(wx.EVT_CLOSE, on_close)
         self.btnApply.Bind(wx.EVT_BUTTON, self.on_btn_apply)
         self.btnVerify.Bind(wx.EVT_BUTTON, self.on_btn_verify)
     

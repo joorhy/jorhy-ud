@@ -14,5 +14,7 @@ class EnumEvent(Singleton):
     EVT_DISHES_PUBLISH_REFRESH = wx.NewId()
     # Employee manager refresh event
     EVT_EMPLOYEE_REFRESH = wx.NewId()
+    # Employee permission refresh event
+    EVT_PERMISSION_REFRESH = wx.NewId()
     # Printer scheme refresh event
     EVT_PRINTER_SCHEME_REFRESH = wx.NewId()

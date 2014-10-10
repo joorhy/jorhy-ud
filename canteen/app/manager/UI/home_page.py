@@ -14,8 +14,90 @@ from app.manager.logic.ctrl import CtrlHomePage
 import wx
 import wx.xrc
 
+
 ###########################################################################
-## Class CWgtDeskTop
+## Class PopPassword
+###########################################################################
+
+class PopPassword (wx.Dialog):
+    def _init_ui(self, parent):
+        parent.Add(wx.BoxSizer(wx.VERTICAL), 1, wx.EXPAND, 5)
+        parent.Add(wx.BoxSizer(wx.VERTICAL), 1, wx.EXPAND, 5)
+
+        # Add current password sizer
+        cur_siser = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.sTxtCur = wx.StaticText(self, wx.ID_ANY, u"当前密码：", wx.DefaultPosition, wx.Size(200, -1), wx.ALIGN_RIGHT)
+        self.sTxtCur.Wrap(-1)
+        cur_siser.Add(self.sTxtCur, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtCurPassword = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(200, -1), 0)
+        cur_siser.Add(self.txtCurPassword, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        parent.Add(cur_siser, 1, wx.EXPAND, 5)
+        # Add new password sizer
+        new_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.sTxtNew = wx.StaticText(self, wx.ID_ANY, u"新密码：", wx.DefaultPosition, wx.Size(200, -1), wx.ALIGN_RIGHT)
+        self.sTxtNew.Wrap(-1)
+        new_sizer.Add(self.sTxtNew, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+
+        self.txtNewPassword = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(200, -1), 0)
+        new_sizer.Add(self.txtNewPassword, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        parent.Add(new_sizer, 1, wx.EXPAND, 5)
+        # Add new password verify sizer
+        verify_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        self.sTxtVerify = wx.StaticText(self, wx.ID_ANY, u"确认新密码：", wx.DefaultPosition, wx.Size(200, -1), wx.ALIGN_RIGHT)
+        self.sTxtVerify.Wrap(-1)
+        verify_sizer.Add(self.sTxtVerify, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtVerifyPassword = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(200, -1), 0)
+        verify_sizer.Add(self.txtVerifyPassword, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        parent.Add(verify_sizer, 1, wx.EXPAND, 5)
+        #Add control button
+        ctrl_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        ctrl_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
+
+        self.btnOk = wx.Button(self, wx.ID_ANY, u"确认", wx.DefaultPosition, wx.DefaultSize, 0)
+        ctrl_sizer.Add(self.btnOk, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.btnCancel = wx.Button(self, wx.ID_ANY, u"取消", wx.DefaultPosition, wx.DefaultSize, 0)
+        ctrl_sizer.Add(self.btnCancel, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        ctrl_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
+
+        parent.Add(ctrl_sizer, 1, wx.EXPAND, 5)
+
+    def __init__(self, parent):
+        wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"密码设置", pos=wx.DefaultPosition,
+                           size=wx.Size(600, 400), style=wx.CAPTION)
+
+        self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+
+        g_sizer = wx.GridSizer(8, 1, 0, 0)
+        self._init_ui(g_sizer)
+
+        self.SetSizer(g_sizer)
+        self.Layout()
+
+        self.Centre(wx.BOTH)
+
+        # Connect Events
+        self.btnOk.Bind(wx.EVT_BUTTON, self.on_btn_ok)
+        self.btnCancel.Bind(wx.EVT_BUTTON, self.on_btn_cancel)
+
+    def __del__(self):
+        pass
+
+    # Virtual event handlers, override them in your derived class
+    def on_btn_ok(self, event):
+        event.Skip()
+
+    def on_btn_cancel(self, event):
+        event.Skip()
+        self.Close()
+
+###########################################################################
+## Class WgtDeskTop
 ###########################################################################
 
 li_func_widget_1 = ['DiningTable', 'DishesPublish', 'Employee', 'PrinterScheme', '', 'Company']
@@ -24,7 +106,8 @@ li_func_widget_2 = ['', '', 'UserPermission', 'SchemeRelated', '', 'Register']
 li_title = [u"餐厅设置", u"菜品发布", u"员工管理", u"打印设置", u"报表中心", u"系统设置"]
 li_func_title_1 = [u'餐桌设置', u'菜品发布', u'员工管理', u'厨打方案', u'菜品销售查询', u'公司信息']
 li_func_title_2 = [u'', u'', u'权限管理', u'菜品关联', u'收银情况查询', u'注册']
-li_func_title_3 = [u'', u'', u'员工排班', u'', u'营业情况查询', u'数据备份']
+#li_func_title_3 = [u'', u'', u'员工排班', u'', u'营业情况查询', u'数据备份']
+li_func_title_3 = [u'', u'', u'', u'', u'营业情况查询', u'']
 li_func_title_4 = [u'', u'', u'', u'', u'消费查询', u'']
 li_func_title_5 = [u'', u'', u'', u'', u'菜品排行榜', u'']
 li_func_title_6 = [u'', u'', u'', u'', u'', u'']
@@ -81,6 +164,9 @@ class WgtHomePage (wx.Panel):
         # Set the selector buttons
         selector_bottom_sizer = wx.BoxSizer(wx.VERTICAL)
         selector_bottom_sizer.SetMinSize(wx.Size(200, 550))
+        # Add system setting button
+        self.btnSysSetting = wx.Button(self.selectorPanel, wx.ID_ANY, u"系统设置", wx.DefaultPosition, wx.DefaultSize, 0)
+        selector_bottom_sizer.Add(self.btnSysSetting, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add dining room setting button
         self.btnDiningRoomSetting = wx.Button(self.selectorPanel, wx.ID_ANY, u"餐厅设置",
                                               wx.Point(50, 50), wx.DefaultSize, 0)
@@ -98,9 +184,9 @@ class WgtHomePage (wx.Panel):
         # Add report forms button
         self.btnReportForms = wx.Button(self.selectorPanel, wx.ID_ANY, u"报表中心", wx.DefaultPosition, wx.DefaultSize, 0)
         selector_bottom_sizer.Add(self.btnReportForms, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add system setting button
-        self.btnSysSetting = wx.Button(self.selectorPanel, wx.ID_ANY, u"系统设置", wx.DefaultPosition, wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnSysSetting, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add report forms button
+        self.btnModifyPassword = wx.Button(self.selectorPanel, wx.ID_ANY, u"修改密码", wx.DefaultPosition, wx.DefaultSize, 0)
+        selector_bottom_sizer.Add(self.btnModifyPassword, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add exit button
         self.btnExit = wx.Button(self.selectorPanel, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
         selector_bottom_sizer.Add(self.btnExit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
@@ -181,6 +267,7 @@ class WgtHomePage (wx.Panel):
         self.btnPrinter.Bind(wx.EVT_BUTTON, self.on_printer_setting)
         self.btnReportForms.Bind(wx.EVT_BUTTON, self.on_report_forms)
         self.btnSysSetting.Bind(wx.EVT_BUTTON, self.on_system_setting)
+        self.btnModifyPassword.Bind(wx.EVT_BUTTON, self.on_modify_password)
         self.btnExit.Bind(wx.EVT_BUTTON, parent.on_exit)
         self.btnFunc_1.Bind(wx.EVT_BUTTON, self.on_func_1)
         self.btnFunc_2.Bind(wx.EVT_BUTTON, self.on_func_2)
@@ -252,6 +339,11 @@ class WgtHomePage (wx.Panel):
         CtrlHomePage.set_selected_item(5)
         self._show_func_widget(5)
 
+    def on_modify_password(self, event):
+        event.Skip()
+        pop_password = PopPassword(self)
+        pop_password.ShowModal()
+
     def on_func_1(self, event):
         event.Skip()
         select_item = CtrlHomePage.get_selected_item()
@@ -317,8 +409,11 @@ class WgtHomePage (wx.Panel):
         self.btnDishesPublishing.Enabled = True
         self.btnStaffMan.Enabled = True
         self.btnPrinter.Enabled = True
-        self.btnReportForms.Enabled = True
+        self.btnReportForms.Enabled = False
+        self.btnReportForms.SetBackgroundColour(wx.YELLOW)
+        self.btnReportForms.SetForegroundColour(wx.YELLOW)
         self.btnSysSetting.Enabled = True
+        self.btnModifyPassword.Enabled = True
 
     def _hide_all_func_buttons(self):
         self.btnFunc_1.Hide()
