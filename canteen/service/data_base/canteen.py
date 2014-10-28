@@ -1,7 +1,7 @@
 # coding: utf-8
 from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Table, text
 from sqlalchemy.orm import relationship
-from service.data_base.SqlManager import SqlManager
+from service.data_base.sql_manager import SqlManager
 
 Base = SqlManager.base_model
 metadata = Base.metadata

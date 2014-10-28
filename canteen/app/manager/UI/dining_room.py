@@ -7,11 +7,11 @@
 ##
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
-
+from app.home_logic import CtrlHomePage
 from app.manager.logic.ctrl import * 
 from app.manager.logic.model import *
 from app.manager.logic.data import *
-from app.manager.AppManager import AppManager
+from app.app_manager import AppManager
 from framework.core import TreeImage
 
 import wx

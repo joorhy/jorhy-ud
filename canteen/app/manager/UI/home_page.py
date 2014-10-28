@@ -8,8 +8,8 @@
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
 from app.manager.UI.sys_setting import *
-from app.manager.AppManager import AppManager
-from app.manager.logic.ctrl import CtrlHomePage
+from app.app_manager import AppManager
+from app.home_logic import CtrlHomePage
 
 import wx
 import wx.xrc

@@ -7,7 +7,7 @@
 ##
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
-from app.manager.AppManager import AppManager
+from app.app_manager import AppManager
 
 import wx
 import wx.xrc

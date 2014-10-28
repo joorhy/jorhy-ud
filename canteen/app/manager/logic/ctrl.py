@@ -1,44 +1,31 @@
 #!/usr/bin/env python
 #_*_ encoding=utf-8 _*_
-from framework.core import EvtManager
+from framework.core import EvtManager, Singleton
 from app.manager.logic.data import *
-from app.manager.EnumEvent import EnumEvent
+from app.enum_event import EnumEvent
 from service.data_base.manager import *
 
 
-class CtrlHomePage():
-    m_frame_width = 800
-    m_frame_height = 600
-    m_selected_item = 5
-    
+@Singleton
+class CtrlManagerLogin():
+    check_result = False
+
     def __init__(self):
         pass
-    
-    def __def__(self):
-        pass
 
-    @classmethod
-    def get_screen_size(cls):
-        return CtrlHomePage.m_frame_width, CtrlHomePage.m_frame_height
-    
-    @classmethod
-    def set_screen_size(cls, x, y):
-        CtrlHomePage.m_frame_width = x
-        CtrlHomePage.m_frame_height = y
-        
-    @classmethod
-    def get_selected_item(cls):
-        return CtrlHomePage.m_selected_item
-    
-    @classmethod
-    def set_selected_item(cls, item=5):
-        # 0 for dining room setting
-        # 1 for dishes publishing
-        # 2 for employee manager
-        # 3 for printer setting
-        # 4 for report form manager
-        # 5 for system setting
-        CtrlHomePage.m_selected_item = item
+    def login(self, user, password):
+        try:
+            if user == 'admin' and password == 'admin':
+                self.check_result = True
+            elif get_password_by_user_name(user) == password:
+                self.check_result = True
+        except TypeError:
+            self.check_result = False
+
+        EvtManager.dispatch_event(EnumEvent.EVT_LOGIN)
+
+    def get_result(self):
+        return self.check_result
 
 
 class CtrlArea():
@@ -689,29 +676,6 @@ class CtrlUserRole():
         if isinstance(data, DataUserRole):
             update_role_info(data, perm_list)
             EvtManager.dispatch_event(EnumEvent.EVT_PERMISSION_REFRESH)
-
-
-class CtrlLogin():
-    check_result = False
-    
-    def __init__(self):
-        pass
-
-    @classmethod
-    def login(cls, user, password):
-        try:
-            if user == 'admin' and password == 'admin':
-                cls.check_result = True
-            elif get_password_by_user_name(user) == password:
-                cls.check_result = True
-        except:
-            cls.check_result = False
-            
-        EvtManager.dispatch_event(EnumEvent.EVT_LOGIN)
-
-    @classmethod
-    def get_result(cls):
-        return cls.check_result
 
 
 class CtrlPrinterScheme():

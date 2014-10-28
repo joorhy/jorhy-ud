@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- 
+from app.manager.logic.data import *
 
 import wx
 import wx.xrc
 import wx.dataview
-from app.manager.logic.data import *
 
 
 class ModelArea(wx.dataview.PyDataViewModel):
