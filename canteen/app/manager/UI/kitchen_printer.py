@@ -205,17 +205,17 @@ class PopPrinterScheme(wx.Dialog):
         if self.type == "add":
             self._init_add_view()
         elif self.type == "mod":
-            self.index = CtrlPrinterScheme.get_cur_item_index()
+            self.index = CtrlPrinterScheme.get_instance().get_cur_item_index()
             self._init_mod_view()
 
     def _init_add_view(self):
-        li_scheme_type = CtrlSchemeType.get_data()
+        li_scheme_type = CtrlSchemeType.get_instance().get_data()
         for scheme_type in li_scheme_type:
             self.cbxType.Append(scheme_type.name, scheme_type)
 
         self.cbxType.SetSelection(0)
 
-        li_print_scheme = CtrlPrinterScheme.get_data()
+        li_print_scheme = CtrlPrinterScheme.get_instance().get_data()
         for print_scheme in li_print_scheme:
             self.cbxBackup.Append(print_scheme.name, print_scheme)
         #self.cbxBackup.SetSelection(0)
@@ -232,7 +232,7 @@ class PopPrinterScheme(wx.Dialog):
             self.index = 0
             return
 
-        items = CtrlPrinterScheme.get_items()
+        items = CtrlPrinterScheme.get_instance().get_items()
         if self.index >= len(items):
             self.index = len(items) - 1
             return
@@ -243,13 +243,13 @@ class PopPrinterScheme(wx.Dialog):
         self.ckxValid.SetValue(data.valid)
         self.txtTrack.SetLabel(("%d / %d" % (self.index+1, len(items))))
 
-        li_scheme_type = CtrlSchemeType.get_data()
+        li_scheme_type = CtrlSchemeType.get_instance().get_data()
         for scheme_type in li_scheme_type:
             self.cbxType.Append(scheme_type.name, scheme_type)
             if scheme_type.key == data.scheme_type:
                 self.cbxType.SetSelection(li_scheme_type.index(scheme_type))
 
-        li_print_scheme = CtrlPrinterScheme.get_data()
+        li_print_scheme = CtrlPrinterScheme.get_instance().get_data()
         for print_scheme in li_print_scheme:
             self.cbxBackup.Append(print_scheme.name, print_scheme)
             if print_scheme.key == data.backup:
@@ -286,7 +286,7 @@ class PopPrinterScheme(wx.Dialog):
                                  self.ckxValid.GetValue(),
                                  scheme_type.key,
                                  print_count,
-                                 scheme_backup.key if scheme_backup is not None else 0)
+                                 scheme_backup.key if scheme_backup is not None else None)
         if self.type == "add":
             CtrlPrinterScheme.add_item(data)
         elif self.type == "mod":
@@ -401,7 +401,7 @@ class PopSchemeRelated (wx.Dialog):
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
         
         # Initialize
-        self.index = CtrlDishes.get_cur_item_index()
+        self.index = CtrlDishes.get_instance().get_cur_item_index()
         self._initialize_view()
     
     def __del__(self):
@@ -414,7 +414,7 @@ class PopSchemeRelated (wx.Dialog):
             self.index = 0
             return
         
-        items = CtrlDishes.get_items()
+        items = CtrlDishes.get_instance().get_items()
         if self.index >= len(items):
             self.index = len(items) - 1
             return
@@ -429,7 +429,7 @@ class PopSchemeRelated (wx.Dialog):
 
         self.txtCode.SetValue(str(data.key))
         self.txtName.SetValue(data.name)
-        li_scheme = CtrlPrinterScheme.get_data()
+        li_scheme = CtrlPrinterScheme.get_instance().get_data()
         for scheme in li_scheme:
             self.cbxScheme.Append(scheme.name, scheme)
             if scheme.key == data.printer_scheme:
@@ -449,7 +449,7 @@ class PopSchemeRelated (wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         scheme_type = self.cbxScheme.GetClientData(self.cbxScheme.GetSelection())
-        items = CtrlDishes.get_items()
+        items = CtrlDishes.get_instance().get_items()
         if self.index >= len(items):
             self.index = len(items) - 1
             return
@@ -537,14 +537,14 @@ class PopSchemeRelatedBat (wx.Dialog):
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
         
         # Initialize view data
-        self.list_data = CtrlDishes.get_cur_list_data()
+        self.list_data = CtrlDishes.get_instance().get_cur_list_data()
         self._initialize_view()
     
     def __del__(self):
         pass    
     
     def _initialize_view(self):
-        li_scheme = CtrlPrinterScheme.get_data()
+        li_scheme = CtrlPrinterScheme.get_instance().get_data()
         for scheme in li_scheme:
             self.cbxSchemeName.Append(scheme.name, scheme) 
                 
@@ -621,7 +621,7 @@ class PopSchemeType (wx.Dialog):
         self.Centre(wx.BOTH)
 
         # Create an instance of our model...
-        self.model = ModelSchemeType(CtrlSchemeType.get_data())
+        self.model = ModelSchemeType(CtrlSchemeType.get_instance().get_data())
         
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -639,9 +639,9 @@ class PopSchemeType (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlSchemeType.add_item(DataSchemeType(0, 0, ""))
+        CtrlSchemeType.get_instance().add_item(DataSchemeType(0, 0, ""))
         
-        data = DataSchemeType(CtrlSchemeType.get_data_len() + 1, CtrlSchemeType.get_id(), "")
+        data = DataSchemeType(CtrlSchemeType.get_instance().get_data_len() + 1, CtrlSchemeType.get_id(), "")
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -659,7 +659,7 @@ class PopSchemeType (wx.Dialog):
     
     def on_btn_refresh(self, event):
         event.Skip()
-        result = CtrlSchemeType.get_data()
+        result = CtrlSchemeType.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -746,8 +746,8 @@ class WgtPrinterScheme(wx.Panel):
         self.Centre(wx.BOTH)
 
         # Create an instance of our model...
-        self.model = ModelPrinterScheme(CtrlPrinterScheme.get_data())
-        CtrlPrinterScheme.refresh_items()
+        self.model = ModelPrinterScheme(CtrlPrinterScheme.get_instance().get_data())
+        CtrlPrinterScheme.get_instance().refresh_items()
         
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -769,7 +769,7 @@ class WgtPrinterScheme(wx.Panel):
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_PRINTER_SCHEME_REFRESH, self.on_btn_refresh)
         
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
@@ -778,8 +778,8 @@ class WgtPrinterScheme(wx.Panel):
     
     def _refresh_ui(self):
         # Refresh data view list
-        CtrlPrinterScheme.refresh_items()
-        result = CtrlPrinterScheme.get_data()
+        CtrlPrinterScheme.get_instance().refresh_items()
+        result = CtrlPrinterScheme.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -813,7 +813,7 @@ class WgtPrinterScheme(wx.Panel):
             item = self.dataViewList.GetCurrentItem()
             data = self.model.ItemToObject(item)
             index = self.model.data.index(data)
-            CtrlPrinterScheme.set_cur_item_index(index)
+            CtrlPrinterScheme.get_instance().set_cur_item_index(index)
             pop_printer_scheme = PopPrinterScheme(self, "mod")
             pop_printer_scheme.ShowModal()
         except:
@@ -842,7 +842,7 @@ class WgtPrinterScheme(wx.Panel):
     def on_btn_exit(self, event):
         event.Skip()
         self.Hide()
-        AppManager.switch_to_application('HomePage')
+        AppManager.get_instance().switch_to_application('HomePage')
         
 ###########################################################################
 ## Class WgtSchemeRelated
@@ -911,8 +911,8 @@ class WgtSchemeRelated (wx.Panel):
         self.Centre(wx.BOTH)
 
         # Create an instance of our model...
-        self.model = ModelDishes(CtrlDishes.get_data())
-        CtrlDishes.refresh_items()
+        self.model = ModelDishes(CtrlDishes.get_instance().get_data())
+        CtrlDishes.get_instance().refresh_items()
         
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -938,7 +938,7 @@ class WgtSchemeRelated (wx.Panel):
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.on_refresh)
         
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
@@ -961,8 +961,8 @@ class WgtSchemeRelated (wx.Panel):
         self.treeCtrl.SetItemImage(self.root, fl_open_idx, wx.TreeItemIcon_Expanded)
         
         dishes_map = dict()
-        CtrlDishes.refresh_items()
-        li_items = CtrlDishes.get_items()
+        CtrlDishes.get_instance().refresh_items()
+        li_items = CtrlDishes.get_instance().get_items()
         for item in li_items:
             if item.category in dishes_map:
                 dishes_map[item.category].append(item)
@@ -972,7 +972,7 @@ class WgtSchemeRelated (wx.Panel):
                 dishes_map_tmp = {item.category: list_tmp}
                 dishes_map.update(dishes_map_tmp)
         
-        li_category = CtrlCategory.get_data()
+        li_category = CtrlCategory.get_instance().get_data()
         for category in li_category:
             if category.key in dishes_map:
                 title = "%s(%d)" % (category.name, len(dishes_map[category.key]))
@@ -1016,21 +1016,21 @@ class WgtSchemeRelated (wx.Panel):
                 if item_.key == self.tree_data.key:
                     data = item_
         index_ = self.model.data.index(data)
-        CtrlDishes.set_cur_item_index(index_)
+        CtrlDishes.get_instance().set_cur_item_index(index_)
         pop_related_setting = PopSchemeRelated(self)
         pop_related_setting.ShowModal()
     
     def on_btn_batch_setting(self, event):
         event.Skip()
         if isinstance(self.tree_data, list):
-            CtrlDishes.set_cur_list_data(self.tree_data)
+            CtrlDishes.get_instance().set_cur_list_data(self.tree_data)
             pop_related_bat_setting = PopSchemeRelatedBat(self)
             pop_related_bat_setting.ShowModal()
     
     def on_exit(self, event):
         event.Skip()
         self.Hide()
-        AppManager.switch_to_application('HomePage')
+        AppManager.get_instance().switch_to_application('HomePage')
         
     def on_sel_changed(self, event):
         event.Skip()
@@ -1045,12 +1045,12 @@ class WgtSchemeRelated (wx.Panel):
     def on_refresh(self, event):
         event.Skip()
         # Refresh treeCtrl
-        CtrlDishes.refresh_items()
+        CtrlDishes.get_instance().refresh_items()
         self.treeCtrl.DeleteAllItems()
         self._show_tree_ctrl()
         
         # Refresh data view list
-        result = CtrlDishes.get_data()
+        result = CtrlDishes.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)

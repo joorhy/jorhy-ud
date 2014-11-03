@@ -18,3 +18,41 @@ class DataTableItem():
         self.is_open = False
         self.people_num = 0
         self.amount = None
+
+
+class DataTypeItem():
+    def __init__(self):
+        self.type_id = -1
+        self.type_name = ""
+
+
+class DataDishesItem():
+    def __init__(self):
+        self.dishes_id = -1
+        self.dishes_code = -1
+        self.dishes_name = ""
+        self.dishes_spec = ""
+        self.dishes_unit = ""
+
+
+class DataOrderDishesItem():
+    def __init__(self):
+        self.dishes_code = -1
+        self.dishes_count = 0
+
+
+class DataOrderItem():
+    def __init__(self):
+        self.order_num = 0
+        self.order_status = 0
+        self.di_order_dishes_items = dict()
+
+
+class DataOrderedDishesItem():
+    def __init__(self):
+        self.dishes_name = ""
+        self.dishes_spec = ""
+        self.dishes_unit = ""
+        self.dishes_count = 0
+
+

@@ -9,6 +9,9 @@
 ###########################################################################
 from app.home_logic import CtrlHomePage
 from app.app_manager import AppManager
+from app.front.logic.ctrl import *
+from app.front.logic.model import ModelOrderedDishes
+
 
 import wx
 import wx.xrc
@@ -80,15 +83,15 @@ class WgtCheckout ( wx.Panel ):
 
         m_dishesViewSizser = wx.BoxSizer( wx.VERTICAL )
 
-        self.m_dataViewDishes = wx.dataview.DataViewListCtrl( self.m_dishesViewPanel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 480,300 ), 0 )
-        self.m_dataViewListColumn14 = self.m_dataViewDishes.AppendTextColumn( u"行号" )
-        self.m_dataViewListColumn15 = self.m_dataViewDishes.AppendTextColumn( u"菜品名称" )
-        self.m_dataViewListColumn16 = self.m_dataViewDishes.AppendTextColumn( u"规格" )
-        self.m_dataViewListColumn17 = self.m_dataViewDishes.AppendTextColumn( u"数量" )
-        self.m_dataViewListColumn18 = self.m_dataViewDishes.AppendTextColumn( u"退菜量" )
-        self.m_dataViewListColumn19 = self.m_dataViewDishes.AppendTextColumn( u"价格" )
-        self.m_dataViewListColumn20 = self.m_dataViewDishes.AppendTextColumn( u"加价" )
-        m_dishesViewSizser.Add( self.m_dataViewDishes, 0, wx.EXPAND, 5 )
+        self.dataViewList = wx.dataview.DataViewListCtrl( self.m_dishesViewPanel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 480,300 ), 0 )
+        self.m_dataViewListColumn14 = self.dataViewList.AppendTextColumn( u"行号" )
+        self.m_dataViewListColumn15 = self.dataViewList.AppendTextColumn( u"菜品名称" )
+        self.m_dataViewListColumn16 = self.dataViewList.AppendTextColumn( u"规格" )
+        self.m_dataViewListColumn17 = self.dataViewList.AppendTextColumn( u"数量" )
+        self.m_dataViewListColumn18 = self.dataViewList.AppendTextColumn( u"退菜量" )
+        self.m_dataViewListColumn19 = self.dataViewList.AppendTextColumn( u"价格" )
+        self.m_dataViewListColumn20 = self.dataViewList.AppendTextColumn( u"加价" )
+        m_dishesViewSizser.Add(self.dataViewList, 0, wx.EXPAND, 5)
 
 
         self.m_dishesViewPanel.SetSizer( m_dishesViewSizser )
@@ -510,14 +513,19 @@ class WgtCheckout ( wx.Panel ):
 
         self.Centre( wx.BOTH )
 
+        # Create an instance of our model...
+        self.model = ModelOrderedDishes(CtrlOrderInfo.get_instance().get_dishes_items())
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+
         # Connect Events
         self.Bind(wx.EVT_SIZE, self.on_size)
-        self.btnAllDiscount.Bind( wx.EVT_BUTTON, self.on_btn_alldiscount )
-        self.btnDishesDiscount.Bind( wx.EVT_BUTTON, self.on_btn_dishes_discount )
-        self.btnFree.Bind( wx.EVT_BUTTON, self.on_btn_free_order )
-        self.btnPrevPrint.Bind( wx.EVT_BUTTON, self.on_btn_prev_print )
-        self.btnCheck.Bind( wx.EVT_BUTTON, self.on_btn_checkout )
-        self.btnExit.Bind( wx.EVT_BUTTON, self.on_btn_exit )
+        self.btnAllDiscount.Bind(wx.EVT_BUTTON, self.on_btn_alldiscount)
+        self.btnDishesDiscount.Bind(wx.EVT_BUTTON, self.on_btn_dishes_discount)
+        self.btnFree.Bind(wx.EVT_BUTTON, self.on_btn_free_order)
+        self.btnPrevPrint.Bind(wx.EVT_BUTTON, self.on_btn_prev_print)
+        self.btnCheck.Bind(wx.EVT_BUTTON, self.on_btn_checkout)
+        self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
 
     def __del__(self):
         pass
@@ -526,7 +534,7 @@ class WgtCheckout ( wx.Panel ):
         # Add event listener
         #EvtManager.add_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
 
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
         self.GetParent().SetTitle(u"结算")
@@ -550,7 +558,7 @@ class WgtCheckout ( wx.Panel ):
         self.btnExit.SetMaxSize(wx.Size(60, 60))
         self.m_topPanel.SetMaxSize(wx.Size(x, 60))
         self.m_dishesViewPanel.SetMinSize(wx.Size(x-300, y-60-220))
-        self.m_dataViewDishes.SetMinSize(wx.Size(x-300, y-60-220))
+        self.dataViewList.SetMinSize(wx.Size(x-300, y-60-220))
         self.m_checkViewPanel.SetMinSize(wx.Size(x-300, 210))
         self.m_dataViewCheckout.SetMinSize(wx.Size(x-300, 210))
 
@@ -571,7 +579,7 @@ class WgtCheckout ( wx.Panel ):
 
     def on_btn_exit( self, event ):
         event.Skip()
-        AppManager.switch_to_application('FrontPage')
+        AppManager.get_instance().switch_to_application('FrontPage')
 
 
 if __name__ == '__main__':

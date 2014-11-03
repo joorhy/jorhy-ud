@@ -9,6 +9,8 @@
 ###########################################################################
 from app.home_logic import CtrlHomePage
 from app.app_manager import AppManager
+from app.front.logic.ctrl import *
+from app.front.logic.model import ModelOrderedDishes
 
 import wx
 import wx.xrc
@@ -71,16 +73,17 @@ class WgtOrderDishes ( wx.Panel ):
 
         m_dataViewSizer = wx.BoxSizer( wx.VERTICAL )
 
-        self.m_dataViewCtrl = wx.dataview.DataViewListCtrl( self.m_dataViewPanel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 400,520 ), 0 )
-        self.m_dataViewListColumn16 = self.m_dataViewCtrl.AppendTextColumn( u"行号" )
-        self.m_dataViewListColumn17 = self.m_dataViewCtrl.AppendTextColumn( u"菜品名称" )
-        self.m_dataViewListColumn18 = self.m_dataViewCtrl.AppendTextColumn( u"规格" )
-        self.m_dataViewListColumn19 = self.m_dataViewCtrl.AppendTextColumn( u"单位" )
-        self.m_dataViewListColumn21 = self.m_dataViewCtrl.AppendTextColumn( u"数量" )
-        self.m_dataViewListColumn20 = self.m_dataViewCtrl.AppendTextColumn( u"退菜量" )
-        self.m_dataViewListColumn22 = self.m_dataViewCtrl.AppendTextColumn( u"价格" )
-        self.m_dataViewListColumn24 = self.m_dataViewCtrl.AppendTextColumn( u"实际金额" )
-        m_dataViewSizer.Add( self.m_dataViewCtrl, 0, 0, 5 )
+        self.dataViewList = wx.dataview.DataViewCtrl(self.m_dataViewPanel, wx.ID_ANY, wx.DefaultPosition,
+                                                     wx.Size(400, 520), 0)
+        self.m_dataViewListColumn16 = self.dataViewList.AppendTextColumn(u"行号", 0)
+        self.m_dataViewListColumn17 = self.dataViewList.AppendTextColumn(u"菜品名称", 1)
+        self.m_dataViewListColumn18 = self.dataViewList.AppendTextColumn(u"规格", 2)
+        self.m_dataViewListColumn19 = self.dataViewList.AppendTextColumn(u"单位", 3)
+        self.m_dataViewListColumn21 = self.dataViewList.AppendTextColumn(u"数量", 4)
+        self.m_dataViewListColumn20 = self.dataViewList.AppendTextColumn(u"退菜量", 5)
+        self.m_dataViewListColumn22 = self.dataViewList.AppendTextColumn(u"价格", 6)
+        self.m_dataViewListColumn24 = self.dataViewList.AppendTextColumn(u"实际金额", 7)
+        m_dataViewSizer.Add(self.dataViewList, 0, 0, 5)
 
 
         self.m_dataViewPanel.SetSizer( m_dataViewSizer )
@@ -173,90 +176,21 @@ class WgtOrderDishes ( wx.Panel ):
         m_dishesSizer = wx.BoxSizer( wx.HORIZONTAL )
 
         self.m_dishesListPanel = wx.Panel( self.m_dieshesPanel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 322,370 ), wx.STATIC_BORDER|wx.TAB_TRAVERSAL )
-        m_dishesListSizer = wx.BoxSizer( wx.VERTICAL )
 
-        bSizer45 = wx.BoxSizer( wx.HORIZONTAL )
+        self.btnDishesUp = None
+        self.btnDishesDown = None
 
-        bSizer45.SetMinSize( wx.Size( 230,-1 ) )
-        self.m_button50 = wx.Button( self.m_dishesListPanel, wx.ID_ANY, u"肥肠煲", wx.DefaultPosition, wx.Size( 80,80 ), 0 )
-        bSizer45.Add( self.m_button50, 0, 0, 5 )
-
-        self.m_button51 = wx.Button( self.m_dishesListPanel, wx.ID_ANY, u"话梅扣猪手", wx.DefaultPosition, wx.Size( 80,80 ), 0 )
-        bSizer45.Add( self.m_button51, 0, 0, 5 )
-
-        self.m_button52 = wx.Button( self.m_dishesListPanel, wx.ID_ANY, u"酷辣馋嘴蛙", wx.DefaultPosition, wx.Size( 80,80 ), 0 )
-        bSizer45.Add( self.m_button52, 0, 0, 5 )
-
-        self.m_button501 = wx.Button( self.m_dishesListPanel, wx.ID_ANY, u"清蒸小鸡", wx.DefaultPosition, wx.Size( 80,80 ), 0 )
-        bSizer45.Add( self.m_button501, 0, 0, 5 )
-
-
-        m_dishesListSizer.Add( bSizer45, 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-        m_dishesListSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-
-        bSizer50 = wx.BoxSizer( wx.HORIZONTAL )
-
-        self.btnDishesUp = wx.Button( self.m_dishesListPanel, wx.ID_ANY, u"上一页", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.btnDishesUp.SetMinSize( wx.Size( 150,-1 ) )
-
-        bSizer50.Add( self.btnDishesUp, 0, wx.ALIGN_BOTTOM, 5 )
-
-
-        bSizer50.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-
-        self.btnDishesDown = wx.Button( self.m_dishesListPanel, wx.ID_ANY, u"下一页", wx.DefaultPosition, wx.DefaultSize, 0 )
-        self.btnDishesDown.SetMinSize( wx.Size( 150,-1 ) )
-
-        bSizer50.Add( self.btnDishesDown, 0, wx.ALIGN_BOTTOM, 5 )
-
-
-        m_dishesListSizer.Add( bSizer50, 1, wx.EXPAND, 5 )
-
-
-        self.m_dishesListPanel.SetSizer( m_dishesListSizer )
         self.m_dishesListPanel.Layout()
-        m_dishesSizer.Add( self.m_dishesListPanel, 1, 0, 5 )
+        m_dishesSizer.Add(self.m_dishesListPanel, 1, 0, 5)
 
-        self.m_dishesTypePanel = wx.Panel( self.m_dieshesPanel, wx.ID_ANY, wx.DefaultPosition, wx.Size( 55,370 ), wx.STATIC_BORDER|wx.TAB_TRAVERSAL )
-        m_dishesTypeSizer = wx.BoxSizer( wx.VERTICAL )
+        self.m_dishesTypePanel = wx.Panel(self.m_dieshesPanel, wx.ID_ANY, wx.DefaultPosition, wx.Size(55, 370),
+                                          wx.STATIC_BORDER | wx.TAB_TRAVERSAL)
 
-        self.m_button43 = wx.Button( self.m_dishesTypePanel, wx.ID_ANY, u"^", wx.DefaultPosition, wx.Size( 60,25 ), 0 )
-        m_dishesTypeSizer.Add( self.m_button43, 0, 0, 5 )
+        self.btnTypeUp = None
+        self.btnTypeDown = None
 
-        self.m_button44 = wx.Button( self.m_dishesTypePanel, wx.ID_ANY, u"荤菜", wx.DefaultPosition, wx.Size( 60,50 ), 0 )
-        m_dishesTypeSizer.Add( self.m_button44, 0, 0, 5 )
-
-        self.m_button45 = wx.Button( self.m_dishesTypePanel, wx.ID_ANY, u"素菜", wx.DefaultPosition, wx.Size( 60,50 ), 0 )
-        m_dishesTypeSizer.Add( self.m_button45, 0, 0, 5 )
-
-        self.m_button46 = wx.Button( self.m_dishesTypePanel, wx.ID_ANY, u"酒水", wx.DefaultPosition, wx.Size( 60,50 ), 0 )
-        m_dishesTypeSizer.Add( self.m_button46, 0, 0, 5 )
-
-        self.m_button47 = wx.Button( self.m_dishesTypePanel, wx.ID_ANY, u"点心", wx.DefaultPosition, wx.Size( 60,50 ), 0 )
-        m_dishesTypeSizer.Add( self.m_button47, 0, 0, 5 )
-
-        self.m_button48 = wx.Button( self.m_dishesTypePanel, wx.ID_ANY, u"文本菜类", wx.DefaultPosition, wx.Size( 60,50 ), 0 )
-        m_dishesTypeSizer.Add( self.m_button48, 0, 0, 5 )
-
-
-        m_dishesTypeSizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
-
-        self.m_button49 = wx.Button( self.m_dishesTypePanel, wx.ID_ANY, u"v", wx.DefaultPosition, wx.Size( 60,25 ), 0 )
-        m_dishesTypeSizer.Add( self.m_button49, 0, 0, 5 )
-
-
-        self.m_dishesTypePanel.SetSizer( m_dishesTypeSizer )
         self.m_dishesTypePanel.Layout()
-        m_dishesSizer.Add( self.m_dishesTypePanel, 1, wx.EXPAND, 5 )
+        m_dishesSizer.Add(self.m_dishesTypePanel, 1, wx.EXPAND, 5)
 
 
         self.m_dieshesPanel.SetSizer( m_dishesSizer )
@@ -279,38 +213,47 @@ class WgtOrderDishes ( wx.Panel ):
 
         # Connect Events
         self.Bind(wx.EVT_SIZE, self.on_size)
-        self.btnDeleteDishes.Bind( wx.EVT_BUTTON, self.on_btn_delete_dishes )
-        self.btnSeat.Bind( wx.EVT_BUTTON, self.on_btn_seat )
-        self.btnPrintOrder.Bind( wx.EVT_BUTTON, self.on_btn_print_order )
-        self.btnCheck.Bind( wx.EVT_BUTTON, self.on_btn_check_order )
-        self.btnPlaceOrder.Bind( wx.EVT_BUTTON, self.on_btn_place_order )
-        self.btnExit.Bind( wx.EVT_BUTTON, self.on_btn_exit )
-        self.btnAddNun.Bind( wx.EVT_BUTTON, self.on_btn_add_num )
-        self.btnDelNum.Bind( wx.EVT_BUTTON, self.on_btn_del_num )
-        self.btnModNum.Bind( wx.EVT_BUTTON, self.on_btn_mod_num )
-        self.btnDemand.Bind( wx.EVT_BUTTON, self.on_btn_demand )
-        self.m_button501.Bind( wx.EVT_BUTTON, self.on_btn_dishes )
-        self.btnDishesUp.Bind( wx.EVT_BUTTON, self.on_btn_dishes_up )
-        self.btnDishesDown.Bind( wx.EVT_BUTTON, self.on_btn_dishes_down )
-        self.m_button43.Bind( wx.EVT_BUTTON, self.on_type_up )
-        self.m_button44.Bind( wx.EVT_BUTTON, self.on_btn_type )
-        self.m_button49.Bind( wx.EVT_BUTTON, self.on_type_down )
+        self.btnDeleteDishes.Bind(wx.EVT_BUTTON, self.on_btn_delete_dishes)
+        self.btnSeat.Bind(wx.EVT_BUTTON, self.on_btn_seat)
+        self.btnPrintOrder.Bind(wx.EVT_BUTTON, self.on_btn_print_order)
+        self.btnCheck.Bind(wx.EVT_BUTTON, self.on_btn_check_order)
+        self.btnPlaceOrder.Bind(wx.EVT_BUTTON, self.on_btn_place_order)
+        self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
+        self.btnAddNun.Bind(wx.EVT_BUTTON, self.on_btn_add_num)
+        self.btnDelNum.Bind(wx.EVT_BUTTON, self.on_btn_del_num)
+        self.btnModNum.Bind(wx.EVT_BUTTON, self.on_btn_mod_num)
+        self.btnDemand.Bind(wx.EVT_BUTTON, self.on_btn_demand)
+
+        self.Bind(wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.on_item_activated, self.dataViewList)
+        self.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_item_changed, self.dataViewList)
+
+        # Create an instance of our model...
+        self.model = ModelOrderedDishes(CtrlOrderInfo.get_instance().get_dishes_items())
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+
+        # initialize
+        self.dishes_page = 0
+        self.dishesBtnMap = dict()
+        self.type_page = 0
+        self.typeBtnMap = dict()
+        self.cur_sel_id = 0
 
     def __del__(self):
         pass
 
     def initialize(self):
         # Add event listener
-        #EvtManager.add_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
+        EvtManager.add_listener(self, EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH, self.on_dishes_items_refresh)
 
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
         self.GetParent().SetTitle(u"点菜")
 
     def un_initialize(self):
         # Remove event listener
-        #EvtManager.remove_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
+        EvtManager.remove_listener(self, EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH, self.on_dishes_items_refresh)
         pass
 
     # Virtual event handlers, override them in your derived class
@@ -326,60 +269,181 @@ class WgtOrderDishes ( wx.Panel ):
         self.btnExit.SetMaxSize(wx.Size(60, 60))
         self.m_topPanel.SetMaxSize(wx.Size(x, 60))
         self.m_dataViewPanel.SetMinSize(wx.Size(x-400, y-60))
-        self.m_dataViewCtrl.SetMinSize(wx.Size(x-400, y-60))
-        self.m_dieshesPanel.SetMinSize(wx.Size(380, y-180))
-        self.m_dishesListPanel.SetMinSize(wx.Size(322, y-180))
+        self.dataViewList.SetMinSize(wx.Size(x-400, y-60))
+        self.m_dieshesPanel.SetMinSize(wx.Size(380, y-240))
+        self.m_dishesListPanel.SetMinSize(wx.Size(325, y-240))
+        self.m_dishesTypePanel.SetMinSize(wx.Size(55, y-240))
 
-    def on_btn_delete_dishes( self, event ):
+        self._show_dishes_buttons(325, y-60-200)
+        self._show_type_buttons(y-60-200)
+
+    def on_btn_delete_dishes(self, event):
+        event.Skip()
+        if self.cur_sel_id > 0:
+            CtrlOrderInfo.get_instance().del_dishes(self.cur_sel_id)
+
+    def on_btn_seat(self, event):
         event.Skip()
 
-    def on_btn_seat( self, event ):
+    def on_btn_print_order(self, event):
         event.Skip()
 
-    def on_btn_print_order( self, event ):
+    def on_btn_check_order(self, event):
+        event.Skip()
+        AppManager.get_instance().switch_to_application('CheckOut')
+
+    def on_btn_place_order(self, event):
         event.Skip()
 
-    def on_btn_check_order( self, event ):
+    def on_btn_exit(self, event):
         event.Skip()
-        AppManager.switch_to_application('CheckOut')
+        AppManager.get_instance().switch_to_application('FrontPage')
 
-    def on_btn_place_order( self, event ):
-        event.Skip()
-
-    def on_btn_exit( self, event ):
-        event.Skip()
-        AppManager.switch_to_application('FrontPage')
-
-    def on_btn_add_num( self, event ):
+    def on_btn_add_num(self, event):
         event.Skip()
 
-    def on_btn_del_num( self, event ):
+    def on_btn_del_num(self, event):
         event.Skip()
 
-    def on_btn_mod_num( self, event ):
+    def on_btn_mod_num(self, event):
         event.Skip()
 
-    def on_btn_demand( self, event ):
+    def on_btn_demand(self, event):
         event.Skip()
 
-    def on_btn_dishes( self, event ):
+    def on_btn_dishes(self, event):
+        event.Skip()
+        CtrlOrderInfo.get_instance().add_dishes(event.GetId())
+
+    def on_btn_dishes_up(self, event):
+        event.Skip()
+        if self.dishes_page > 0:
+            self.dishes_page -= 1
+            x, y = self.GetSize()
+            self._show_dishes_buttons(320, y-60-200)
+
+    def on_btn_dishes_down(self, event):
+        event.Skip()
+        self.dishes_page += 1
+        x, y = self.GetSize()
+        self._show_dishes_buttons(320, y-60-200)
+
+    def on_btn_type(self, event):
         event.Skip()
 
-    def on_btn_dishes_up( self, event ):
+    def on_type_up(self, event):
         event.Skip()
+        if self.type_page > 0:
+            self.type_page -= 1
+            x, y = self.GetSize()
+            self._show_type_buttons(y-60-200)
 
-    def on_btn_dishes_down( self, event ):
+    def on_type_down(self, event):
         event.Skip()
+        self.type_page += 1
+        x, y = self.GetSize()
+        self._show_type_buttons(y-60-200)
 
-    def on_type_up( self, event ):
+    def _show_dishes_buttons(self, x, y):
+        column = x / 80
+        row = (y - 30) / 80
+        start_item_index = column * row * self.dishes_page
+        dishes_items = CtrlDishesInfo.get_instance().get_dishes_items()
+        if start_item_index >= len(dishes_items):
+            self.dishes_page -= 1
+            return
+
+        for (k, v) in self.dishesBtnMap.items():
+            self.Unbind(wx.EVT_BUTTON, v, handler=self.on_btn_dishes)
+            v.Destroy()
+        self.dishesBtnMap.clear()
+
+        try:
+            for i in range(0, row):
+                for j in range(0, column):
+                    index_ = i*column+j
+                    if index_ >= len(dishes_items):
+                        break
+                    item = dishes_items[index_ + start_item_index]
+                    win_id = int(item.dishes_code)
+                    self.dishesBtnMap[win_id] = wx.Button(self.m_dishesListPanel, win_id, item.dishes_name,
+                                                          (j*80, i*80), wx.Size(80, 80))
+                    self.dishesBtnMap[win_id].SetBackgroundColour(wx.CYAN)
+
+                    self.Bind(wx.EVT_BUTTON, self.on_btn_dishes, self.dishesBtnMap[win_id])
+        except:
+            pass
+
+        if self.btnDishesUp is not None:
+            self.btnDishesUp.Destroy()
+        self.btnDishesUp = wx.Button(self.m_dishesListPanel, -1, u"上一页", (0, y-30), wx.Size(150, 30))
+
+        if self.btnDishesDown is not None:
+            self.btnDishesDown.Destroy()
+        self.btnDishesDown = wx.Button(self.m_dishesListPanel, -1, u"下一页", (x-150, y-30), wx.Size(150, 30))
+
+        self.btnDishesUp.Bind(wx.EVT_BUTTON, self.on_btn_dishes_up)
+        self.btnDishesDown.Bind(wx.EVT_BUTTON, self.on_btn_dishes_down)
+
+    def _show_type_buttons(self, y):
+        row = (y - 60) / 50
+        type_items = CtrlDishesInfo.get_instance().get_type_items()
+
+        start_item_index = row * self.type_page
+        if start_item_index >= len(type_items):
+            self.type_page -= 1
+            return
+
+        for (k, v) in self.typeBtnMap.items():
+            self.Unbind(wx.EVT_BUTTON, v, handler=self.on_btn_type)
+            v.Destroy()
+        self.typeBtnMap.clear()
+
+        try:
+            for i in range(0, row):
+                if i >= len(type_items):
+                    break
+
+                item = type_items[i + start_item_index]
+                win_id = item.type_id
+                self.typeBtnMap[win_id] = wx.Button(self.m_dishesTypePanel, win_id, item.type_name,
+                                                    (0, i*50+25), wx.Size(70, 50))
+                self.typeBtnMap[win_id].SetBackgroundColour(wx.YELLOW)
+
+                self.Bind(wx.EVT_BUTTON, self.on_btn_type, self.typeBtnMap[win_id])
+        except:
+            pass
+
+        if self.btnTypeUp is not None:
+            self.btnTypeUp.Destroy()
+        self.btnTypeUp = wx.Button(self.m_dishesTypePanel, -1, u"^", (0, 0), wx.Size(70, 30))
+
+        if self.btnTypeDown is not None:
+            self.btnTypeDown.Destroy()
+        self.btnTypeDown = wx.Button(self.m_dishesTypePanel, -1, u"v", (0, y-30), wx.Size(70, 30))
+
+        self.btnTypeUp.Bind(wx.EVT_BUTTON, self.on_type_up)
+        self.btnTypeDown.Bind(wx.EVT_BUTTON, self.on_type_down)
+
+    def on_dishes_items_refresh(self, event):
         event.Skip()
+        # Refresh data view list
+        result = CtrlOrderInfo.get_instance().get_dishes_items()
+        del self.model.data[0:len(self.model.data)]
+        for new_obj in result:
+            item = self.model.ObjectToItem(new_obj)
+            self.model.data.append(new_obj)
+            self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
 
-    def on_btn_type( self, event ):
+        self.model.Cleared()
+
+    def on_item_activated(self, event):
         event.Skip()
+        print self.model.GetValue(event.GetItem(), 0)
 
-    def on_type_down( self, event ):
+    def on_item_changed(self, event):
         event.Skip()
-
+        self.cur_sel_id = self.model.GetValue(event.GetItem(), 0)
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

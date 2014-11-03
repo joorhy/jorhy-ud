@@ -20,3 +20,5 @@ class EnumEvent(Singleton):
     EVT_PRINTER_SCHEME_REFRESH = wx.NewId()
     # Front page refresh event
     EVT_FRONT_PAGE_REFRESH = wx.NewId()
+    # Order dishes items refresh event
+    EVT_ORDER_DISHES_ITEMS_REFRESH = wx.NewId()

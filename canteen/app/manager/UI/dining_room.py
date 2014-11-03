@@ -75,7 +75,7 @@ class PopAreaSetting (wx.Dialog):
         self._init_ctrl_sizer(sizer)
 
         # Create an instance of our model...
-        self.model = ModelArea(CtrlArea.get_data())
+        self.model = ModelArea(CtrlArea.get_instance().get_data())
 
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -98,9 +98,9 @@ class PopAreaSetting (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlArea.add_item(DataArea())
+        CtrlArea.get_instance().add_item(DataArea())
 
-        data = DataArea(CtrlArea.get_data_len() + 1, CtrlArea.get_id())
+        data = DataArea(CtrlArea.get_instance().get_data_len() + 1, CtrlArea.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -118,7 +118,7 @@ class PopAreaSetting (wx.Dialog):
 
     def on_btn_refresh(self, event):
         event.Skip()
-        result = CtrlArea.get_data()
+        result = CtrlArea.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -198,7 +198,7 @@ class PopMinExpenseSetting(wx.Dialog):
         self.Centre(wx.BOTH)
 
         # Create an instance of our model...
-        self.model = ModelMinExpense(CtrlMinExpense.get_data())
+        self.model = ModelMinExpense(CtrlMinExpense.get_instance().get_data())
         
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -216,9 +216,9 @@ class PopMinExpenseSetting(wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlMinExpense.add_item(DataMinExpense())
+        CtrlMinExpense.get_instance().add_item(DataMinExpense())
         
-        data = DataMinExpense(CtrlMinExpense.get_data_len() + 1, CtrlMinExpense.get_id())
+        data = DataMinExpense(CtrlMinExpense.get_instance().get_data_len() + 1, CtrlMinExpense.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -236,7 +236,7 @@ class PopMinExpenseSetting(wx.Dialog):
     
     def on_btn_refresh(self, event):
         event.Skip()
-        result = CtrlMinExpense.get_data()
+        result = CtrlMinExpense.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -376,17 +376,17 @@ class PopTableBatAdd (wx.Dialog):
         pass
 
     def _initialize_view(self):
-        li_area = CtrlArea.get_data()
+        li_area = CtrlArea.get_instance().get_data()
         for area in li_area:
             self.cbxArea.Append(area.name, area)
         self.cbxArea.SetSelection(0)
 
-        li_table_type = CtrlType.get_data()
+        li_table_type = CtrlType.get_instance().get_data()
         for table_type in li_table_type:
             self.cbxType.Append(table_type.name, table_type)
         self.cbxType.SetSelection(0)
 
-        li_min_expense = CtrlMinExpense.get_data()
+        li_min_expense = CtrlMinExpense.get_instance().get_data()
         for min_expense in li_min_expense:
             self.cbxMinExpense.Append(min_expense.name, min_expense)
         self.cbxMinExpense.SetSelection(0)
@@ -540,21 +540,21 @@ class PopTableInfo (wx.Dialog):
         if self.type == "add":
             self._init_add_view()
         elif self.type == "mod":
-            self.index = CtrlTable.get_cur_item_index()
+            self.index = CtrlTable.get_instance().get_cur_item_index()
             self._init_mod_view()
 
     def _init_add_view(self):
-        li_area = CtrlArea.get_data()
+        li_area = CtrlArea.get_instance().get_data()
         for area in li_area:
             self.cbxArea.Append(area.name, area)
         self.cbxArea.SetSelection(0)
 
-        li_table_type = CtrlType.get_data()
+        li_table_type = CtrlType.get_instance().get_data()
         for table_type in li_table_type:
             self.cbxType.Append(table_type.name, table_type)
         self.cbxType.SetSelection(0)
 
-        li_min_expense = CtrlMinExpense.get_data()
+        li_min_expense = CtrlMinExpense.get_instance().get_data()
         for min_expense in li_min_expense:
             self.cbxMinExpense.Append(min_expense.name, min_expense)
         self.cbxMinExpense.SetSelection(0)
@@ -569,7 +569,7 @@ class PopTableInfo (wx.Dialog):
             self.index = 0
             return
 
-        items = CtrlTable.get_items()
+        items = CtrlTable.get_instance().get_items()
         if self.index >= len(items):
             self.index = len(items) - 1
             return
@@ -580,19 +580,19 @@ class PopTableInfo (wx.Dialog):
         self.txtPeople.SetValue(str(data.people_num))
         self.txtTrack.SetLabel(("%d / %d" % (self.index+1, len(items))))
 
-        li_area = CtrlArea.get_data()
+        li_area = CtrlArea.get_instance().get_data()
         for area in li_area:
             self.cbxArea.Append(area.name, area)
             if area.key == data.area:
                 self.cbxArea.SetSelection(li_area.index(area))
 
-        li_table_type = CtrlType.get_data()
+        li_table_type = CtrlType.get_instance().get_data()
         for table_type in li_table_type:
             self.cbxType.Append(table_type.name, table_type)
             if table_type.key == data.table_type:
                 self.cbxType.SetSelection(li_table_type.index(table_type))
 
-        li_min_expense = CtrlMinExpense.get_data()
+        li_min_expense = CtrlMinExpense.get_instance().get_data()
         for min_expense in li_min_expense:
             self.cbxMinExpense.Append(min_expense.name, min_expense)
             if min_expense.key == data.min_type:
@@ -690,7 +690,7 @@ class PopTypeSetting (wx.Dialog):
         self.Centre(wx.BOTH)
 
         # Create an instance of our model...
-        self.model = ModelType(CtrlType.get_data())
+        self.model = ModelType(CtrlType.get_instance().get_data())
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
 
@@ -707,9 +707,9 @@ class PopTypeSetting (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlType.add_item(DataType())
+        CtrlType.get_instance().add_item(DataType())
         
-        data = DataType(CtrlType.get_data_len() + 1, CtrlType.get_id())
+        data = DataType(CtrlType.get_instance().get_data_len() + 1, CtrlType.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -727,7 +727,7 @@ class PopTypeSetting (wx.Dialog):
     
     def on_btn_refresh(self, event):
         event.Skip()
-        result = CtrlType.get_data()
+        result = CtrlType.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -860,8 +860,8 @@ class WgtDiningTable (wx.Panel):
         self.Centre(wx.BOTH)
         
         # Create an instance of our model...
-        self.model = ModelTable(CtrlTable.get_data())
-        CtrlTable.refresh_items()
+        self.model = ModelTable(CtrlTable.get_instance().get_data())
+        CtrlTable.get_instance().refresh_items()
         
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -892,7 +892,7 @@ class WgtDiningTable (wx.Panel):
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
         
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
@@ -910,7 +910,7 @@ class WgtDiningTable (wx.Panel):
         self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
         
         table_type_map = dict()
-        li_items = CtrlTable.get_items()
+        li_items = CtrlTable.get_instance().get_items()
         for item in li_items:
             if item.table_type in table_type_map:
                 table_type_map[item.table_type].append(item)
@@ -920,7 +920,7 @@ class WgtDiningTable (wx.Panel):
                 table_type_map_tmp = {item.table_type: list_tmp}
                 table_type_map.update(table_type_map_tmp)
         
-        li_table_type = CtrlType.get_data()
+        li_table_type = CtrlType.get_instance().get_data()
         for table_type in li_table_type:
             if table_type.key in table_type_map:
                 title = "%s(%d)" % (table_type.name, len(table_type_map[table_type.key]))
@@ -944,12 +944,12 @@ class WgtDiningTable (wx.Panel):
                 
     def _refresh_ui(self):
         # Refresh treeCtrl
-        CtrlTable.refresh_items()
+        CtrlTable.get_instance().refresh_items()
         self.treeCtrl.DeleteAllItems()
         self._show_tree_ctrl()
         
         # Refresh data view list
-        result = CtrlTable.get_data()
+        result = CtrlTable.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -992,7 +992,7 @@ class WgtDiningTable (wx.Panel):
                     if item_.key == self.tree_data.key:
                         data = item_
             index_ = self.model.data.index(data)
-            CtrlTable.set_cur_item_index(index_)
+            CtrlTable.get_instance().set_cur_item_index(index_)
             pop_table_info = PopTableInfo(self, "mod")
             pop_table_info.ShowModal()
         except:
@@ -1042,8 +1042,8 @@ class WgtDiningTable (wx.Panel):
     def on_btn_exit(self, event):
         event.Skip()
         self.Hide()
-        CtrlHomePage.set_selected_item()
-        AppManager.switch_to_application('HomePage')
+        CtrlHomePage.get_instance().set_selected_item()
+        AppManager.get_instance().switch_to_application('HomePage')
 
     def on_sel_changed(self, event):
         event.Skip()

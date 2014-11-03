@@ -166,7 +166,7 @@ class ModeUPermGroup():
             self.id_ = int(obj.id)
             self.type = obj.vch_type
             self.name = obj.vch_name
-            self.desc = obj.vch_perm_desc
+            self.desc = obj.vch_desc
             self.selected = False
 
 

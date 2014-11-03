@@ -1,0 +1,137 @@
+
+      通讯文档-V4
+=========================
+
+1. 开台 （已更新：把登录验证提出参数对象）
+{{url}}/table/open?para={"tableId":3,"peopleNum":3}&signIn={"username":"root", "password":"root"}
+
+2. 撤台
+{{url}}/table/reset?para={"tableId":3}
+
+3. 点菜下单
+{{url}}/table/order?para={"tableId":3, "orderId":132, "peopleNum":12, "dish":[{"code":10012,"spec":6,"style":0, "num":4, "customizedStyle":"xstyle"},{"code":10013,"spec":8,"style":0, "num":2, "customizedStyle":"xstyle3"},{"code":10011,"spec":9,"style":3, "num":3, "customizedStyle":"xstyle2"}], "signIn":{"username":"root", "password":"root"}}
+
+4. 退菜
+{{url}}/table/dishBack?para={"dishId":555, "dishCode":10012, "number":1, "desc": "有事不想吃" }
+
+5. 加菜
+{{url}}/table/add?para={"orderId": 133, "dish":[{"code":10019,"spec":10,"style":0, "num":1, "customizedStyle":"xstyle"},{"code":10018,"spec":12,"style":0, "num":1, "customizedStyle":"xstyle3"}]}
+
+6. 加载所有
+{{url}}/menu/loadAll
+
+7. 结账
+{{url}}/table/checkOut?para={"tableId":3, "orderId":133}
+
+8. 注册用户 （需验证重复注册）
+{{url}}/user/signup?para={"username":"user2", "password":"pass2", "userType":2, "userDetailsId":1}
+
+9. 用户登录
+{{url}}/user/signin?para={"username":"root", "password":"root"}
+
+
+
+//TODO 20141101
+1.  -> 收银登录
+    -> 列出桌子的状态 (桌子信息；是否已开台；如果已经点菜下单，就把总金额传过来；桌子额定人数与实际人数)
+    -> 开台 （服务员的列表）
+    -> 点菜 （菜品列表；添加菜品所有分类的种类；）
+    -> 结算 （a, b, c）
+
+a. 根据订单号，取得订单详细信息（点的所有菜；消费金额；）
+b. 订单里添加order_code
+c. 添加优惠券；结账分类（现金，银行卡，信用卡，团购）
+
+
+
+
+
+
+
+
+      通讯文档-V3
+=========================
+ 
+1.	开台
+http://localhost:8080/table/open?para={"tableId":3,"signIn":{"username":"root", "password":"root"}}
+//平板发送的数据格式 C-S
+{
+    "tableId": 3,
+    "signIn": {
+        "username": "root",
+        "password": "root"
+    }
+}
+
+2.	点菜 
+http://localhost:8080/table/order?para={"tableId":3, "orderId":80, "peopleNum":12, "dish":[{"code":10012,"spec":6,"style":0, "num":4, "customizedStyle":"xstyle"},{"code":10013,"spec":8,"style":0, "num":2, "customizedStyle":"xstyle3"},{"code":10011,"spec":9,"style":3, "num":3, "customizedStyle":"xstyle2"}], "signIn":{"username":"root", "password":"root"}}
+//C-S
+{
+    "tableId": 3,
+    "orderId": 80,
+    "peopleNum": 12,
+    "dish": [{
+        "code": 10012,
+        "spec": 6,
+        "style": 0,
+        "num": 4,
+        "customizedStyle": "xstyle"
+    }, {
+        "code": 10013,
+        "spec": 8,
+        "style": 0,
+        "num": 2,
+        "customizedStyle": "xstyle3"
+    }, {
+        "code": 10011,
+        "spec": 9,
+        "style": 3,
+        "num": 3,
+        "customizedStyle": "xstyle2"
+    }],
+    "signIn": {
+        "username": "root",
+        "password": "root"
+    }
+}
+
+
+
+3.	退菜
+http://localhost:8080/table/dishBack?para={"dishId":389, "dishCode":10011, "number":1, "desc": "有事不想吃" }
+{
+    "dishId": 389,
+    "dishCode": 10011,
+    "number": 1,
+    "desc": "有事不想吃"
+}
+
+4.	结账 （功能有BUG）
+http://localhost:8080/table/checkOut?para={"tableId":2, "orderId":83}
+//C-S
+{
+    "tableId": 2,
+    "orderId": 83
+}
+
+5.	撤台 （功能有BUG）
+http://localhost:8080/table/reset?para={"tableId":3}
+{
+    "tableId": 3
+}
+
+6.	机器注册 （功能有BUG）
+http://localhost:8080/device/reg?para={"mac":"mac_mac_macaddress", "name":"device's name"}
+{
+    "mac": "mac_mac_macaddress",
+    "name": "device's name"
+}
+
+7. 加载所有
+http://localhost:8080/menu/loadAll
+
+3.	
+3.	
+3.	
+3.	
+

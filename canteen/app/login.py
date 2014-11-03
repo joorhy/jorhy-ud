@@ -8,8 +8,6 @@
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
 from app.home_logic import CtrlHomePage
-from app.manager.logic.ctrl import CtrlManagerLogin
-from app.front.logic.ctrl import CtrlFrontLogin
 from framework.core import EvtManager
 from app.enum_event import EnumEvent
 from app.app_manager import AppManager
@@ -172,7 +170,7 @@ class WgtLogin(wx.Panel):
         EvtManager.add_listener(self, EnumEvent.EVT_LOGIN, self.on_evt_login)
         
         self.GetParent().SetTitle(u"登陆")
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
@@ -268,8 +266,10 @@ class WgtLogin(wx.Panel):
     def on_login(self, event):
         event.Skip()
         if self.app == 'manager':
+            from app.manager.logic.ctrl import CtrlManagerLogin
             CtrlManagerLogin.get_instance().login(self.txtUser.GetValue(), self.txtPassword.GetValue())
         elif self.app == 'front':
+            from app.front.logic.ctrl import CtrlFrontLogin
             CtrlFrontLogin.get_instance().login(self.txtUser.GetValue(), self.txtPassword.GetValue())
         
     def on_set_user_focus(self, event):
@@ -283,14 +283,16 @@ class WgtLogin(wx.Panel):
     def on_evt_login(self, event):
         event.Skip()
         if self.app == 'manager':
+            from app.manager.logic.ctrl import CtrlManagerLogin
             if CtrlManagerLogin.get_instance().get_result():
-                AppManager.switch_to_application('HomePage')
+                AppManager.get_instance().switch_to_application('HomePage')
             else:
                 dlg = wx.MessageDialog(self, u"用户名或密码错误", caption=u"登陆")
                 dlg.ShowModal()
         elif self.app == 'front':
+            from app.front.logic.ctrl import CtrlFrontLogin
             if CtrlFrontLogin.get_instance().get_result():
-                AppManager.switch_to_application('FrontPage')
+                AppManager.get_instance().switch_to_application('FrontPage')
             else:
                 dlg = wx.MessageDialog(self, u"用户名或密码错误", caption=u"登陆")
                 dlg.ShowModal()

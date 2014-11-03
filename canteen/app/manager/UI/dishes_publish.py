@@ -79,7 +79,7 @@ class PopCategorySetting (wx.Dialog):
         self.Centre(wx.BOTH)
         
         # Create an instance of our model...
-        self.model = ModelCategory(CtrlCategory.get_data())
+        self.model = ModelCategory(CtrlCategory.get_instance().get_data())
         
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -97,9 +97,9 @@ class PopCategorySetting (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlCategory.add_item(DataCategory())
+        CtrlCategory.get_instance().add_item(DataCategory())
         
-        data = DataCategory(CtrlCategory.get_data_len() + 1, CtrlCategory.get_id())
+        data = DataCategory(CtrlCategory.get_instance().get_data_len() + 1, CtrlCategory.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -118,7 +118,7 @@ class PopCategorySetting (wx.Dialog):
     def on_btn_refresh(self, event):
         event.Skip()
         
-        result = CtrlCategory.get_data()
+        result = CtrlCategory.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -420,7 +420,7 @@ class PopDishesInfo (wx.Dialog):
         if self.type == "add":
             self._init_add_view()
         elif self.type == "mod":
-            self.index = CtrlDishes.get_cur_item_index()
+            self.index = CtrlDishes.get_instance().get_cur_item_index()
             self._init_mod_view()
 
     def _init_add_view(self):
@@ -436,12 +436,12 @@ class PopDishesInfo (wx.Dialog):
         # Tell the DVC to use the style model
         self.dataViewListStyle.AssociateModel(self.model_style)
 
-        li_unit = CtrlUnit.get_data()
+        li_unit = CtrlUnit.get_instance().get_data()
         for unit in li_unit:
             self.cbxUnit.Append(unit.name, unit)
         self.cbxUnit.SetSelection(0)
 
-        li_category = CtrlCategory.get_data()
+        li_category = CtrlCategory.get_instance().get_data()
         for category in li_category:
             self.cbxCategory.Append(category.name, category)
         self.cbxCategory.SetSelection(0)
@@ -455,7 +455,7 @@ class PopDishesInfo (wx.Dialog):
             self.index = 0
             return
 
-        items = CtrlDishes.get_items()
+        items = CtrlDishes.get_instance().get_items()
         if self.index >= len(items):
             self.index = len(items) - 1
             return
@@ -463,13 +463,13 @@ class PopDishesInfo (wx.Dialog):
         data = items[self.index]
 
         # Create an instance of our specification model...
-        self.model_spec = ModelSpec(CtrlSpec.get_data_by_dish_code(data.code))
+        self.model_spec = ModelSpec(CtrlSpec.get_instance().get_data_by_dish_code(data.code))
 
         # Tell the DVC to use the specification model
         self.dataViewListSpec.AssociateModel(self.model_spec)
 
         # Create an instance of our style model...
-        self.model_style = ModelStyle(CtrlStyle.get_data_by_dish_code(data.code))
+        self.model_style = ModelStyle(CtrlStyle.get_instance().get_data_by_dish_code(data.code))
 
         # Tell the DVC to use the style model
         self.dataViewListStyle.AssociateModel(self.model_style)
@@ -489,13 +489,13 @@ class PopDishesInfo (wx.Dialog):
             img.Rescale(165, 165)
             self.bmpImage.SetBitmap(img.ConvertToBitmap())
 
-        li_unit = CtrlUnit.get_data()
+        li_unit = CtrlUnit.get_instance().get_data()
         for unit in li_unit:
             self.cbxUnit.Append(unit.name, unit)
             if unit.key == data.unit:
                 self.cbxUnit.SetSelection(li_unit.index(unit))
 
-        li_category = CtrlCategory.get_data()
+        li_category = CtrlCategory.get_instance().get_data()
         for category in li_category:
             self.cbxCategory.Append(category.name, category)
             if category.key == data.category:
@@ -530,12 +530,12 @@ class PopDishesInfo (wx.Dialog):
             CtrlDishes.add_item(data)
             for spec_data in self.model_spec.data:
                 data = DataSpec(dish_code=self.txtDishCode.GetValue(), name=spec_data.name, price=spec_data.price)
-                CtrlSpec.add_item(data)
+                CtrlSpec.get_instance().add_item(data)
 
             for style_data in self.model_style.data:
                 data = DataStyle(dish_code=self.txtDishCode.GetValue(), name=style_data.name,
                                  price_add=style_data.price_add, amount_add=style_data.amount_add)
-                CtrlStyle.add_item(data)
+                CtrlStyle.get_instance().add_item(data)
         elif self.type == "mod":
             CtrlDishes.update_item(data)
 
@@ -678,7 +678,7 @@ class PopUnitSetting (wx.Dialog):
         self.Centre(wx.BOTH)
 
         # Create an instance of our model...
-        self.model = ModelUnit(CtrlUnit.get_data())
+        self.model = ModelUnit(CtrlUnit.get_instance().get_data())
         
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -696,9 +696,9 @@ class PopUnitSetting (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlUnit.add_item(DataUnit())
+        CtrlUnit.get_instance().add_item(DataUnit())
 
-        data = DataUnit(CtrlUnit.get_data_len() + 1, CtrlUnit.get_id())
+        data = DataUnit(CtrlUnit.get_instance().get_data_len() + 1, CtrlUnit.get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -716,7 +716,7 @@ class PopUnitSetting (wx.Dialog):
     
     def on_btn_refresh(self, event):
         event.Skip()
-        result = CtrlUnit.get_data()
+        result = CtrlUnit.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -827,8 +827,8 @@ class WgtDishesPublish (wx.Panel):
         self.Centre(wx.BOTH)
         
         # Create an instance of our model...
-        self.model = ModelDishes(CtrlDishes.get_data())
-        CtrlDishes.refresh_items()
+        self.model = ModelDishes(CtrlDishes.get_instance().get_data())
+        CtrlDishes.get_instance().refresh_items()
         
         # Tel the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -858,7 +858,7 @@ class WgtDishesPublish (wx.Panel):
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.on_btn_refresh)
         
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
@@ -876,7 +876,7 @@ class WgtDishesPublish (wx.Panel):
         self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
         
         dishes_map = dict()
-        li_items = CtrlDishes.get_items()
+        li_items = CtrlDishes.get_instance().get_items()
         for item in li_items:
             if item.category in dishes_map:
                 dishes_map[item.category].append(item)
@@ -886,7 +886,7 @@ class WgtDishesPublish (wx.Panel):
                 dishes_map_tmp = {item.category: list_tmp}
                 dishes_map.update(dishes_map_tmp)
         
-        li_category = CtrlCategory.get_data()
+        li_category = CtrlCategory.get_instance().get_data()
         for category in li_category:
             if category.key in dishes_map:
                 title = "%s(%d)" % (category.name, len(dishes_map[category.key]))
@@ -910,12 +910,12 @@ class WgtDishesPublish (wx.Panel):
     
     def _refresh_ui(self):
         # Refresh treeCtrl
-        CtrlDishes.refresh_items()
+        CtrlDishes.get_instance().refresh_items()
         self.treeCtrl.DeleteAllItems()
         self._show_tree_ctrl()
         
         # Refresh data view list
-        result = CtrlDishes.get_data()
+        result = CtrlDishes.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -957,7 +957,7 @@ class WgtDishesPublish (wx.Panel):
                         data = item_
 
             index_ = self.model.data.index(data)
-            CtrlDishes.set_cur_item_index(index_)
+            CtrlDishes.get_instance().set_cur_item_index(index_)
             pop_dishes_info = PopDishesInfo(self, "mod")
             pop_dishes_info.ShowModal()
         except:
@@ -999,8 +999,8 @@ class WgtDishesPublish (wx.Panel):
     def on_btn_exit(self, event):
         event.Skip()
         self.Hide()
-        CtrlHomePage.set_selected_item()
-        AppManager.switch_to_application('HomePage')
+        CtrlHomePage.get_instance().set_selected_item()
+        AppManager.get_instance().switch_to_application('HomePage')
 
     def on_sel_changed(self, event):
         event.Skip()

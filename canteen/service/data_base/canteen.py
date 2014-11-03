@@ -3,7 +3,9 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Tab
 from sqlalchemy.orm import relationship
 from service.data_base.sql_manager import SqlManager
 
-Base = SqlManager.base_model
+#sqlacodegen mysql://root:123456@localhost/canteen --outfile 1101.py
+
+Base = SqlManager.get_instance().base_model
 metadata = Base.metadata
 
 
@@ -55,7 +57,6 @@ class DishPublish(Base):
     vch_name = Column(String(45))
     vch_code = Column(String(45), nullable=False)
     vch_spell = Column(String(45))
-    num_default_price = Column(Integer)
     vch_picname = Column(String(45))
     num_style_id = Column(ForeignKey(u'dish_style.id'), index=True)
     num_spec_id = Column(ForeignKey(u'dish_spec.id'), index=True)
@@ -68,6 +69,7 @@ class DishPublish(Base):
     num_recommend = Column(Integer)
     ch_disabled = Column(String(1))
     ch_is_print = Column(String(1))
+    vch_dish_intro = Column(String(100))
 
     dish_category = relationship(u'DishCategory')
     num_printer_scheme = relationship(u'PrinterScheme')
@@ -83,7 +85,6 @@ class DishPublishLog(Base):
     vch_name = Column(String(45))
     vch_code = Column(String(45), nullable=False)
     vch_spell = Column(String(45))
-    num_default_price = Column(Float)
     vch_picname = Column(String(45))
     num_style_id = Column(Integer)
     num_spec_id = Column(Integer)
@@ -96,6 +97,8 @@ class DishPublishLog(Base):
     num_recommend = Column(Integer)
     vch_customized_style = Column(String(100))
     num_dish_withdraw_id = Column(ForeignKey(u'dish_publish_log_withdraw.id'), index=True)
+    num_dish_num = Column(Integer)
+    vch_dish_intro = Column(String(100))
 
     num_dish_withdraw = relationship(u'DishPublishLogWithdraw')
 
@@ -104,6 +107,8 @@ class DishPublishLogWithdraw(Base):
     __tablename__ = 'dish_publish_log_withdraw'
 
     id = Column(Integer, primary_key=True)
+    num_number = Column(Integer)
+    dt_date = Column(DateTime)
     vch_desc = Column(String(45))
 
 
@@ -169,10 +174,11 @@ class PrinterScheme(Base):
     num_valid = Column(Integer)
     num_scheme_type = Column(ForeignKey(u'printer_scheme_type.id'), index=True)
     num_print_count = Column(Integer)
-    num_backup_scheme_id = Column(Integer)
+    num_backup_scheme_id = Column(ForeignKey(u'printer_scheme.id'), index=True)
     num_produced_count = Column(Integer, server_default=text("'1'"))
     vch_code = Column(String(45))
 
+    num_backup_scheme = relationship(u'PrinterScheme', remote_side=[id])
     printer_scheme_type = relationship(u'PrinterSchemeType')
 
 
@@ -232,6 +238,7 @@ class TableBook(Base):
     num_table_id = Column(ForeignKey(u'table_info.id'), index=True)
     ch_openflag = Column(String(1))
     num_consumers = Column(Integer)
+    vch_memo = Column(String(45))
 
     num_table = relationship(u'TableInfo')
 
@@ -253,7 +260,6 @@ class TableDish(Base):
     id = Column(Integer, primary_key=True)
     num_batch_id = Column(Integer, nullable=False, index=True)
     num_dish_publish_log_id = Column(ForeignKey(u'dish_publish_log.id'), index=True)
-    num_dish_num = Column(Integer)
 
     num_dish_publish_log = relationship(u'DishPublishLog')
 
@@ -312,6 +318,9 @@ class TableOrder(Base):
     num_open_user_id = Column(ForeignKey(u'u_userinfo.id'), index=True)
     num_table_book_id = Column(ForeignKey(u'table_book.id'), index=True)
     num_table_dish_batch_id = Column(Integer)
+    num_discount_rate = Column(Float)
+    num_discount_amount = Column(Float)
+    vch_code = Column(String(45))
 
     num_open_user = relationship(u'UUserinfo')
     num_table_book = relationship(u'TableBook')
@@ -328,16 +337,17 @@ class UPermGroup(Base):
     __tablename__ = 'u_perm_group'
 
     id = Column(Integer, primary_key=True)
-    vch_name = Column(String(45))
     vch_type = Column(String(1))
-    vch_perm_desc = Column(String(45))
+    vch_name = Column(String(45))
+    vch_desc = Column(String(45))
 
     u_perm_lists = relationship(u'UPermList', secondary='u_perm_group_has_u_perm_list')
+    u_userinfos = relationship(u'UUserinfo', secondary='u_userinfo_has_u_perm_group')
 
 
 t_u_perm_group_has_u_perm_list = Table(
     'u_perm_group_has_u_perm_list', metadata,
-    Column('u_perm_group_id', ForeignKey(u'u_perm_group.id', ondelete=u'CASCADE'), primary_key=True, nullable=False, index=True),
+    Column('u_perm_group_id', ForeignKey(u'u_perm_group.id'), primary_key=True, nullable=False, index=True),
     Column('u_perm_list_id', ForeignKey(u'u_perm_list.id'), primary_key=True, nullable=False, index=True)
 )
 
@@ -351,18 +361,20 @@ class UPermList(Base):
     vch_name = Column(String(45))
 
 
+class UPermission(Base):
+    __tablename__ = 'u_permission'
+
+    id = Column(Integer, primary_key=True)
+    num_batch_id = Column(Integer)
+    num_perm_code = Column(Integer)
+    vch_perm_desc = Column(String(45))
+
+
 class UScheduleOndutyType(Base):
     __tablename__ = 'u_schedule_onduty_type'
 
     id = Column(Integer, primary_key=True)
     num_name = Column(String(45))
-
-
-class UType(Base):
-    __tablename__ = 'u_type'
-
-    id = Column(Integer, primary_key=True)
-    vch_name = Column(String(45))
 
 
 class UUserLeave(Base):
@@ -426,7 +438,6 @@ class UUserinfo(Base):
     num_user_type = Column(Integer)
     num_userdetails_id = Column(ForeignKey(u'u_userdetails.id'), index=True)
 
-    u_perm_groups = relationship(u'UPermGroup', secondary='u_userinfo_has_u_perm_group')
     num_userdetails = relationship(u'UUserdetail')
 
 

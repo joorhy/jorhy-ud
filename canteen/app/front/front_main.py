@@ -8,6 +8,6 @@ import wx
 CONFIG.useTemp = True
 
 app = wx.App()
-AppManager.initialize()
-AppManager.switch_to_application('Login', 'front')
+AppManager.get_instance().initialize()
+AppManager.get_instance().switch_to_application('Login', 'front')
 app.MainLoop()

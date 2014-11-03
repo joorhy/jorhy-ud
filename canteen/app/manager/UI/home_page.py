@@ -288,10 +288,10 @@ class WgtHomePage (wx.Panel):
 
     # Override function, initialize user interface
     def initialize(self):
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
-        select_item = CtrlHomePage.get_selected_item()
+        select_item = CtrlHomePage.get_instance().get_selected_item()
         self._show_func_widget(select_item)
 
     # Override function un initialize user interface
@@ -311,32 +311,32 @@ class WgtHomePage (wx.Panel):
 
     def on_dining_room_setting(self, event):
         event.Skip()
-        CtrlHomePage.set_selected_item(0)
+        CtrlHomePage.get_instance().set_selected_item(0)
         self._show_func_widget(0)
 
     def on_dishes_publishing(self, event):
         event.Skip()
-        CtrlHomePage.set_selected_item(1)
+        CtrlHomePage.get_instance().set_selected_item(1)
         self._show_func_widget(1)
 
     def on_employee_manager(self, event):
         event.Skip()
-        CtrlHomePage.set_selected_item(2)
+        CtrlHomePage.get_instance().set_selected_item(2)
         self._show_func_widget(2)
 
     def on_printer_setting(self, event):
         event.Skip()
-        CtrlHomePage.set_selected_item(3)
+        CtrlHomePage.get_instance().set_selected_item(3)
         self._show_func_widget(3)
 
     def on_report_forms(self, event):
         event.Skip()
-        CtrlHomePage.set_selected_item(4)
+        CtrlHomePage.get_instance().set_selected_item(4)
         self._show_func_widget(4)
 
     def on_system_setting(self, event):
         event.Skip()
-        CtrlHomePage.set_selected_item(5)
+        CtrlHomePage.get_instance().set_selected_item(5)
         self._show_func_widget(5)
 
     def on_modify_password(self, event):
@@ -346,22 +346,22 @@ class WgtHomePage (wx.Panel):
 
     def on_func_1(self, event):
         event.Skip()
-        select_item = CtrlHomePage.get_selected_item()
-        AppManager.set_app_title(li_func_title_1[select_item])
+        select_item = CtrlHomePage.get_instance().get_selected_item()
+        AppManager.get_instance().set_app_title(li_func_title_1[select_item])
         self._set_screen_tile()
         if select_item != 5:
-            AppManager.switch_to_application(li_func_widget_1[select_item])
+            AppManager.get_instance().switch_to_application(li_func_widget_1[select_item])
         else:
             pop_company = PopCompany(self)
             pop_company.ShowModal()
 
     def on_func_2(self, event):
         event.Skip()
-        select_item = CtrlHomePage.get_selected_item()
-        AppManager.set_app_title(li_func_title_2[select_item])
+        select_item = CtrlHomePage.get_instance().get_selected_item()
+        AppManager.get_instance().set_app_title(li_func_title_2[select_item])
         self._set_screen_tile()
         if select_item != 5:
-            AppManager.switch_to_application(li_func_widget_2[select_item])
+            AppManager.get_instance().switch_to_application(li_func_widget_2[select_item])
         else:
             pop_register = PopRegister(self)
             pop_register.ShowModal()
@@ -387,10 +387,10 @@ class WgtHomePage (wx.Panel):
         self._hide_all_func_buttons()
         (self.li_buttons[index]).Enabled = False
         if get_func_number(index) == 1:
-            AppManager.set_app_title(li_func_title_1[index])
-            AppManager.switch_to_application(li_func_widget_1[index])
+            AppManager.get_instance().set_app_title(li_func_title_1[index])
+            AppManager.get_instance().switch_to_application(li_func_widget_1[index])
         else:
-            AppManager.set_app_title(li_title[index])
+            AppManager.get_instance().set_app_title(li_title[index])
             self._show_function_buttons(index)
 
         self._set_screen_tile()
@@ -424,7 +424,7 @@ class WgtHomePage (wx.Panel):
         self.btnFunc_6.Hide()    
 
     def _show_func_buttons(self):
-        select_item = CtrlHomePage.get_selected_item()  
+        select_item = CtrlHomePage.get_instance().get_selected_item()
         self.func_num = get_func_number(select_item)
             
         x, y = self.GetSize()
@@ -435,7 +435,7 @@ class WgtHomePage (wx.Panel):
             self.di_funcButtons[i].SetSize(wx.Size(100, 100))
 
     def _set_screen_tile(self):
-        self.GetParent().SetTitle(AppManager.get_app_title())
+        self.GetParent().SetTitle(AppManager.get_instance().get_app_title())
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

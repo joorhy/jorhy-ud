@@ -43,7 +43,7 @@ class MainScreen (wx.Frame):
     def on_size(self, event):
         event.Skip()
         x, y = self.GetClientSize()
-        CtrlHomePage.set_screen_size(x, y)
+        CtrlHomePage.get_instance().set_screen_size(x, y)
         if self.panel is not None:
             self.panel.SetSize(wx.Size(x, y))
         

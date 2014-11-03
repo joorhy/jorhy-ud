@@ -78,7 +78,7 @@ class PopDepartment (wx.Dialog):
         self.Centre(wx.BOTH)
         
         # Create an instance of our model...
-        self.model = ModelDepartment(CtrlDepartment.get_data())
+        self.model = ModelDepartment(CtrlDepartment.get_instance().get_data())
         
         # Tel the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -96,9 +96,9 @@ class PopDepartment (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_new(self, event):
         event.Skip()
-        CtrlDepartment.add_item(DataDepartment(0, 0, ""))
+        CtrlDepartment.get_instance().add_item(DataDepartment(0, 0, ""))
         
-        data = DataDepartment(CtrlDepartment.get_data_len() + 1, CtrlDepartment.get_id(), "")
+        data = DataDepartment(CtrlDepartment.get_instance().get_data_len() + 1, CtrlDepartment.get_id(), "")
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -116,7 +116,7 @@ class PopDepartment (wx.Dialog):
     
     def on_btn_refresh(self, event):
         event.Skip()
-        result = CtrlDepartment.get_data()
+        result = CtrlDepartment.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -466,11 +466,11 @@ class PopEmployee (wx.Dialog):
         if self.type == "add":
             self._init_add_view()
         elif self.type == "mod":
-            self.index = CtrlEmployee.get_cur_item_index()
+            self.index = CtrlEmployee.get_instance().get_cur_item_index()
             self._init_mod_view()
             
     def _init_add_view(self):
-        li_department = CtrlDepartment.get_data()
+        li_department = CtrlDepartment.get_instance().get_data()
         for dept in li_department:
             self.cbxDepartment.Append(dept.name, dept)
         self.cbxDepartment.SetSelection(0)
@@ -479,7 +479,7 @@ class PopEmployee (wx.Dialog):
         self.radioBtnOnDuty.SetValue(True)
 
         # Create an instance of our model...
-        self.model = ModelUserRole(CtrlUserRole.get_data())
+        self.model = ModelUserRole(CtrlUserRole.get_instance().get_data())
 
         # Tell the DVC to use the model
         self.dataViewRole.AssociateModel(self.model)
@@ -490,14 +490,14 @@ class PopEmployee (wx.Dialog):
             self.index = 0
             return
         
-        items = CtrlEmployee.get_items()
+        items = CtrlEmployee.get_instance().get_items()
         if self.index >= len(items):
             self.index = len(items) - 1
             return
         
         data = items[self.index]
         # Create an instance of our model...
-        self.model = ModelUserRole(CtrlUserRole.get_data_by_user(data))
+        self.model = ModelUserRole(CtrlUserRole.get_instance().get_data_by_user(data))
 
         # Tell the DVC to use the model
         self.dataViewRole.AssociateModel(self.model)
@@ -528,7 +528,7 @@ class PopEmployee (wx.Dialog):
         birth_day = wx.DateTimeFromDMY(data.birthday.day, data.birthday.month - 1, data.birthday.year)
         self.dateBirthDay.SetValue(birth_day)
 
-        li_department = CtrlDepartment.get_data()
+        li_department = CtrlDepartment.get_instance().get_data()
         for dept in li_department:
             self.cbxDepartment.Append(dept.name, dept)
             if dept.key == data.department:
@@ -681,12 +681,12 @@ class PopPermission (wx.Dialog):
         if self.type == "add":
             self._init_add_view()
         elif self.type == "mod":
-            self.index = CtrlUserRole.get_cur_item_index()
+            self.index = CtrlUserRole.get_instance().get_cur_item_index()
             self._init_mod_view()
 
     def _init_add_view(self):
         # Create an instance of our model...
-        self.model = ModelPermList(CtrlPermList.get_data())
+        self.model = ModelPermList(CtrlPermList.get_instance().get_data())
 
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -697,7 +697,7 @@ class PopPermission (wx.Dialog):
             self.index = 0
             return
 
-        items = CtrlUserRole.get_data()
+        items = CtrlUserRole.get_instance().get_data()
         if self.index >= len(items):
             self.index = len(items) - 1
             return
@@ -705,7 +705,7 @@ class PopPermission (wx.Dialog):
         data = items[self.index]
         self.perm_id = data.key
         # Create an instance of our model...
-        self.model = ModelPermList(CtrlPermList.get_data_by_group(data))
+        self.model = ModelPermList(CtrlPermList.get_instance().get_data_by_group(data))
 
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -739,7 +739,7 @@ class PopPermission (wx.Dialog):
                             self.txtRoleDesc.GetValue())
 
         if self.type == "add":
-            CtrlUserRole.add_item(data, self.model.data)
+            CtrlUserRole.get_instance().add_item(data, self.model.data)
         elif self.type == "mod":
             CtrlUserRole.update_item(data, self.model.data)
 
@@ -832,8 +832,8 @@ class WgtEmployee (wx.Panel):
         self.Centre(wx.BOTH)
 
         # Create an instance of our model...
-        self.model = ModelEmployee(CtrlEmployee.get_data())
-        CtrlEmployee.refresh_items()
+        self.model = ModelEmployee(CtrlEmployee.get_instance().get_data())
+        CtrlEmployee.get_instance().refresh_items()
         
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -861,7 +861,7 @@ class WgtEmployee (wx.Panel):
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_EMPLOYEE_REFRESH, self.on_btn_refresh)
         
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
@@ -879,7 +879,7 @@ class WgtEmployee (wx.Panel):
         self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
         
         department_map = dict()
-        li_items = CtrlEmployee.get_items()
+        li_items = CtrlEmployee.get_instance().get_items()
         for item in li_items:
             if item.department in department_map:
                 department_map[item.department].append(item)
@@ -889,7 +889,7 @@ class WgtEmployee (wx.Panel):
                 department_map_tmp = {item.department: list_tmp}
                 department_map.update(department_map_tmp)
         
-        li_department = CtrlDepartment.get_data()
+        li_department = CtrlDepartment.get_instance().get_data()
         for dept in li_department:
             if dept.key in department_map:
                 title = "%s(%d)" % (dept.name, len(department_map[dept.key]))
@@ -913,12 +913,12 @@ class WgtEmployee (wx.Panel):
         
     def _refresh_ui(self):
         # Refresh treeCtrl
-        CtrlEmployee.refresh_items()
+        CtrlEmployee.get_instance().refresh_items()
         self.treeCtrl.DeleteAllItems()
         self._show_tree_ctrl()
         
         # Refresh data view list
-        result = CtrlEmployee.get_data()
+        result = CtrlEmployee.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -958,7 +958,7 @@ class WgtEmployee (wx.Panel):
                     if item_.key == self.tree_data.key:
                         data = item_
             index = self.model.data.index(data)
-            CtrlEmployee.set_cur_item_index(index)
+            CtrlEmployee.get_instance().set_cur_item_index(index)
             pop_employee = PopEmployee(self, "mod")
             pop_employee.ShowModal()
         except:
@@ -992,7 +992,7 @@ class WgtEmployee (wx.Panel):
     def on_btn_exit(self, event):
         event.Skip()
         self.Hide()
-        AppManager.switch_to_application('HomePage')
+        AppManager.get_instance().switch_to_application('HomePage')
 
     def on_sel_changed(self, event):
         event.Skip()
@@ -1087,8 +1087,8 @@ class WgtPermission (wx.Panel):
         self.Centre(wx.BOTH)
 
         # Create an instance of our model...
-        self.model = ModelUserRole(CtrlUserRole.get_data())
-        CtrlTable.refresh_items()
+        self.model = ModelUserRole(CtrlUserRole.get_instance().get_data())
+        CtrlUserRole.get_instance().refresh_items()
 
         # Tell the DVC to use the model
         self.dataViewList.AssociateModel(self.model)
@@ -1115,7 +1115,7 @@ class WgtPermission (wx.Panel):
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_PERMISSION_REFRESH, self.on_btn_refresh)
 
-        x, y = CtrlHomePage.get_screen_size()
+        x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
 
     def un_initialize(self):
@@ -1132,7 +1132,7 @@ class WgtPermission (wx.Panel):
         self.treeCtrl.SetItemImage(self.root, tree_image.folder_idx, wx.TreeItemIcon_Normal)
         self.treeCtrl.SetItemImage(self.root, tree_image.folder_open_idx, wx.TreeItemIcon_Expanded)
 
-        li_role = CtrlUserRole.get_data()
+        li_role = CtrlUserRole.get_instance().get_data()
         for group_type in li_group_type:
             child = self.treeCtrl.AppendItem(self.root, group_type)
             self.treeCtrl.SetPyData(child, None)
@@ -1157,12 +1157,12 @@ class WgtPermission (wx.Panel):
 
     def _refresh_ui(self):
         # Refresh treeCtrl
-        CtrlUserRole.refresh_items()
+        CtrlUserRole.get_instance().refresh_items()
         self.treeCtrl.DeleteAllItems()
         self._show_tree_ctrl()
 
         # Refresh data view list
-        result = CtrlUserRole.get_data()
+        result = CtrlUserRole.get_instance().get_data()
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
             item = self.model.ObjectToItem(new_obj)
@@ -1201,7 +1201,7 @@ class WgtPermission (wx.Panel):
                     if item_.key == self.tree_data.key:
                         data = item_
             index_ = self.model.data.index(data)
-            CtrlUserRole.set_cur_item_index(index_)
+            CtrlUserRole.get_instance().set_cur_item_index(index_)
             pop_permission = PopPermission(self, "mod")
             pop_permission.ShowModal()
         except:
@@ -1232,7 +1232,7 @@ class WgtPermission (wx.Panel):
     def on_btn_exit(self, event):
         event.Skip()
         self.Hide()
-        AppManager.switch_to_application('HomePage')
+        AppManager.get_instance().switch_to_application('HomePage')
 
     def on_sel_changed(self, event):
         event.Skip()

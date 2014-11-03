@@ -4,7 +4,7 @@ from service.data_base.mode import *
 
 
 def get_id(type_):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     result = None
     if type_ == 'AreaInfo':
         result = session.query(TableInfoArea.id).all()
@@ -34,7 +34,7 @@ def get_id(type_):
 
 
 def get_all(type_):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     session.flush()
     session.commit()
 
@@ -107,7 +107,7 @@ def add_item(type_, data):
     if data is None:
         return
 
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     item = None
     if type_ == 'AreaInfo':
         item = TableInfoArea()
@@ -162,13 +162,15 @@ def add_item(type_, data):
         item = PrinterScheme()
 
         item.vch_name = data.name
-        item.num_valid = data.valid
+        item.num_valid = 1 if data.valid else 0
         item.num_scheme_type = data.scheme_type
         item.num_print_count = data.print_count
-        item.num_backup_scheme_id = data.backup
+        if data.backup is not None:
+            item.num_backup_scheme_id = data.backup
         item.vch_code = data.code
     elif type_ == 'TableInfo':
         item = TableInfo()
+        item.vch_code = ''
         item.vch_name = data.name
         item.num_type = data.table_type
         item.num_area = data.area
@@ -184,7 +186,7 @@ def delete_item(type_, data):
     if data is None:
         return
 
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     if type_ == 'AreaInfo':
         session.query(TableInfoArea).filter(TableInfoArea.id == data.key).delete()
     elif type_ == 'CategoryInfo':
@@ -224,7 +226,7 @@ def update_item(type_, data):
     if data is None:
         return
 
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     if type_ == 'AreaInfo':
         session.query(TableInfoArea).filter(TableInfoArea.id == data.key).\
             update({TableInfoArea.vch_name: data.name})
@@ -294,7 +296,7 @@ def update_print_scheme(data):
     if not data:
         return
 
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     session.query(DishPublish).filter(DishPublish.id == data.key) \
         .update({DishPublish.num_printer_scheme_id: data.printer_scheme,
                  DishPublish.ch_is_print: data.is_print})
@@ -303,7 +305,7 @@ def update_print_scheme(data):
 
 
 def get_spec_by_dish_code(dish_code):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     session.flush()
     session.commit()
 
@@ -316,7 +318,7 @@ def get_spec_by_dish_code(dish_code):
 
 
 def delete_spec_by_dish_code(dish_code):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     session.query(DishSpec).filter(DishSpec.vch_dish_code == dish_code).delete()
 
     session.flush()
@@ -324,7 +326,7 @@ def delete_spec_by_dish_code(dish_code):
 
 
 def get_style_by_dish_code(dish_code):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     session.flush()
     session.commit()
 
@@ -337,7 +339,7 @@ def get_style_by_dish_code(dish_code):
 
 
 def delete_style_by_dish_code(dish_code):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     session.query(DishStyle).filter(DishStyle.vch_dish_code == dish_code).delete()
 
     session.flush()
@@ -345,11 +347,11 @@ def delete_style_by_dish_code(dish_code):
 
 
 def add_role_info(data, li_perm_list):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     perm_group = UPermGroup()
     perm_group.vch_type = data.type
     perm_group.vch_name = data.name
-    perm_group.vch_perm_desc = data.desc
+    perm_group.vch_desc = data.desc
 
     for perm in li_perm_list:
         if perm.selected:
@@ -362,11 +364,11 @@ def add_role_info(data, li_perm_list):
 
 
 def update_role_info(data, li_perm_list):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     perm_group = session.query(UPermGroup).filter(UPermGroup.id == data.key).one()
     #perm_group.vch_type = data.type
     perm_group.vch_name = data.name
-    perm_group.vch_perm_desc = data.desc
+    perm_group.vch_desc = data.desc
 
     for perm in li_perm_list:
         if perm.selected:
@@ -379,7 +381,7 @@ def update_role_info(data, li_perm_list):
 
 
 def get_perm_by_group(group):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     li_perm = session.query(UPermList).all()
     result = session.query(UPermGroup).filter(UPermGroup.id == group.key).one()
     data = list()
@@ -393,7 +395,7 @@ def get_perm_by_group(group):
 
 
 def add_user_info(data, li_perm_group):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     details = UUserdetail()
     details.vch_realname = data.name
     details.vch_englishname = ''
@@ -431,7 +433,7 @@ def add_user_info(data, li_perm_group):
 
 
 def update_user_info(data, li_perm_group):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     session.query(UUserinfo).filter(UUserinfo.id == data.key).update({UUserinfo.vch_name: data.code})
 
     detail_id = session.query(UUserinfo.num_userdetails_id).filter(UUserinfo.id == data.key).all()
@@ -462,7 +464,7 @@ def update_user_info(data, li_perm_group):
 
 
 def get_group_by_user(user):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     li_group = session.query(UPermGroup).all()
     result = session.query(UUserinfo).filter(UUserinfo.id == user.key).one()
     data = list()
@@ -476,7 +478,7 @@ def get_group_by_user(user):
 
 
 def get_password_by_user_name(user_name):
-    session = SqlManager.session
+    session = SqlManager.get_instance().session
     pass_word = session.query(UUserinfo.vch_psw).filter(UUserinfo.vch_name == user_name).one()
 
     return pass_word[0]

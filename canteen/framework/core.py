@@ -63,8 +63,8 @@ class BrevityCode():
     def __init__(self):
         pass
 
-    @classmethod
-    def multi_get_letter(cls, str_input):
+    @staticmethod
+    def multi_get_letter(str_input):
         if isinstance(str_input, unicode): 
             unicode_str = str_input 
         else: 
@@ -138,9 +138,12 @@ class MyEvent(wx.PyEvent):
 evt_map = dict()
 
 
-class EvtManager(Singleton):
-    @classmethod
-    def add_listener(cls, win, evt_id, func):
+class EvtManager():
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def add_listener(win, evt_id, func):
         win.Connect(-1, -1, evt_id, func)    
         if evt_id in evt_map:
             evt_map[evt_id].append(win)
@@ -150,12 +153,12 @@ class EvtManager(Singleton):
             evt_map_tmp = {evt_id: list_tmp}
             evt_map.update(evt_map_tmp)
             
-    @classmethod
-    def remove_listener(cls, win, evt_id, func):
+    @staticmethod
+    def remove_listener(win, evt_id, func):
         pass
     
-    @classmethod
-    def dispatch_event(cls, evt_id, evt_data=""):
+    @staticmethod
+    def dispatch_event(evt_id, evt_data=""):
         if evt_id in evt_map:
             for item in evt_map[evt_id]:
                 wx.PostEvent(item, MyEvent(evt_id, evt_data))
