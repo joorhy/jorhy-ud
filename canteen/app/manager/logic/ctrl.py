@@ -12,10 +12,12 @@ class CtrlManagerLogin():
         self.check_result = False
         self.user = '0000'
         self.password = '0000'
+        self.img_path = ''
 
-    def initialize(self, user, password):
+    def initialize(self, user, password, img_path):
         self.user = user
         self.password = password
+        self.img_path = img_path
 
     def login(self, user, password):
         try:
@@ -30,6 +32,9 @@ class CtrlManagerLogin():
 
     def get_result(self):
         return self.check_result
+
+    def get_image_path(self):
+        return self.img_path
 
 
 @Singleton
@@ -369,6 +374,10 @@ class CtrlSpec():
         if isinstance(data, DataSpec):
             update_item('SpecInfo', data)
 
+    @staticmethod
+    def has_spec(spec_id):
+        return is_has_spec(spec_id)
+
 
 @Singleton
 class CtrlStyle():
@@ -423,6 +432,10 @@ class CtrlStyle():
         if isinstance(data, DataStyle):
             update_item('StyleInfo', data)
 
+    @staticmethod
+    def has_style(style_id):
+        return is_has_style(style_id)
+
 
 @Singleton
 class CtrlUnit():
@@ -453,12 +466,12 @@ class CtrlUnit():
             self.data_len += 1
             
     @staticmethod
-    def delete_item(cls, data):
+    def delete_item(data):
         if isinstance(data, DataUnit):
             delete_item('UnitInfo', data)
             
     @staticmethod
-    def update_item(cls, data):
+    def update_item(data):
         if isinstance(data, DataUnit):
             update_item('UnitInfo', data)
 

@@ -14,6 +14,7 @@ class AppManager():
     def initialize(self):
         if self.mainScreen is None:
             self.mainScreen = MainScreen(None)
+            #self.mainScreen.ShowFullScreen(True)
             self.mainScreen.Show(True)
             self.mainScreen.Center()
 
@@ -29,6 +30,9 @@ class AppManager():
             #self.panel = None
 
     def switch_to_application(self, wgt, app=""):
+        if wgt == "":
+            return
+
         if self.panel is not None:
             self.panel.Hide()
             self.panel = None

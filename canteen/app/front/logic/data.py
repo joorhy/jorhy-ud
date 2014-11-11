@@ -16,8 +16,17 @@ class DataTableItem():
         self.table_type = ""
         self.table_area = ""
         self.is_open = False
+        self.open_time = ""
+        self.waiter = ""
         self.people_num = 0
+        self.customer_num = 0
+        self.deposit = ""
+        self.memo = ""
         self.amount = None
+        self.is_selected = False
+        self.order_id = None
+        self.order_num = ""
+        self.operator = ""
 
 
 class DataTypeItem():
@@ -31,28 +40,38 @@ class DataDishesItem():
         self.dishes_id = -1
         self.dishes_code = -1
         self.dishes_name = ""
-        self.dishes_spec = ""
-        self.dishes_unit = ""
+        self.dishes_spec = None
+        self.dishes_unit = None
+        self.dishes_style = None
+        self.dishes_type = 0
+        self.dishes_brevity = ""
 
 
 class DataOrderDishesItem():
     def __init__(self):
-        self.dishes_code = -1
+        self.dishes_code = 0
         self.dishes_count = 0
 
 
 class DataOrderItem():
     def __init__(self):
         self.order_num = 0
+        self.order_money = 0
         self.order_status = 0
         self.di_order_dishes_items = dict()
 
 
 class DataOrderedDishesItem():
     def __init__(self):
+        self.dishes_code = ''
         self.dishes_name = ""
         self.dishes_spec = ""
+        self.dishes_spec_id = 0
+        self.dishes_style_id = 0
+        self.customer_demand = ""
         self.dishes_unit = ""
         self.dishes_count = 0
+        self.dishes_amount = 0
+        self.dishes_real_amount = 0
 
 

@@ -438,6 +438,7 @@ class UUserinfo(Base):
     num_user_type = Column(Integer)
     num_userdetails_id = Column(ForeignKey(u'u_userdetails.id'), index=True)
 
+    u_perm_groups = relationship(u'UPermGroup', secondary='u_userinfo_has_u_perm_group')
     num_userdetails = relationship(u'UUserdetail')
 
 

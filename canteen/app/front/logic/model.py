@@ -143,11 +143,13 @@ class ModelOrderedDishes(wx.dataview.PyDataViewModel):
             mapper = {0: self.data.index(node) + 1,
                       1: node.dishes_name,
                       2: node.dishes_spec,
-                      3: node.dishes_unit,
+                      3: node.dishes_unit['vch_name'],
                       4: node.dishes_count,
                       5: "",
-                      6: "",
-                      7: ""}
+                      6: node.dishes_amount,
+                      7: node.dishes_real_amount,
+                      8: node.dishes_real_amount - node.dishes_real_amount,
+                      9: ''}
             return mapper[col]
 
         else:

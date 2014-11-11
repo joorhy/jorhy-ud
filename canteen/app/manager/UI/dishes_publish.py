@@ -19,6 +19,10 @@ import wx
 import wx.xrc
 import wx.dataview
 
+import os
+import time
+import shutil
+
 ###########################################################################
 ## Class PopCategorySetting
 ###########################################################################
@@ -99,7 +103,7 @@ class PopCategorySetting (wx.Dialog):
         event.Skip()
         CtrlCategory.get_instance().add_item(DataCategory())
         
-        data = DataCategory(CtrlCategory.get_instance().get_data_len() + 1, CtrlCategory.get_id())
+        data = DataCategory(CtrlCategory.get_instance().get_data_len() + 1, CtrlCategory.get_instance().get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -111,7 +115,7 @@ class PopCategorySetting (wx.Dialog):
             data = self.model.ItemToObject(item)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlCategory.delete_item(data)
+            CtrlCategory.get_instance().delete_item(data)
         except:
             print 'PopCategorySetting on_btn_delete error'
     
@@ -130,7 +134,7 @@ class PopCategorySetting (wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         for data in self.model.data:
-            CtrlCategory.update_item(data)
+            CtrlCategory.get_instance().update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -142,11 +146,11 @@ class PopCategorySetting (wx.Dialog):
 
 # This is how you pre-establish a file filter so that the dialog
 # only shows the extension(s) you want it to.
-wildcard = "bitmap image (*.bmp)|*.bmp|"    \
-           "png image (*.png)|*.png|"         \
+wildcard = "bitmap image (*.png)|*.png|"   ''' \
+           "png image (*.bmp)|*.bmp|"         \
            "jpg image (*.jpg)|*.jpg|"         \
-           "jpeg image (*.jpeg)|*.jpeg|"      \
-           "All files (*.*)|*.*"
+           "jpeg image (*.jpeg)|*.jpeg|"      \'
+           "All files (*.*)|*.*"'''
 
 
 class PopDishesInfo (wx.Dialog):
@@ -485,7 +489,8 @@ class PopDishesInfo (wx.Dialog):
         if data.image_url == "":
             self.bmpImage.SetBitmap(wx.NullBitmap)
         else:
-            img = wx.Image(data.image_url, wx.BITMAP_TYPE_ANY)
+            dishes_img_url = CtrlManagerLogin.get_instance().get_image_path() + "/" + data.image_url
+            img = wx.Image(dishes_img_url, wx.BITMAP_TYPE_ANY)
             img.Rescale(165, 165)
             self.bmpImage.SetBitmap(img.ConvertToBitmap())
 
@@ -527,7 +532,7 @@ class PopDishesInfo (wx.Dialog):
                           self.cbxStop.GetValue(),
                           self.image_url, "")
         if self.type == "add":
-            CtrlDishes.add_item(data)
+            CtrlDishes.get_instance().add_item(data)
             for spec_data in self.model_spec.data:
                 data = DataSpec(dish_code=self.txtDishCode.GetValue(), name=spec_data.name, price=spec_data.price)
                 CtrlSpec.get_instance().add_item(data)
@@ -537,16 +542,23 @@ class PopDishesInfo (wx.Dialog):
                                  price_add=style_data.price_add, amount_add=style_data.amount_add)
                 CtrlStyle.get_instance().add_item(data)
         elif self.type == "mod":
-            CtrlDishes.update_item(data)
+            CtrlDishes.get_instance().update_item(data)
 
             for spec_data in self.model_spec.data:
-                data = DataSpec(dish_code=self.txtDishCode.GetValue(), name=spec_data.name, price=spec_data.price)
-                CtrlSpec.update_item(data)
+                data = DataSpec(key=spec_data.key, dish_code=self.txtDishCode.GetValue(), name=spec_data.name,
+                                price=spec_data.price)
+                if CtrlSpec.get_instance().has_spec(spec_data.key):
+                    CtrlSpec.get_instance().update_item(data)
+                else:
+                    CtrlSpec.get_instance().add_item(data)
 
             for style_data in self.model_style.data:
-                data = DataStyle(dish_code=self.txtDishCode.GetValue(), name=style_data.name,
+                data = DataStyle(key=style_data.key, dish_code=self.txtDishCode.GetValue(), name=style_data.name,
                                  price_add=style_data.price_add, amount_add=style_data.amount_add)
-                CtrlStyle.update_item(data)
+                if CtrlStyle.get_instance().has_style(style_data.key):
+                    CtrlStyle.get_instance().update_item(data)
+                else:
+                    CtrlStyle.get_instance().add_item(data)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -556,7 +568,7 @@ class PopDishesInfo (wx.Dialog):
         event.Skip()
         dlg = wx.FileDialog(
             self, message=u"选择图片",
-            defaultDir="E:",    # os.getcwd()
+            defaultDir=os.getcwd(),
             defaultFile="",
             wildcard=wildcard,
             style=wx.OPEN | wx.CHANGE_DIR)
@@ -566,9 +578,13 @@ class PopDishesInfo (wx.Dialog):
         if dlg.ShowModal() == wx.ID_OK:
             # This returns a Python list of files that were selected.
             paths = dlg.GetPath()
-            self.image_url = paths
+            src_img_url = paths
+            img_name = time.strftime('img%Y%m%d%H%M%S') + ".png"
+            dst_img_url = CtrlManagerLogin.get_instance().get_image_path() + "/" + img_name
+            shutil.copyfile(src_img_url, dst_img_url)
 
-            img = wx.Image(self.image_url, wx.BITMAP_TYPE_ANY)
+            self.image_url = img_name
+            img = wx.Image(dst_img_url, wx.BITMAP_TYPE_ANY)
             img.Rescale(165, 165)
             self.bmpImage.SetBitmap(img.ConvertToBitmap())
 
@@ -592,7 +608,7 @@ class PopDishesInfo (wx.Dialog):
             data = self.model_spec.ItemToObject(item)
             self.model_spec.data.remove(data)
             self.dataViewListSpec.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlSpec.delete_item(data)
+            CtrlSpec.get_instance().delete_item(data)
         except:
             print 'PopDishesInfo on_btn_delete_spec error'
 
@@ -611,7 +627,7 @@ class PopDishesInfo (wx.Dialog):
             data = self.model_style.ItemToObject(item)
             self.model_style.data.remove(data)
             self.dataViewListStyle.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlStyle.delete_item(data)
+            CtrlStyle.get_instance().delete_item(data)
         except:
             print 'PopDishesInfo on_btn_delete_style error'
 
@@ -698,7 +714,7 @@ class PopUnitSetting (wx.Dialog):
         event.Skip()
         CtrlUnit.get_instance().add_item(DataUnit())
 
-        data = DataUnit(CtrlUnit.get_instance().get_data_len() + 1, CtrlUnit.get_id())
+        data = DataUnit(CtrlUnit.get_instance().get_data_len() + 1, CtrlUnit.get_instance().get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -710,7 +726,7 @@ class PopUnitSetting (wx.Dialog):
             data = self.model.ItemToObject(item)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlUnit.delete_item(data)
+            CtrlUnit.get_instance().delete_item(data)
         except:
             print 'PopUnitSetting on_btn_delete error'
     
@@ -728,7 +744,7 @@ class PopUnitSetting (wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         for data in self.model.data:
-            CtrlUnit.update_item(data)
+            CtrlUnit.get_instance().update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -976,9 +992,9 @@ class WgtDishesPublish (wx.Panel):
 
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlDishes.delete_item(data)
-            CtrlSpec.delete_item_by_dish_code(data.code)
-            CtrlStyle.delete_item_by_dish_code(data.code)
+            CtrlDishes.get_instance().delete_item(data)
+            CtrlSpec.get_instance().delete_item_by_dish_code(data.code)
+            CtrlStyle.get_instance().delete_item_by_dish_code(data.code)
         except:
             print 'WgtDishesPublish: on_btn_delete error'
     

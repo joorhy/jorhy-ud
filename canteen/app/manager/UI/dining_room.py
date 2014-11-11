@@ -100,7 +100,7 @@ class PopAreaSetting (wx.Dialog):
         event.Skip()
         CtrlArea.get_instance().add_item(DataArea())
 
-        data = DataArea(CtrlArea.get_instance().get_data_len() + 1, CtrlArea.get_id())
+        data = DataArea(CtrlArea.get_instance().get_data_len() + 1, CtrlArea.get_instance().get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -112,7 +112,7 @@ class PopAreaSetting (wx.Dialog):
             data = self.model.ItemToObject(item)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlArea.delete_item(data)
+            CtrlArea.get_instance().delete_item(data)
         except:
             print 'PopAreaSetting on_btn_delete error'
 
@@ -130,7 +130,7 @@ class PopAreaSetting (wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         for data in self.model.data:
-            CtrlArea.update_item(data)
+            CtrlArea.get_instance().update_item(data)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -218,7 +218,7 @@ class PopMinExpenseSetting(wx.Dialog):
         event.Skip()
         CtrlMinExpense.get_instance().add_item(DataMinExpense())
         
-        data = DataMinExpense(CtrlMinExpense.get_instance().get_data_len() + 1, CtrlMinExpense.get_id())
+        data = DataMinExpense(CtrlMinExpense.get_instance().get_data_len() + 1, CtrlMinExpense.get_instance().get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -230,7 +230,7 @@ class PopMinExpenseSetting(wx.Dialog):
             data = self.model.ItemToObject(item)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlMinExpense.delete_item(data)
+            CtrlMinExpense.get_instance().delete_item(data)
         except:
             print 'PopMinExpenseSetting on_btn_delete error'
     
@@ -248,7 +248,7 @@ class PopMinExpenseSetting(wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         for data in self.model.data:
-            CtrlMinExpense.update_item(data)
+            CtrlMinExpense.get_instance().update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -401,7 +401,7 @@ class PopTableBatAdd (wx.Dialog):
         i_to = int(self.txtTo.GetValue())
         i_people_num = int(self.txtPeopleNum.GetValue())
         for index_ in range(i_from, i_to + 1):
-            CtrlTable.add_item(DataTable(0, 0, ("餐桌%d" % index_), table_type.key, area.key,
+            CtrlTable.get_instance().add_item(DataTable(0, 0, ("餐桌%d" % index_), table_type.key, area.key,
                                          i_people_num, min_expense.key))
 
     def on_btn_exit(self, event):
@@ -622,9 +622,9 @@ class PopTableInfo (wx.Dialog):
                          int(self.txtPeople.GetValue()),
                          min_expense.key)
         if self.type == "add":
-            CtrlTable.add_item(data)
+            CtrlTable.get_instance().add_item(data)
         elif self.type == "mod":
-            CtrlTable.update_item(data)
+            CtrlTable.get_instance().update_item(data)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -709,7 +709,7 @@ class PopTypeSetting (wx.Dialog):
         event.Skip()
         CtrlType.get_instance().add_item(DataType())
         
-        data = DataType(CtrlType.get_instance().get_data_len() + 1, CtrlType.get_id())
+        data = DataType(CtrlType.get_instance().get_data_len() + 1, CtrlType.get_instance().get_id())
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -721,7 +721,7 @@ class PopTypeSetting (wx.Dialog):
             data = self.model.ItemToObject(item)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlType.delete_item(data)
+            CtrlType.get_instance().delete_item(data)
         except:
             print 'PopTypeSetting on_btn_delete error'
     
@@ -739,7 +739,7 @@ class PopTypeSetting (wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         for data in self.model.data:
-            CtrlType.update_item(data)
+            CtrlType.get_instance().update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -1011,7 +1011,7 @@ class WgtDiningTable (wx.Panel):
 
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlTable.delete_item(data)
+            CtrlTable.get_instance().delete_item(data)
         except:
             print 'WgtDiningTable: on_btn_delete error'
     

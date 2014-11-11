@@ -98,7 +98,8 @@ class PopDepartment (wx.Dialog):
         event.Skip()
         CtrlDepartment.get_instance().add_item(DataDepartment(0, 0, ""))
         
-        data = DataDepartment(CtrlDepartment.get_instance().get_data_len() + 1, CtrlDepartment.get_id(), "")
+        data = DataDepartment(CtrlDepartment.get_instance().get_data_len() + 1,
+                              CtrlDepartment.get_instance().get_id(), "")
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -110,7 +111,7 @@ class PopDepartment (wx.Dialog):
             data = self.model.ItemToObject(item)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlDepartment.delete_item(data)
+            CtrlDepartment.get_instance().delete_item(data)
         except:
             print 'PopDepartment on_btn_delete error'
     
@@ -128,7 +129,7 @@ class PopDepartment (wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         for data in self.model.data:
-            CtrlDepartment.update_item(data)
+            CtrlDepartment.get_instance().update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -563,9 +564,9 @@ class PopEmployee (wx.Dialog):
                             self.txtNote.GetValue())
         
         if self.type == "add":
-            CtrlEmployee.add_item(data, self.model.data)
+            CtrlEmployee.get_instance().add_item(data, self.model.data)
         elif self.type == "mod":
-            CtrlEmployee.update_item(data)
+            CtrlEmployee.get_instance().update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -741,7 +742,7 @@ class PopPermission (wx.Dialog):
         if self.type == "add":
             CtrlUserRole.get_instance().add_item(data, self.model.data)
         elif self.type == "mod":
-            CtrlUserRole.update_item(data, self.model.data)
+            CtrlUserRole.get_instance().update_item(data, self.model.data)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -957,8 +958,8 @@ class WgtEmployee (wx.Panel):
                 for item_ in self.model.data:
                     if item_.key == self.tree_data.key:
                         data = item_
-            index = self.model.data.index(data)
-            CtrlEmployee.get_instance().set_cur_item_index(index)
+            index_ = self.model.data.index(data)
+            CtrlEmployee.get_instance().set_cur_item_index(index_)
             pop_employee = PopEmployee(self, "mod")
             pop_employee.ShowModal()
         except:
@@ -976,7 +977,7 @@ class WgtEmployee (wx.Panel):
                         data = item_
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlEmployee.delete_item(data)
+            CtrlEmployee.get_instance().delete_item(data)
         except:
             print 'WgtEmployee: on_btn_delete error'
     
@@ -1221,7 +1222,7 @@ class WgtPermission (wx.Panel):
             if data.type == '0':
                 self.model.data.remove(data)
                 self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-                CtrlUserRole.delete_item(data)
+                CtrlUserRole.get_instance().delete_item(data)
         except:
             print 'WgtPermission: on_btn_delete error'
 

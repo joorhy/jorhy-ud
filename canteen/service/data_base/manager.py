@@ -243,7 +243,6 @@ def update_item(type_, data):
                     DishStyle.num_priceadd: float(data.price_add),
                     DishStyle.ch_mountadd: data.amount_add})
     elif type_ == 'MinExpenseInfo':
-        print float(data.price)
         session.query(TableInfoMinexpense).filter(TableInfoMinexpense.id == data.key) \
             .update({TableInfoMinexpense.vch_name: data.name, TableInfoMinexpense.num_amount: float(data.price)})
     elif type_ == 'SchemeTypeInfo':
@@ -260,20 +259,16 @@ def update_item(type_, data):
                      UPermList.vch_pcode: data.p_code,
                      UPermList.vch_name: data.name})
     elif type_ == 'DishInfo':
-        session.query(DishPublish).filter(DishPublish.id == data[0]) \
-            .update({DishPublish.num_code: data.code,
+        session.query(DishPublish).filter(DishPublish.id == data.key) \
+            .update({DishPublish.vch_code: data.code,
                      DishPublish.vch_name: data.name,
                      DishPublish.vch_spell: data.spell,
-                     DishPublish.num_spec_id: data.spec,
                      DishPublish.num_category: data.category,
-                     DishPublish.num_default_price: data.price,
                      DishPublish.num_unit: data.unit,
-                     DishPublish.num_style_id: data.style,
-                     DishPublish.num_ticheng: data.commisssion,
+                     DishPublish.num_ticheng: data.commission,
                      DishPublish.num_discount: data.discount,
-                     DishPublish.vch_picname: data.image_url,
-                     DishPublish.item.ch_disabled: data.stop,
-                     DishPublish.num_printer_scheme_id: data.printer_scheme})
+                     DishPublish.ch_disabled: data.stop,
+                     DishPublish.vch_picname: data.image_url})
     elif type_ == 'PrintSchemeInfo':
         session.query(PrinterScheme).filter(PrinterScheme.id == data.key).\
             update({PrinterScheme.vch_name: data.name,
@@ -281,12 +276,12 @@ def update_item(type_, data):
                     PrinterScheme.num_scheme_type: data.scheme_type,
                     PrinterScheme.num_print_count: data.print_count})
     elif type_ == 'TableInfo':
-        session.query(TableInfo).filter(TableInfo.id == data[0]) \
+        session.query(TableInfo).filter(TableInfo.id == data.key) \
             .update({TableInfo.vch_name: data.name,
                      TableInfo.num_type: data.table_type,
                      TableInfo.num_area: data.area,
                      TableInfo.num_people_amount: data.people_num,
-                     TableInfo.num_minexpense_type: data.min_type})
+                     TableInfo.num_minexpense_id: data.min_type})
 
     session.flush()
     session.commit()
@@ -302,6 +297,16 @@ def update_print_scheme(data):
                  DishPublish.ch_is_print: data.is_print})
     session.flush()
     session.commit()
+
+
+def is_has_spec(spec_id):
+    session = SqlManager.get_instance().session
+    session.flush()
+    session.commit()
+    result = session.query(DishSpec).filter(DishSpec.id == spec_id).all()
+    if len(result) == 0:
+        return False
+    return True
 
 
 def get_spec_by_dish_code(dish_code):
@@ -323,6 +328,16 @@ def delete_spec_by_dish_code(dish_code):
 
     session.flush()
     session.commit()
+
+
+def is_has_style(style_id):
+    session = SqlManager.get_instance().session
+    session.flush()
+    session.commit()
+    result = session.query(DishStyle).filter(DishStyle.id == style_id).all()
+    if len(result) == 0:
+        return False
+    return True
 
 
 def get_style_by_dish_code(dish_code):
@@ -425,7 +440,7 @@ def add_user_info(data, li_perm_group):
     for group in li_perm_group:
         if group.selected:
             perm_group = session.query(UPermGroup).filter(UPermGroup.id == group.key).one()
-            user_info.u_perm_groups.append(perm_group)
+            user_info.u_perm_lists.append(perm_group)
 
     session.add(user_info)
     session.flush()

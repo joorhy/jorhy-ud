@@ -1,0 +1,102 @@
+
+        通讯文档
+
+           updated:2014-11-09
+===============================
+
+--------[测试]--------
+1. 测试网络链接是否正常
+{{url}}/test
+
+--------[菜单]--------
+1. 加载所有
+{{url}}/menu/loadAll
+
+2. 菜品列表，销售情况
+{{url}}/menu/sellInfo
+
+3. 菜品所有分类
+{{url}}/menu/category
+
+--------[桌子]--------
+1. 开台 （已更新：把登录验证提出参数对象）
+{{url}}/table/open?para={"tableId":3,"peopleNum":3}&signIn={"username":"root", "password":"root"}
+
+2. 撤台
+{{url}}/table/reset?para={"tableId":3}
+
+3. 点菜下单 (删除多余的 -> "peopleNum":12)  (删除多余的 -> "signIn":{})
+{{url}}/table/order?para={"tableId":3, "orderId":132, "dish":[{"code":10012,"spec":6,"style":0, "num":4, "customizedStyle":"xstyle"},{"code":10013,"spec":8,"style":0, "num":2, "customizedStyle":"xstyle3"},{"code":10011,"spec":9,"style":3, "num":3, "customizedStyle":"xstyle2"}], "signIn":{"username":"root", "password":"root"}}
+
+4. 退菜
+{{url}}/table/dishBack?para={"dishId":555, "dishCode":10012, "number":1, "desc": "有事不想吃" }
+
+5. 加菜
+{{url}}/table/add?para={"orderId": 133, "dish":[{"code":10019,"spec":10,"style":0, "num":1, "customizedStyle":"xstyle"},{"code":10018,"spec":12,"style":0, "num":1, "customizedStyle":"xstyle3"}]}
+
+6. 结账
+{{url}}/table/checkOut?para={"tableId":3, "orderId":133}
+
+7. 所有桌子状态
+{{url}}/table/allStatus
+
+{{url}}/order/consumption?para={"orderId": 146}‘
+
+--------[用户]--------
+1. 注册用户 
+{{url}}/user/signup?para={"username":"user2", "password":"pass2", "userType":2, "userDetailsId":1}
+
+2. 用户登录
+{{url}}/user/signin?para={"username":"root", "password":"root"}
+
+3. 取得用户信息（基本信息+详细信息）
+{{url}}/user/allInfo
+
+4. 取得所有服务员列表
+{{url}}/user/waiters
+
+--------[设备]--------
+1. 注册设备
+{{url}}/device/reg?para={"mac":"xx", "name":"name"}
+
+
+
+//***********************************************//
+//TODO         数据库修改记录
+//***********************************************//
+
+20141108
+table_order:
+    添加备注 num_discount_amount -> 订单减免金额
+    添加字段 num_checkout_type -> 结账方式：现金，银行卡，信用卡，团购，优惠券
+
+
+
+//***********************************************//
+//TODO         待办事项
+//***********************************************//
+
+20141109
+1. 注册机器码
+2. 下载文件
+3. 加菜 返回和点菜一样的
+
+20141101
+1.  -> 收银登录 -ok
+    -> 列出桌子的状态<table/allStatus> (桌子信息；是否已开台；如果已经点菜下单，就把总金额传过来；桌子额定人数与实际人数) -ok
+    -> 开台 （服务员的列表）  -ok
+    -> 点菜 （菜品列表，销售情况<menu/sellInfo>；添加菜品所有分类的种类<menu/category>；） -ok
+    -> 结算 （a, b, c）
+
+a. 根据订单号，取得订单详细信息（点的所有菜；消费金额；) -ok
+b. 订单里添加order_code -OK
+c. 添加优惠券；结账分类（现金，银行卡，信用卡，团购）
+d. 需要 收银端 发来具体参数信息（打折，优惠，减免之类的）
+
+2. 和CK剩下的消息都走完 什么注册平板机器码这些 提前预告一下。添加机器码（还有待更新）
+3. 开台，人数不能为零！ -ok
+4. 未结账的订单，能否撤台？
+5. 统计菜品销售情况（bug: 还需要添加退菜的情况！）
+6. 打印相应格式的信息 （已经能够打印，但不清楚什么时候调用打印功能！） -ok
+
+

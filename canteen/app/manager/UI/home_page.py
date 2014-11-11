@@ -103,10 +103,10 @@ class PopPassword (wx.Dialog):
 li_func_widget_1 = ['DiningTable', 'DishesPublish', 'Employee', 'PrinterScheme', '', 'Company']
 li_func_widget_2 = ['', '', 'UserPermission', 'SchemeRelated', '', 'Register']
 
-li_title = [u"餐厅设置", u"菜品发布", u"员工管理", u"打印设置", u"报表中心", u"系统设置"]
+li_title = [u"餐厅管理", u"菜品管理", u"员工管理", u"打印设置", u"报表中心", u"系统设置"]
 li_func_title_1 = [u'餐桌设置', u'菜品发布', u'员工管理', u'厨打方案', u'菜品销售查询', u'公司信息']
 li_func_title_2 = [u'', u'', u'权限管理', u'菜品关联', u'收银情况查询', u'注册']
-#li_func_title_3 = [u'', u'', u'员工排班', u'', u'营业情况查询', u'数据备份']
+#li_func_title_3 = [u'区域设置', u'菜品单位设置', u'员工排班', u'', u'营业情况查询', u'数据备份']
 li_func_title_3 = [u'', u'', u'', u'', u'营业情况查询', u'']
 li_func_title_4 = [u'', u'', u'', u'', u'消费查询', u'']
 li_func_title_5 = [u'', u'', u'', u'', u'菜品排行榜', u'']
@@ -349,11 +349,15 @@ class WgtHomePage (wx.Panel):
         select_item = CtrlHomePage.get_instance().get_selected_item()
         AppManager.get_instance().set_app_title(li_func_title_1[select_item])
         self._set_screen_tile()
-        if select_item != 5:
-            AppManager.get_instance().switch_to_application(li_func_widget_1[select_item])
-        else:
+        if select_item == 1:
             pop_company = PopCompany(self)
             pop_company.ShowModal()
+        elif select_item == 5:
+            pop_company = PopCompany(self)
+            pop_company.ShowModal()
+        else:
+            AppManager.get_instance().switch_to_application(li_func_widget_1[select_item])
+
 
     def on_func_2(self, event):
         event.Skip()

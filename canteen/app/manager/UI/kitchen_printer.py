@@ -288,9 +288,9 @@ class PopPrinterScheme(wx.Dialog):
                                  print_count,
                                  scheme_backup.key if scheme_backup is not None else None)
         if self.type == "add":
-            CtrlPrinterScheme.add_item(data)
+            CtrlPrinterScheme.get_instance().add_item(data)
         elif self.type == "mod":
-            CtrlPrinterScheme.update_item(data)
+            CtrlPrinterScheme.get_instance().update_item(data)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -457,7 +457,7 @@ class PopSchemeRelated (wx.Dialog):
         data = items[self.index]
         data.printer_scheme = scheme_type.key
         data.is_print = u'1' if self.radioBtnPrintOn.GetValue() else u'0'
-        CtrlDishes.update_print_scheme(data)
+        CtrlDishes.get_instance().update_print_scheme(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -558,7 +558,7 @@ class PopSchemeRelatedBat (wx.Dialog):
         for item in self.list_data:
             if isinstance(item, DataDishes):
                 item.printer_scheme = scheme_type.key
-                CtrlDishes.update_print_scheme(item)
+                CtrlDishes.get_instance().update_print_scheme(item)
                 
     def on_btn_exit(self, event):
         event.Skip()
@@ -641,7 +641,8 @@ class PopSchemeType (wx.Dialog):
         event.Skip()
         CtrlSchemeType.get_instance().add_item(DataSchemeType(0, 0, ""))
         
-        data = DataSchemeType(CtrlSchemeType.get_instance().get_data_len() + 1, CtrlSchemeType.get_id(), "")
+        data = DataSchemeType(CtrlSchemeType.get_instance().get_data_len() + 1,
+                              CtrlSchemeType.get_instance().get_id(), "")
         self.model.data.append(data)
         item = self.model.ObjectToItem(data)
         self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
@@ -653,7 +654,7 @@ class PopSchemeType (wx.Dialog):
             data = self.model.ItemToObject(item)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlSchemeType.delete_item(data)
+            CtrlSchemeType.get_instance().delete_item(data)
         except:
             print 'PopSchemeType on_btn_delete error'
     
@@ -671,7 +672,7 @@ class PopSchemeType (wx.Dialog):
     def on_btn_save(self, event):
         event.Skip()
         for data in self.model.data:
-            CtrlSchemeType.update_item(data)
+            CtrlSchemeType.get_instance().update_item(data)
     
     def on_btn_exit(self, event):
         event.Skip()
@@ -826,7 +827,7 @@ class WgtPrinterScheme(wx.Panel):
             data = self.model.ItemToObject(item)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlPrinterScheme.delete_item(data)
+            CtrlPrinterScheme.get_instance().delete_item(data)
         except:
             print 'WgtPrinterScheme on_btn_delete error'
         
