@@ -11,12 +11,85 @@ class AppManager():
         self.panel = None
         self.app_title = ""
 
-    def initialize(self):
+        self.login_panel = None
+
+        self.home_page_panel = None
+        self.dining_table_panel = None
+        self.dishes_publish_panel = None
+        self.employee_panel = None
+        self.printer_scheme_panel = None
+        self.scheme_related_panel = None
+        self.user_permission_panel = None
+
+        self.front_page_panel = None
+        self.order_dishes_panel = None
+        self.checkout_panel = None
+
+    def initialize(self, app_type):
         if self.mainScreen is None:
             self.mainScreen = MainScreen(None)
             #self.mainScreen.ShowFullScreen(True)
-            self.mainScreen.Show(True)
-            self.mainScreen.Center()
+            #self.mainScreen.Show(True)
+            #self.mainScreen.Center()
+            self.mainScreen.Maximize()
+
+        if self.login_panel is None:
+            from app.login import WgtLogin
+            self.login_panel = WgtLogin(self.mainScreen, app_type)
+
+        if app_type == "manager":
+            if self.home_page_panel is None:
+                from app.manager.UI.home_page import WgtHomePage
+                self.home_page_panel = WgtHomePage(self.mainScreen)
+                self.home_page_panel.Hide()
+
+            if self.dining_table_panel is None:
+                from app.manager.UI.dining_room import WgtDiningTable
+                self.dining_table_panel = WgtDiningTable(self.mainScreen)
+                self.dining_table_panel.Hide()
+
+            if self.dishes_publish_panel is None:
+                from app.manager.UI.dishes_publish import WgtDishesPublish
+                self.dishes_publish_panel = WgtDishesPublish(self.mainScreen)
+                self.dishes_publish_panel.Hide()
+
+            if self.employee_panel is None:
+                from app.manager.UI.employee import WgtEmployee
+                self.employee_panel = WgtEmployee(self.mainScreen)
+                self.employee_panel.Hide()
+
+            if self.printer_scheme_panel is None:
+                from app.manager.UI.kitchen_printer import WgtPrinterScheme
+                self.printer_scheme_panel = WgtPrinterScheme(self.mainScreen)
+                self.printer_scheme_panel.Hide()
+
+            if self.scheme_related_panel is None:
+                from app.manager.UI.kitchen_printer import WgtSchemeRelated
+                self.scheme_related_panel = WgtSchemeRelated(self.mainScreen)
+                self.scheme_related_panel.Hide()
+
+            if self.user_permission_panel is None:
+                from app.manager.UI.employee import WgtPermission
+                self.user_permission_panel = WgtPermission(self.mainScreen)
+                self.user_permission_panel.Hide()
+
+        elif app_type == "front":
+            if self.front_page_panel is None:
+                from app.front.UI.front_page import WgtFrontPage
+                self.front_page_panel = WgtFrontPage(self.mainScreen)
+                self.front_page_panel.Hide()
+
+            if self.order_dishes_panel is None:
+                from app.front.UI.order_dishes import WgtOrderDishes
+                self.order_dishes_panel = WgtOrderDishes(self.mainScreen)
+                self.order_dishes_panel.Hide()
+
+            if self.checkout_panel is None:
+                from app.front.UI.check_out import WgtCheckout
+                self.checkout_panel = WgtCheckout(self.mainScreen)
+                self.checkout_panel.Hide()
+
+        self.mainScreen.Show(True)
 
     def get_app_title(self):
         return self.app_title
@@ -38,38 +111,60 @@ class AppManager():
             self.panel = None
                      
         if wgt == 'Login':
-            from app.login import WgtLogin
-            self.panel = WgtLogin(self.mainScreen, app)
+            if self.login_panel is None:
+                from app.login import WgtLogin
+                self.login_panel = WgtLogin(self.mainScreen, app)
+            self.panel = self.login_panel
         elif wgt == 'HomePage':
-            from app.manager.UI.home_page import WgtHomePage
-            self.panel = WgtHomePage(self.mainScreen)
+            if self.home_page_panel is None:
+                from app.manager.UI.home_page import WgtHomePage
+                self.home_page_panel = WgtHomePage(self.mainScreen)
+            self.panel = self.home_page_panel
         elif wgt == 'DiningTable':
-            from app.manager.UI.dining_room import WgtDiningTable
-            self.panel = WgtDiningTable(self.mainScreen)
+            if self.dining_table_panel is None:
+                from app.manager.UI.dining_room import WgtDiningTable
+                self.dining_table_panel = WgtDiningTable(self.mainScreen)
+            self.panel = self.dining_table_panel
         elif wgt == 'DishesPublish':
-            from app.manager.UI.dishes_publish import WgtDishesPublish
-            self.panel = WgtDishesPublish(self.mainScreen)
+            if self.dishes_publish_panel is None:
+                from app.manager.UI.dishes_publish import WgtDishesPublish
+                self.dishes_publish_panel = WgtDishesPublish(self.mainScreen)
+            self.panel = self.dishes_publish_panel
         elif wgt == 'Employee':
-            from app.manager.UI.employee import WgtEmployee
-            self.panel = WgtEmployee(self.mainScreen)
+            if self.employee_panel is None:
+                from app.manager.UI.employee import WgtEmployee
+                self.employee_panel = WgtEmployee(self.mainScreen)
+            self.panel = self.employee_panel
         elif wgt == 'PrinterScheme':
-            from app.manager.UI.kitchen_printer import WgtPrinterScheme
-            self.panel = WgtPrinterScheme(self.mainScreen)
+            if self.printer_scheme_panel is None:
+                from app.manager.UI.kitchen_printer import WgtPrinterScheme
+                self.printer_scheme_panel = WgtPrinterScheme(self.mainScreen)
+            self.panel = self.printer_scheme_panel
         elif wgt == 'SchemeRelated':
-            from app.manager.UI.kitchen_printer import WgtSchemeRelated
-            self.panel = WgtSchemeRelated(self.mainScreen)
+            if self.scheme_related_panel is None:
+                from app.manager.UI.kitchen_printer import WgtSchemeRelated
+                self.scheme_related_panel = WgtSchemeRelated(self.mainScreen)
+            self.panel = self.scheme_related_panel
         elif wgt == 'UserPermission':
-            from app.manager.UI.employee import WgtPermission
-            self.panel = WgtPermission(self.mainScreen)
+            if self.user_permission_panel is None:
+                from app.manager.UI.employee import WgtPermission
+                self.user_permission_panel = WgtPermission(self.mainScreen)
+            self.panel = self.user_permission_panel
         elif wgt == 'FrontPage':
-            from app.front.UI.front_page import WgtFrontPage
-            self.panel = WgtFrontPage(self.mainScreen)
+            if self.front_page_panel is None:
+                from app.front.UI.front_page import WgtFrontPage
+                self.front_page_panel = WgtFrontPage(self.mainScreen)
+            self.panel = self.front_page_panel
         elif wgt == 'OrderDishes':
-            from app.front.UI.order_dishes import WgtOrderDishes
-            self.panel = WgtOrderDishes(self.mainScreen)
+            if self.order_dishes_panel is None:
+                from app.front.UI.order_dishes import WgtOrderDishes
+                self.order_dishes_panel = WgtOrderDishes(self.mainScreen)
+            self.panel = self.order_dishes_panel
         elif wgt == 'CheckOut':
-            from app.front.UI.check_out import WgtCheckout
-            self.panel = WgtCheckout(self.mainScreen)
+            if self.checkout_panel is None:
+                from app.front.UI.check_out import WgtCheckout
+                self.checkout_panel = WgtCheckout(self.mainScreen)
+            self.panel = self.checkout_panel
         
         self.mainScreen.set_panel(self.panel)
         self.panel.initialize()

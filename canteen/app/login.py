@@ -14,6 +14,9 @@ from app.app_manager import AppManager
 
 import wx
 import wx.xrc
+import sys
+
+from framework.img_button import ImgButton
 
 ###########################################################################
 ## Class WgtLogin
@@ -21,121 +24,43 @@ import wx.xrc
 
 
 class WgtLogin(wx.Panel):
-    def _init_keyboard_sizer(self, parent):
-        sizer = wx.GridSizer(3, 1, 0, 0)
+    def _init_keyboard_sizer(self):
+        self.key_1 = ImgButton(self, u"key_1.png", u"s_key_1.png", "", wx.Colour(255, 163, 16))
+        self.key_2 = ImgButton(self, u"key_2.png", u"s_key_2.png", "", wx.Colour(255, 163, 16))
+        self.key_3 = ImgButton(self, u"key_3.png", u"s_key_3.png", "", wx.Colour(255, 163, 16))
+        self.key_4 = ImgButton(self, u"key_4.png", u"s_key_4.png", "", wx.Colour(255, 163, 16))
+        self.key_5 = ImgButton(self, u"key_5.png", u"s_key_5.png", "", wx.Colour(255, 163, 16))
+        self.key_6 = ImgButton(self, u"key_6.png", u"s_key_6.png", "", wx.Colour(255, 163, 16))
+        self.key_7 = ImgButton(self, u"key_7.png", u"s_key_7.png", "", wx.Colour(255, 163, 16))
+        self.key_8 = ImgButton(self, u"key_8.png", u"s_key_8.png", "", wx.Colour(255, 163, 16))
+        self.key_9 = ImgButton(self, u"key_9.png", u"s_key_9.png", "", wx.Colour(255, 163, 16))
+        self.key_cancel = ImgButton(self, u"key_cancel.png", u"s_key_cancel.png", "", wx.Colour(255, 163, 16))
+        self.key_0 = ImgButton(self, u"key_0.png", u"s_key_0.png", "", wx.Colour(255, 163, 16))
+        self.key_back = ImgButton(self, u"key_back.png", u"s_key_back.png", "", wx.Colour(255, 163, 16))
 
-        keyboard_sizer = wx.FlexGridSizer(4, 3, 0, 0)
-        keyboard_sizer.SetFlexibleDirection(wx.BOTH)
-        keyboard_sizer.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_SPECIFIED)
-        # Add key 1
-        self.key_1 = wx.Button(self, wx.ID_ANY, u"1", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_1.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_1, 1, wx.ALIGN_CENTER_HORIZONTAL | wx.EXPAND | wx.TOP | wx.RIGHT | wx.LEFT, 5)
-        # Add key 2
-        self.key_2 = wx.Button(self, wx.ID_ANY, u"2", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_2.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_2, 1, wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL | wx.TOP |
-                           wx.RIGHT | wx.LEFT | wx.EXPAND, 5)
-        # Add key 3
-        self.key_3 = wx.Button(self, wx.ID_ANY, u"3", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_3.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_3, 0, wx.TOP | wx.LEFT | wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL, 5)
-        # Add key 4
-        self.key_4 = wx.Button(self, wx.ID_ANY, u"4", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_4.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_4, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.RIGHT | wx.LEFT, 5)
-        # Add key 5
-        self.key_5 = wx.Button(self, wx.ID_ANY, u"5", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_5.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_5, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.RIGHT | wx.LEFT, 5)
-        # Add key 6
-        self.key_6 = wx.Button(self, wx.ID_ANY, u"6", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_6.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_6, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.LEFT, 5)
-        # Add key 7
-        self.key_7 = wx.Button(self, wx.ID_ANY, u"7", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_7.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_7, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.ALIGN_CENTER_VERTICAL |
-                           wx.TOP | wx.RIGHT | wx.LEFT, 5)
-        # Add key 8
-        self.key_8 = wx.Button(self, wx.ID_ANY, u"8", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_8.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_8, 0, wx.ALIGN_CENTER_VERTICAL | wx.ALIGN_CENTER_HORIZONTAL |
-                           wx.TOP | wx.RIGHT | wx.LEFT, 5)
-        # Add key 9
-        self.key_9 = wx.Button(self, wx.ID_ANY, u"9", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_9.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_9, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.LEFT, 5)
-        # Add key cancel
-        self.key_cancel = wx.Button(self, wx.ID_ANY, u"取消", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_cancel.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_cancel, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.RIGHT | wx.LEFT, 5)
-        # Add key 0
-        self.key_0 = wx.Button(self, wx.ID_ANY, u"0", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_0.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_0, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.RIGHT | wx.LEFT, 5)
-        # Add key back
-        self.key_back = wx.Button(self, wx.ID_ANY, u"退格", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.key_back.SetMinSize(wx.Size(60, 50))
-        keyboard_sizer.Add(self.key_back, 0, wx.ALIGN_CENTER_HORIZONTAL | wx.TOP | wx.LEFT, 5)
-
-        sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
-        # Layout keyboard 
-        sizer.Add(keyboard_sizer, 1, wx.EXPAND, 5)
-        parent.Add(sizer, 1, wx.EXPAND, 5)
-
-    def _init_login_sizer(self, parent):
-        g_sizer = wx.GridSizer(4, 1, 0, 0)
-
-        # Add spacer sizer
-        g_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
-        g_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
-
-        # Add login info sizer
-        login_sizer = wx.FlexGridSizer(3, 2, 0, 0)
-        login_sizer.SetFlexibleDirection(wx.BOTH)
-        login_sizer.SetNonFlexibleGrowMode(wx.FLEX_GROWMODE_SPECIFIED)
+    def _init_login_sizer(self):
         # Add user name label
-        s_txt_user = wx.StaticText(self, wx.ID_ANY, u"用户名：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_user.Wrap(-1)
-        login_sizer.Add(s_txt_user, 0, wx.ALL, 5)
+        self.userLabel = ImgButton(self, u"user.png", u"user.png")
+        self.userLabel.Enable(False)
         # Add user name text control
         self.txtUser = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
-        login_sizer.Add(self.txtUser, 0, wx.ALL | wx.ALIGN_RIGHT, 5)
         # Add password label
-        s_txt_password = wx.StaticText(self, wx.ID_ANY, u"密码：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_password.Wrap(-1)
-        login_sizer.Add(s_txt_password, 0, wx.ALL, 5)
+        self.passwordLabel = ImgButton(self, u"password.png", u"password.png")
+        self.passwordLabel.Enable(False)
         # Add password text control
         self.txtPassword = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                        wx.DefaultSize, wx.TE_PASSWORD)
-        login_sizer.Add(self.txtPassword, 0, wx.ALL, 5)
         # Add login button
-        s_txt_null = wx.StaticText(self, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_null.Wrap(-1)
-        login_sizer.Add(s_txt_null, 0, wx.ALL, 5)
+        self.btnLogin = ImgButton(self, u"btn_login.png", u"s_btn_login.png", "", wx.Colour(255, 163, 16))
 
-        self.btnLogin = wx.Button(self, wx.ID_ANY, u"登录", wx.DefaultPosition, wx.DefaultSize, 0)
-        login_sizer.Add(self.btnLogin, 0, wx.ALL, 5)
-
-        # Layout login info sizer
-        g_sizer.Add(login_sizer, 1, wx.EXPAND, 5)
-
-        # Layout login sizer
-        parent.Add(g_sizer, 1, wx.EXPAND, 5)
-
-    def __init__(self, parent, app):
+    def __init__(self, parent, app_):
         wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
                           size=wx.Size(495, 266), style=wx.TAB_TRAVERSAL)
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
-        self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DLIGHT))
-        
-        sizer = wx.GridSizer(1, 3, 0, 0)
-        sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
-        self._init_keyboard_sizer(sizer)
-        self._init_login_sizer(sizer)
-        
-        self.SetSizer(sizer)
+
+        self._init_keyboard_sizer()
+        self._init_login_sizer()
+
         self.Layout()
         self.Centre(wx.BOTH) 
         self.focus = ''
@@ -159,8 +84,11 @@ class WgtLogin(wx.Panel):
         self.txtUser.Bind(wx.EVT_SET_FOCUS, self.on_set_user_focus)
         self.txtPassword.Bind(wx.EVT_SET_FOCUS, self.on_set_password_focus)
 
+        self.Bind(wx.EVT_PAINT, self.on_paint)
+        #self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_erase_background)
+
         # application type
-        self.app = app
+        self.app = app_
     
     def __del__(self):
         pass
@@ -178,9 +106,101 @@ class WgtLogin(wx.Panel):
         EvtManager.remove_listener(self, EnumEvent.EVT_LOGIN, self.on_evt_login)
 
     # Virtual event handlers, override them in your derived class
+    def on_paint(self, event):
+        dc = wx.ClientDC(self)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\login_bg.jpg", wx.BITMAP_TYPE_JPEG).Scale(sz.x, sz.y)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
+    def on_erase_background(self, event):
+        #dc = event.GetDC()
+        #if not dc:
+        dc = wx.ClientDC(self)
+        #rect = self.GetUpdateRegion().GetBox()
+        #dc.SetClippingRect(rect)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\login_bg.jpg", wx.BITMAP_TYPE_JPEG).Scale(sz.x, sz.y)
+        bg_bmp = bg_img.ConvertToBitmap()
+        #dc.DrawBitmap(bg_bmp, 0, 0)
+
+        #bmp = wx.Bitmap(sys.path[0] + "\\..\\image\\login_bg.jpg").
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
     def on_size(self, event):
         event.Skip()
-        self.GetSize()
+        x, y = self.GetClientSize()
+        start_x = x / 2 - 190
+        start_y = y * 4 / 9
+
+        btn_w = 62
+        btn_h = 48
+        btn_size = wx.Size(btn_w, btn_h)
+        self.key_1.SetPosition(wx.Point(start_x, start_y))
+        self.key_1.SetSize(btn_size)
+
+        self.key_2.SetPosition(wx.Point(start_x + btn_w, start_y))
+        self.key_2.SetSize(btn_size)
+
+        self.key_3.SetPosition(wx.Point(start_x + (btn_w * 2), start_y))
+        self.key_3.SetSize(btn_size)
+
+        self.key_4.SetPosition(wx.Point(start_x, start_y + btn_h))
+        self.key_4.SetSize(btn_size)
+
+        self.key_5.SetPosition(wx.Point(start_x + btn_w, start_y + btn_h))
+        self.key_5.SetSize(btn_size)
+
+        self.key_6.SetPosition(wx.Point(start_x + (btn_w * 2), start_y + btn_h))
+        self.key_6.SetSize(btn_size)
+
+        self.key_7.SetPosition(wx.Point(start_x, start_y + (btn_h * 2)))
+        self.key_7.SetSize(btn_size)
+
+        self.key_8.SetPosition(wx.Point(start_x + btn_w, start_y + (btn_h * 2)))
+        self.key_8.SetSize(btn_size)
+
+        self.key_9.SetPosition(wx.Point(start_x + (btn_w * 2), start_y + (btn_h * 2)))
+        self.key_9.SetSize(btn_size)
+
+        self.key_cancel.SetPosition(wx.Point(start_x, start_y + (btn_h * 3)))
+        self.key_cancel.SetSize(btn_size)
+
+        self.key_0.SetPosition(wx.Point(start_x + btn_w, start_y + (btn_h * 3)))
+        self.key_0.SetSize(btn_size)
+
+        self.key_back.SetPosition(wx.Point(start_x + (btn_w * 2), start_y + (btn_h * 3)))
+        self.key_back.SetSize(btn_size)
+
+        self.userLabel.SetSize(wx.Size(80, 25))
+        self.userLabel.SetPosition(wx.Point(start_x + 200, start_y + 60))
+
+        self.txtUser.SetPosition(wx.Point(start_x + 280, start_y + 60))
+        self.txtPassword.SetTransparent(0)
+
+        self.passwordLabel.SetSize(wx.Size(80, 25))
+        self.passwordLabel.SetPosition(wx.Point(start_x + 200, start_y + 100))
+
+        self.txtPassword.SetPosition(wx.Point(start_x + 280, start_y + 100))
+        self.txtPassword.SetTransparent(255)
+
+        self.btnLogin.SetSize(wx.Size(102, 32))
+        self.btnLogin.SetPosition(wx.Point(start_x + 245, start_y + 140))
+
+        self.Refresh()
 
     def on_key_1(self, event):
         event.Skip()
@@ -247,7 +267,7 @@ class WgtLogin(wx.Panel):
     
     def on_key_cancel(self, event):
         event.Skip()
-        self.Destroy()
+        self.GetParent().Destroy()
     
     def on_key_0(self, event):
         event.Skip()

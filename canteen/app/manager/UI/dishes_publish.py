@@ -14,6 +14,7 @@ from app.manager.logic.model import *
 from app.manager.logic.data import *
 from app.app_manager import AppManager
 from framework.core import TreeImage
+from framework.img_button import ImgButton
 
 import wx
 import wx.xrc
@@ -22,6 +23,7 @@ import wx.dataview
 import os
 import time
 import shutil
+import sys
 
 ###########################################################################
 ## Class PopCategorySetting
@@ -113,11 +115,13 @@ class PopCategorySetting (wx.Dialog):
         try:
             item = self.dataViewList.GetCurrentItem()
             data = self.model.ItemToObject(item)
+            CtrlCategory.get_instance().delete_item(data)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlCategory.get_instance().delete_item(data)
-        except:
-            print 'PopCategorySetting on_btn_delete error'
+        except Exception, ex:
+            print Exception, ":", ex
+            pop_error = wx.MessageDialog(self, u"该类型不能删除", caption=u"菜品类型")
+            pop_error.ShowModal()
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -518,7 +522,11 @@ class PopDishesInfo (wx.Dialog):
         self._init_mod_view()
 
     def on_btn_save(self, event):
-        event.Skip()
+        if len(self.model_spec.data) == 0:
+            pop_error = wx.MessageDialog(self, u"请配置规格", caption=u"菜品")
+            pop_error.ShowModal()
+            return
+
         unit = self.cbxUnit.GetClientData(self.cbxUnit.GetSelection())
         category = self.cbxCategory.GetClientData(self.cbxCategory.GetSelection())
         data = DataDishes(0, self.item_id, 
@@ -724,11 +732,13 @@ class PopUnitSetting (wx.Dialog):
         try:
             item = self.dataViewList.GetCurrentItem()
             data = self.model.ItemToObject(item)
+            CtrlUnit.get_instance().delete_item(data)
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
-            CtrlUnit.get_instance().delete_item(data)
-        except:
-            print 'PopUnitSetting on_btn_delete error'
+        except Exception, ex:
+            print Exception, ":", ex
+            pop_error = wx.MessageDialog(self, u"该单位不能删除", caption=u"菜品单位")
+            pop_error.ShowModal()
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -758,40 +768,25 @@ class PopUnitSetting (wx.Dialog):
 class WgtDishesPublish (wx.Panel):
     def _init_status_bar_sizer(self, parent):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.SetMinSize(wx.Size(-1, 50))
+        sizer.SetMinSize(wx.Size(-1, 82))
 
-        # Add new button
-        self.btnNew = wx.Button(self, wx.ID_ANY, u"新增", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnNew.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnNew, 0, 0, 5)
-        # Add modify button
-        self.btnModify = wx.Button(self, wx.ID_ANY, u"修改", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnModify.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnModify, 0, 0, 5)
-        # Add delete button
-        self.btnDelete = wx.Button(self, wx.ID_ANY, u"删除", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnDelete.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnDelete, 0, 0, 5)
-        # Add dishes type button
-        self.btnType = wx.Button(self, wx.ID_ANY, u"类型", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnType.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnType, 0, 0, 5)
-        # Add dishes unit button
-        self.btnUnit = wx.Button(self, wx.ID_ANY, u"单位", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnUnit.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnUnit, 0, 0, 5)
-        # Add refresh button
-        self.btnRefresh = wx.Button(self, wx.ID_ANY, u"刷新", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnRefresh.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnRefresh, 0, 0, 5)
-        # Add exit button
-        self.btnExit = wx.Button(self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnExit.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnExit, 0, 0, 5)
-        # Add space fix panel 
+        # Add space fix panel
         self.topPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
-        self.topPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
         sizer.Add(self.topPanel, 1, wx.EXPAND, 5)
+        # Add new button
+        self.btnNew = ImgButton(self.topPanel, u"new.png", u"s_new.png")
+        # Add modify button
+        self.btnModify = ImgButton(self.topPanel, u"modify.png", u"s_modify.png")
+        # Add delete button
+        self.btnDelete = ImgButton(self.topPanel, u"delete.png", u"s_delete.png")
+        # Add dishes type button
+        self.btnType = ImgButton(self.topPanel, u"dishes_type.png", u"s_dishes_type.png")
+        # Add dishes unit button
+        self.btnUnit = ImgButton(self.topPanel, u"unit.png", u"s_unit.png")
+        # Add refresh button
+        self.btnRefresh = ImgButton(self.topPanel, u"refresh.png", u"s_refresh.png")
+        # Add exit button
+        self.btnExit = ImgButton(self.topPanel, u"tool_exit.png", u"s_tool_exit.png")
         
         # Layout status bar
         parent.Add(sizer, 1, wx.EXPAND, 5)
@@ -805,6 +800,7 @@ class WgtDishesPublish (wx.Panel):
         # Create a tree control
         self.treeCtrl = wx.TreeCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TR_DEFAULT_STYLE)
         self.treeCtrl.SetMinSize(wx.Size(-1, 600))
+        self.treeCtrl.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         left_sizer.Add(self.treeCtrl, 0, wx.EXPAND, 5)
         # Layout tree control
         sizer.Add(left_sizer, 1, 0, 5)
@@ -822,6 +818,7 @@ class WgtDishesPublish (wx.Panel):
         self.dataViewList.AppendTextColumn(u"所属类", 4)
         self.dataViewList.AppendTextColumn(u"单位", 5)
         self.dataViewList.AppendToggleColumn(u"停用", 6, width=80)
+        self.dataViewList.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         right_sizer.Add(self.dataViewList, 0, wx.EXPAND | wx.LEFT, 5)
         # Layout data view list
         sizer.Add(right_sizer, 1, 0, 5)
@@ -833,6 +830,7 @@ class WgtDishesPublish (wx.Panel):
         wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
                           size=wx.Size(800, 600), style=wx.TAB_TRAVERSAL)
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+        self.SetBackgroundColour(wx.Colour(0x51, 0x1c, 0x0a))
         
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_status_bar_sizer(sizer)
@@ -841,15 +839,9 @@ class WgtDishesPublish (wx.Panel):
         self.SetSizer(sizer)
         self.Layout()
         self.Centre(wx.BOTH)
-        
-        # Create an instance of our model...
-        self.model = ModelDishes(CtrlDishes.get_instance().get_data())
-        CtrlDishes.get_instance().refresh_items()
-        
-        # Tel the DVC to use the model
-        self.dataViewList.AssociateModel(self.model)
 
         # Connect Events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
         
         self.btnNew.Bind(wx.EVT_BUTTON, self.on_btn_new)
@@ -863,14 +855,22 @@ class WgtDishesPublish (wx.Panel):
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_sel_changed, self.treeCtrl)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.on_activate, self.treeCtrl)
         
-        # Show tree control
+        # define variable
+        self.model = None
         self.tree_data = None
-        self._show_tree_ctrl()
     
     def __del__(self):
         pass
     
     def initialize(self):
+        # Create an instance of our model...
+        self.model = ModelDishes(CtrlDishes.get_instance().get_data())
+        CtrlDishes.get_instance().refresh_items()
+        # Tel the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+        # Show tree control
+        self._show_tree_ctrl()
+
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.on_btn_refresh)
         
@@ -882,6 +882,7 @@ class WgtDishesPublish (wx.Panel):
         EvtManager.remove_listener(self, EnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.on_btn_refresh)
     
     def _show_tree_ctrl(self):
+        self.treeCtrl.DeleteAllItems()
         tree_image = TreeImage()
         self.treeCtrl.SetImageList(tree_image.image_list)
         self.il = tree_image.image_list
@@ -941,20 +942,50 @@ class WgtDishesPublish (wx.Panel):
         self.model.Cleared()
     
     # Virtual event handlers, override them in your derived class
+    def on_paint(self, event):
+        dc = wx.ClientDC(self.topPanel)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetSize()
         
-        self.btnNew.SetMaxSize(wx.Size(50, 50))
-        self.btnModify.SetMaxSize(wx.Size(50, 50))
-        self.btnDelete.SetMaxSize(wx.Size(50, 50))
-        self.btnType.SetMaxSize(wx.Size(50, 50))
-        self.btnUnit.SetMaxSize(wx.Size(50, 50))
-        self.btnRefresh.SetMaxSize(wx.Size(50, 50))
-        self.btnExit.SetMaxSize(wx.Size(50, 50))
-        self.topPanel.SetMaxSize(wx.Size(x-350, 50))
-        self.treeCtrl.SetMinSize(wx.Size(200, y-50))
-        self.dataViewList.SetMinSize(wx.Size(x-200, y-50))
+        self.btnNew.SetSize(wx.Size(63, 70))
+        self.btnNew.SetPosition(wx.Point(0, 6))
+
+        self.btnModify.SetSize(wx.Size(63, 70))
+        self.btnModify.SetPosition(wx.Point(65, 6))
+
+        self.btnDelete.SetSize(wx.Size(63, 70))
+        self.btnDelete.SetPosition(wx.Point(130, 6))
+
+        self.btnType.SetSize(wx.Size(63, 70))
+        self.btnType.SetPosition(wx.Point(195, 6))
+
+        self.btnUnit.SetSize(wx.Size(63, 70))
+        self.btnUnit.SetPosition(wx.Point(260, 6))
+
+        self.btnRefresh.SetSize(wx.Size(63, 70))
+        self.btnRefresh.SetPosition(wx.Point(325, 6))
+
+        self.btnExit.SetSize(wx.Size(63, 70))
+        self.btnExit.SetPosition(wx.Point(390, 6))
+
+        self.topPanel.SetSize(wx.Size(x, 82))
+        self.treeCtrl.SetMinSize(wx.Size(200, y-82))
+        self.dataViewList.SetMinSize(wx.Size(x-200, y-82))
+
+        self.Refresh()
         
     def on_btn_new(self, event):
         event.Skip()

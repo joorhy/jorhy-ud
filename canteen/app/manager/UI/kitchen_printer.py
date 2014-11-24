@@ -12,11 +12,14 @@ from app.manager.logic.ctrl import *
 from app.manager.logic.model import *
 from app.manager.logic.data import *
 from app.app_manager import AppManager
+from framework.img_button import ImgButton
 
 import wx
 import wx.xrc
 import wx.dataview
 from wx.dataview import DataViewColumn
+
+import sys
 
 ###########################################################################
 ## Class PopPrinterScheme
@@ -686,31 +689,22 @@ class PopSchemeType (wx.Dialog):
 class WgtPrinterScheme(wx.Panel):
     def _init_status_bar_sizer(self, parent):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.SetMinSize(wx.Size(-1, 50))
-        # Add new button
-        self.btnNew = wx.Button(self, wx.ID_ANY, u"新增", wx.DefaultPosition, wx.Size(50, 50), 0)
-        sizer.Add(self.btnNew, 0, 0, 5)
-        # Add modify button
-        self.btnModify = wx.Button(self, wx.ID_ANY, u"修改", wx.DefaultPosition, wx.Size(50, 50), 0)
-        sizer.Add(self.btnModify, 0, 0, 5)
-        # Add delete button
-        self.btnDelete = wx.Button(self, wx.ID_ANY, u"删除", wx.DefaultPosition, wx.Size(50, 50), 0)
-        sizer.Add(self.btnDelete, 0, 0, 5)
-        # Add invoice type button
-        self.btnSchemeType = wx.Button(self, wx.ID_ANY, u"单类", wx.DefaultPosition, wx.Size(50, 50), 0)
-        sizer.Add(self.btnSchemeType, 0, 0, 5)
-        # Add refresh button
-        self.btnRefresh = wx.Button(self, wx.ID_ANY, u"刷新", wx.DefaultPosition, wx.Size(50, 50), 0)
-        sizer.Add(self.btnRefresh, 0, 0, 5)
-        # Add exit button
-        self.btnExit = wx.Button(self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.Size(50, 50), 0)
-        sizer.Add(self.btnExit, 0, 0, 5)
+        sizer.SetMinSize(wx.Size(-1, 82))
         # Add fix space panel
         self.topPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(-1, -1), wx.TAB_TRAVERSAL)
-        self.topPanel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
-        self.topPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
-        self.topPanel.SetMaxSize(wx.Size(-1, 50))
         sizer.Add(self.topPanel, 1, wx.EXPAND, 5)
+        # Add new button
+        self.btnNew = ImgButton(self.topPanel, u"new.png", u"s_new.png")
+        # Add modify button
+        self.btnModify = ImgButton(self.topPanel, u"modify.png", u"s_modify.png")
+        # Add delete button
+        self.btnDelete = ImgButton(self.topPanel, u"delete.png", u"s_delete.png")
+        # Add invoice type button
+        self.btnSchemeType = ImgButton(self.topPanel, u"order_type.png", u"s_order_type.png")
+        # Add refresh button
+        self.btnRefresh = ImgButton(self.topPanel, u"refresh.png", u"s_refresh.png")
+        # Add exit button
+        self.btnExit = ImgButton(self.topPanel, u"tool_exit.png", u"s_tool_exit.png")
         
         # Layout status bar sizer
         parent.Add(sizer, 1, wx.EXPAND, 5)
@@ -727,7 +721,8 @@ class WgtPrinterScheme(wx.Panel):
         self.dataViewList.AppendToggleColumn(u"生效", 3, width=50) 
         self.dataViewList.AppendTextColumn(u"单据类型", 4) 
         self.dataViewList.AppendTextColumn(u"厨打分数", 5) 
-        self.dataViewList.AppendTextColumn(u"后备方案", 6)  
+        self.dataViewList.AppendTextColumn(u"后备方案", 6)
+        self.dataViewList.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         sizer.Add(self.dataViewList, 0, 0, 5)
         
         # Layout data view list
@@ -737,6 +732,7 @@ class WgtPrinterScheme(wx.Panel):
         wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
                           size=wx.Size(800, 600), style=wx.TAB_TRAVERSAL)
         self.SetSizeHintsSz(wx.Size(-1, -1), wx.DefaultSize)
+        self.SetBackgroundColour(wx.Colour(0x51, 0x1c, 0x0a))
         
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_status_bar_sizer(sizer)
@@ -746,14 +742,8 @@ class WgtPrinterScheme(wx.Panel):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        # Create an instance of our model...
-        self.model = ModelPrinterScheme(CtrlPrinterScheme.get_instance().get_data())
-        CtrlPrinterScheme.get_instance().refresh_items()
-        
-        # Tell the DVC to use the model
-        self.dataViewList.AssociateModel(self.model)
-
         # Connect Events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
         
         self.btnNew.Bind(wx.EVT_BUTTON, self.on_btn_new)
@@ -762,11 +752,20 @@ class WgtPrinterScheme(wx.Panel):
         self.btnSchemeType.Bind(wx.EVT_BUTTON, self.pn_btn_scheme_type)
         self.btnRefresh.Bind(wx.EVT_BUTTON, self.on_btn_refresh)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
+
+        # define variable
+        self.model = None
     
     def __del__(self):
         pass
     
     def initialize(self):
+        # Create an instance of our model...
+        self.model = ModelPrinterScheme(CtrlPrinterScheme.get_instance().get_data())
+        CtrlPrinterScheme.get_instance().refresh_items()
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_PRINTER_SCHEME_REFRESH, self.on_btn_refresh)
         
@@ -790,18 +789,46 @@ class WgtPrinterScheme(wx.Panel):
         self.model.Cleared()
     
     # Virtual event handlers, override them in your derived class
+    def on_paint(self, event):
+        dc = wx.ClientDC(self.topPanel)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetSize()
 
-        self.btnNew.SetMaxSize(wx.Size(50, 50))
-        self.btnModify.SetMaxSize(wx.Size(50, 50))
-        self.btnDelete.SetMaxSize(wx.Size(50, 50))
-        self.btnSchemeType.SetMaxSize(wx.Size(50, 50))
-        self.btnRefresh.SetMaxSize(wx.Size(50, 50))
-        self.btnExit.SetMaxSize(wx.Size(50, 50))
-        self.topPanel.SetMaxSize(wx.Size(x-300, 50))
-        self.dataViewList.SetMinSize(wx.Size(x, y-50))
+        self.btnNew.SetSize(wx.Size(63, 70))
+        self.btnNew.SetPosition(wx.Point(0, 6))
+
+        self.btnModify.SetSize(wx.Size(63, 70))
+        self.btnModify.SetPosition(wx.Point(65, 6))
+
+        self.btnDelete.SetSize(wx.Size(63, 70))
+        self.btnDelete.SetPosition(wx.Point(130, 6))
+
+        self.btnSchemeType.SetSize(wx.Size(63, 70))
+        self.btnSchemeType.SetPosition(wx.Point(195, 6))
+
+        self.btnRefresh.SetSize(wx.Size(63, 70))
+        self.btnRefresh.SetPosition(wx.Point(260, 6))
+
+        self.btnExit.SetSize(wx.Size(63, 70))
+        self.btnExit.SetPosition(wx.Point(325, 6))
+
+        self.topPanel.SetSize(wx.Size(x, 82))
+        self.dataViewList.SetMinSize(wx.Size(x, y-82))
+
+        self.Refresh()
         
     def on_btn_new(self, event):
         event.Skip()
@@ -853,23 +880,18 @@ class WgtPrinterScheme(wx.Panel):
 class WgtSchemeRelated (wx.Panel):
     def _init_status_bar_sizer(self, parent):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.SetMinSize(wx.Size(800, 50))
-        # Add kitchen print setting button
-        self.btnSetting = wx.Button(self, wx.ID_ANY, u"厨打设置", wx.DefaultPosition, wx.DefaultSize, 0)
-        sizer.Add(self.btnSetting, 0, wx.EXPAND, 5)
-        # Add batch kitchen print setting button
-        self.btnBatSetting = wx.Button(self, wx.ID_ANY, u"批处理", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnBatSetting.SetMinSize(wx.Size(100, 50))
-        sizer.Add(self.btnBatSetting, 0, 0, 5)
-        # Add exit button
-        self.btnExit = wx.Button(self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnExit.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnExit, 0, 0, 5)
+        sizer.SetMinSize(wx.Size(-1, 82))
         # Add fix space panel
         self.topPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
         self.topPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
         sizer.Add(self.topPanel, 1, wx.EXPAND, 5)
-        
+        # Add kitchen print setting button
+        self.btnSetting = ImgButton(self.topPanel, u"kitchen_print.png", u"s_kitchen_print.png")
+        # Add batch kitchen print setting button
+        self.btnBatSetting = ImgButton(self.topPanel, u"batch.png", u"s_batch.png")
+        # Add exit button
+        self.btnExit = ImgButton(self.topPanel, u"tool_exit.png", u"s_tool_exit.png")
+
         # Layout status bar sizer
         parent.Add(sizer, 1, wx.EXPAND, 5)
 
@@ -879,7 +901,8 @@ class WgtSchemeRelated (wx.Panel):
         # Add tree control
         left_sizer = wx.BoxSizer(wx.VERTICAL)
         left_sizer.SetMinSize(wx.Size(200, 550))
-        self.treeCtrl = wx.TreeCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TR_DEFAULT_STYLE)        
+        self.treeCtrl = wx.TreeCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TR_DEFAULT_STYLE)
+        self.treeCtrl.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         left_sizer.Add(self.treeCtrl, 0, wx.EXPAND, 5)
         sizer.Add(left_sizer, 1, 0, 5)
         # Add data view list
@@ -891,7 +914,8 @@ class WgtSchemeRelated (wx.Panel):
         self.dataViewList.AppendTextColumn(u"行号", 0) 
         self.dataViewList.AppendTextColumn(u"品码", 1) 
         self.dataViewList.AppendTextColumn(u"品名", 2) 
-        self.dataViewList.AppendTextColumn(u"厨打方式", 10) 
+        self.dataViewList.AppendTextColumn(u"厨打方式", 10)
+        self.dataViewList.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         right_sizer.Add(self.dataViewList, 0, wx.EXPAND | wx.LEFT, 5)
 
         sizer.Add(right_sizer, 1, 0, 5)
@@ -902,6 +926,7 @@ class WgtSchemeRelated (wx.Panel):
         wx.Panel.__init__(self, parent, id=wx.ID_ANY, pos=wx.DefaultPosition,
                           size=wx.Size(800, 600), style=wx.TAB_TRAVERSAL)
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+        self.SetBackgroundColour(wx.Colour(0x51, 0x1c, 0x0a))
         
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_status_bar_sizer(sizer)
@@ -911,14 +936,8 @@ class WgtSchemeRelated (wx.Panel):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        # Create an instance of our model...
-        self.model = ModelDishes(CtrlDishes.get_instance().get_data())
-        CtrlDishes.get_instance().refresh_items()
-        
-        # Tell the DVC to use the model
-        self.dataViewList.AssociateModel(self.model)
-
         # Connect Events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
         
         self.btnSetting.Bind(wx.EVT_BUTTON, self.on_btn_setting)
@@ -928,14 +947,22 @@ class WgtSchemeRelated (wx.Panel):
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_sel_changed, self.treeCtrl)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.on_activate, self.treeCtrl)
         
-        # Show tree control
+        # define variable
+        self.model = None
         self.tree_data = None
-        self._show_tree_ctrl()
     
     def __del__(self):
         pass
     
     def initialize(self):
+        # Create an instance of our model...
+        self.model = ModelDishes(CtrlDishes.get_instance().get_data())
+        CtrlDishes.get_instance().refresh_items()
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+        # Show tree control
+        self._show_tree_ctrl()
+
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.on_refresh)
         
@@ -947,6 +974,7 @@ class WgtSchemeRelated (wx.Panel):
         EvtManager.remove_listener(self, EnumEvent.EVT_DISHES_PUBLISH_REFRESH, self.on_refresh)
     
     def _show_tree_ctrl(self):
+        self.treeCtrl.DeleteAllItems()
         isz = (16, 16)
         il = wx.ImageList(isz[0], isz[1])
         fl_idx = il.Add(wx.ArtProvider_GetBitmap(wx.ART_FOLDER, wx.ART_OTHER, isz))
@@ -996,16 +1024,38 @@ class WgtSchemeRelated (wx.Panel):
         self.treeCtrl.Expand(self.root)
     
     # Virtual event handlers, override them in your derived class
+    def on_paint(self, event):
+        dc = wx.ClientDC(self.topPanel)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetSize()
 
-        self.btnSetting.SetMaxSize(wx.Size(100, 50))
-        self.btnBatSetting.SetMaxSize(wx.Size(100, 50))
-        self.btnExit.SetMaxSize(wx.Size(50, 50))
-        self.topPanel.SetMaxSize(wx.Size(x-250, 50))
-        self.treeCtrl.SetMinSize(wx.Size(200, y-50))
-        self.dataViewList.SetMinSize(wx.Size(x-200, y-50))
+        self.btnSetting.SetSize(wx.Size(103, 70))
+        self.btnSetting.SetPosition(wx.Point(0, 6))
+
+        self.btnBatSetting.SetSize(wx.Size(83, 70))
+        self.btnBatSetting.SetPosition(wx.Point(105, 6))
+
+        self.btnExit.SetSize(wx.Size(63, 70))
+        self.btnExit.SetPosition(wx.Point(190, 6))
+
+        self.topPanel.SetSize(wx.Size(x, 82))
+        self.treeCtrl.SetMinSize(wx.Size(200, y-82))
+        self.dataViewList.SetMinSize(wx.Size(x-200, y-82))
+
+        self.Refresh()
         
     def on_btn_setting(self, event):
         event.Skip()

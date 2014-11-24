@@ -1,5 +1,6 @@
 #_*_ encoding=utf-8 _*_
 #!/usr/bin/env python
+from app.front.logic.ctrl import *
 from app.app_manager import AppManager
 from app.front.config import CONFIG
 from service.http_json.http_service import HttpService
@@ -18,6 +19,12 @@ if not CONFIG.useTemp:
     config_json = json.loads(content)
     HttpService.get_instance().initialize(config_json['svr_address'], config_json['svr_port'])
 
-AppManager.get_instance().initialize()
+try:
+    CtrlTableInfo.get_instance().get_table_items()
+    CtrlDishesInfo.get_instance().get_dishes_items()
+except Exception, ex:
+    print Exception, ":", ex
+
+AppManager.get_instance().initialize('front')
 AppManager.get_instance().switch_to_application('Login', 'front')
 app.MainLoop()

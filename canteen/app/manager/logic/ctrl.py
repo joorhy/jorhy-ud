@@ -563,9 +563,9 @@ class CtrlEmployee():
             EvtManager.dispatch_event(EnumEvent.EVT_EMPLOYEE_REFRESH)
             
     @staticmethod
-    def update_item(data):
+    def update_item(data, group_list):
         if isinstance(data, DataEmployee):
-            update_item('EmployeeInfo', data)
+            update_user_info(data, group_list)
             EvtManager.dispatch_event(EnumEvent.EVT_EMPLOYEE_REFRESH)
 
 

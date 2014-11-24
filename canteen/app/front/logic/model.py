@@ -108,7 +108,8 @@ class ModelOrderedDishes(wx.dataview.PyDataViewModel):
                   4: 'int',
                   5: 'int',
                   6: 'float',
-                  7: 'float'}
+                  7: 'float',
+                  8: 'string'}
         return mapper[col]
 
     def GetChildren(self, parent, children):
@@ -149,7 +150,11 @@ class ModelOrderedDishes(wx.dataview.PyDataViewModel):
                       6: node.dishes_amount,
                       7: node.dishes_real_amount,
                       8: node.dishes_real_amount - node.dishes_real_amount,
-                      9: ''}
+                      9: '',
+                      10: node.dishes_code,
+                      11: node.dishes_status,
+                      12: node.dishes_spec_id,
+                      13: node.dishes_style_id}
             return mapper[col]
 
         else:

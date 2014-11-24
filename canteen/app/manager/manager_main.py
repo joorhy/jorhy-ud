@@ -19,6 +19,6 @@ from app.manager.logic.ctrl import CtrlManagerLogin
 CtrlManagerLogin.get_instance().initialize(config_json['user'], config_json["password"],
                                            config_json["disk_num"] + ":" + config_json["img_path"])
 
-AppManager.get_instance().initialize()
+AppManager.get_instance().initialize('manager')
 AppManager.get_instance().switch_to_application('Login', 'manager')
 app.MainLoop()

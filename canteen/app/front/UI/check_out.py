@@ -11,11 +11,12 @@ from app.home_logic import CtrlHomePage
 from app.app_manager import AppManager
 from app.front.logic.ctrl import *
 from app.front.logic.model import ModelOrderedDishes
-
+from framework.img_button import ImgButton
 
 import wx
 import wx.xrc
 import wx.dataview
+import sys
 
 ###########################################################################
 ## Class PopWholeOrderDiscount
@@ -29,7 +30,7 @@ class PopWholeOrderDiscount (wx.Dialog):
         discount_sizer.SetMinSize(wx.Size(-1, 120))
         # Add source discount sizer
         src_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.s_txt_src_discount = wx.StaticText(self, wx.ID_ANY, u"原折扣：", wx.DefaultPosition,
+        self.s_txt_src_discount = wx.StaticText(self, wx.ID_ANY, u"全单折扣：", wx.DefaultPosition,
                                                 wx.Size(100, -1), wx.ALIGN_RIGHT)
         self.s_txt_src_discount.Wrap(-1)
         src_discount_sizer.Add(self.s_txt_src_discount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
@@ -40,7 +41,7 @@ class PopWholeOrderDiscount (wx.Dialog):
         discount_sizer.Add(src_discount_sizer, 1, wx.EXPAND, 5)
 
         # Add special discount sizer
-        special_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        '''special_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.s_txt_spec_discount = wx.StaticText(self, wx.ID_ANY, u"特批折扣：", wx.DefaultPosition,
                                                  wx.Size(100, -1), wx.ALIGN_RIGHT)
@@ -49,7 +50,7 @@ class PopWholeOrderDiscount (wx.Dialog):
 
         self.txtSpecDiscount = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         special_discount_sizer.Add(self.txtSpecDiscount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        discount_sizer.Add(special_discount_sizer, 1, wx.EXPAND, 5)
+        discount_sizer.Add(special_discount_sizer, 1, wx.EXPAND, 5)'''
 
         parent.Add(discount_sizer, 1, wx.EXPAND, 5)
 
@@ -86,6 +87,12 @@ class PopWholeOrderDiscount (wx.Dialog):
 
     # Virtual event handlers, override them in your derived class
     def on_btn_confirm(self, event):
+        order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
+        if order_id is not None:
+            order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
+            if order_item is not None:
+                order_item.all_discount = float(self.txtSrcDiscount.GetValue())
+
         self.Close()
 
     def on_btn_cancel(self, event):
@@ -103,7 +110,7 @@ class PopDishesDiscount (wx.Dialog):
         discount_sizer.SetMinSize(wx.Size(-1, 120))
         # Add source discount sizer
         src_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        self.s_txt_src_discount = wx.StaticText(self, wx.ID_ANY, u"原折扣：", wx.DefaultPosition,
+        self.s_txt_src_discount = wx.StaticText(self, wx.ID_ANY, u"菜品折扣：", wx.DefaultPosition,
                                                 wx.Size(100, -1), wx.ALIGN_RIGHT)
         self.s_txt_src_discount.Wrap(-1)
         src_discount_sizer.Add(self.s_txt_src_discount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
@@ -114,7 +121,7 @@ class PopDishesDiscount (wx.Dialog):
         discount_sizer.Add(src_discount_sizer, 1, wx.EXPAND, 5)
 
         # Add special discount sizer
-        special_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        '''special_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.s_txt_spec_discount = wx.StaticText(self, wx.ID_ANY, u"特批折扣：", wx.DefaultPosition,
                                                  wx.Size(100, -1), wx.ALIGN_RIGHT)
@@ -123,7 +130,7 @@ class PopDishesDiscount (wx.Dialog):
 
         self.txtSpecDiscount = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         special_discount_sizer.Add(self.txtSpecDiscount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        discount_sizer.Add(special_discount_sizer, 1, wx.EXPAND, 5)
+        discount_sizer.Add(special_discount_sizer, 1, wx.EXPAND, 5)'''
 
         parent.Add(discount_sizer, 1, wx.EXPAND, 5)
 
@@ -155,8 +162,19 @@ class PopDishesDiscount (wx.Dialog):
         self.btnConfirm.Bind(wx.EVT_BUTTON, self.on_btn_confirm)
         self.btnCancel.Bind(wx.EVT_BUTTON, self.on_btn_cancel)
 
+        # Initialize
+        self._init_data_view()
+
     def __del__(self):
         pass
+
+    def _init_data_view(self):
+        self.txtSrcDiscount.Enable(False)
+        dishes_code = CtrlOrderInfo.get_instance().get_select_dishes_code()
+        if dishes_code is not None:
+            dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(dishes_code)
+            if dishes_item is not None:
+                self.txtSrcDiscount.SetValue(str(dishes_item.dishes_discount))
 
     # Virtual event handlers, override them in your derived class
     def on_btn_confirm(self, event):
@@ -229,11 +247,28 @@ class PopCheckoutDiscount (wx.Dialog):
         self.btnConfirm.Bind(wx.EVT_BUTTON, self.on_btn_confirm)
         self.btnCancel.Bind(wx.EVT_BUTTON, self.on_btn_cancel)
 
+        # Initialize
+        self._init_data_view()
+
     def __del__(self):
         pass
 
+    def _init_data_view(self):
+        self.txtConsumeSum.Enable(False)
+        order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
+        if order_id is not None:
+            order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
+            if order_item is not None:
+                self.txtConsumeSum.SetValue(str(order_item.place_money))
+
     # Virtual event handlers, override them in your derived class
     def on_btn_confirm(self, event):
+        order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
+        if order_id is not None:
+            order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
+            if order_item is not None:
+                order_item.free_price = float(self.txtFree.GetValue())
+
         self.Close()
 
     def on_btn_cancel(self, event):
@@ -535,6 +570,8 @@ class PopPrevPrint (wx.Dialog):
                 # Tell the DVC to use the model
                 self.dataViewCtrl.AssociateModel(self.model)
 
+
+
     # Virtual event handlers, override them in your derived class
     def on_btn_prev_print(self, event):
         event.Skip()
@@ -570,7 +607,7 @@ class PopCheckout (wx.Dialog):
         money_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         s_txt_money = wx.StaticText(self, wx.ID_ANY, u"金额：", wx.DefaultPosition,
-                                                 wx.Size(100, -1), wx.ALIGN_RIGHT)
+                                    wx.Size(100, -1), wx.ALIGN_RIGHT)
         s_txt_money.Wrap(-1)
         money_sizer.Add(s_txt_money, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
@@ -628,12 +665,13 @@ class PopCheckout (wx.Dialog):
         if order_id is not None:
             order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
             if order_item is not None:
-                self.txtMoney.SetValue(str(order_item.order_money))
+                self.txtMoney.SetValue(str((order_item.place_money * order_item.all_discount) - order_item.free_price))
 
     # Virtual event handlers, override them in your derived class
     def on_btn_confirm(self, event):
         if self.table_item is not None:
-            CtrlOrderInfo.get_instance().check_out(self.table_item.table_id, self.table_item.order_id)
+            CtrlOrderInfo.get_instance().check_out(self.table_item.table_id, self.table_item.order_id,
+                                                   self.table_item.order_num)
         self.Close()
 
     def on_btn_cancel(self, event):
@@ -646,35 +684,21 @@ class PopCheckout (wx.Dialog):
 
 class WgtCheckout (wx.Panel):
     def _init_status_bar(self, parent):
-        self.statusBarPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(-1, 60), wx.TAB_TRAVERSAL)
-        self.statusBarPanel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
-        self.statusBarPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        self.statusBarPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(-1, 82), wx.TAB_TRAVERSAL)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add all dishes discount button
-        self.btnAllDiscount = wx.Button(self.statusBarPanel, wx.ID_ANY, u"全单折", wx.DefaultPosition,
-                                        wx.Size(60, 60), 0)
-        sizer.Add(self.btnAllDiscount, 0, 0, 5)
+        self.btnAllDiscount = ImgButton(self.statusBarPanel, u"all_discount.png", u"s_all_discount.png")
         # Add dishes discount button
-        self.btnDishesDiscount = wx.Button(self.statusBarPanel, wx.ID_ANY, u"菜品折", wx.DefaultPosition,
-                                           wx.Size(60, 60), 0)
-        sizer.Add(self.btnDishesDiscount, 0, 0, 5)
+        self.btnDishesDiscount = ImgButton(self.statusBarPanel, u"dishes_discount.png", u"s_dishes_discount.png")
         # Add free dishes button
-        self.btnFree = wx.Button(self.statusBarPanel, wx.ID_ANY, u"免单", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnFree, 0, 0, 5)
-        # Add vertical line
-        s_vertical_line = wx.StaticLine(self.statusBarPanel, wx.ID_ANY, wx.DefaultPosition,
-                                        wx.DefaultSize, wx.LI_VERTICAL)
-        sizer.Add(s_vertical_line, 0, wx.EXPAND | wx.ALL, 5)
+        self.btnFree = ImgButton(self.statusBarPanel, u"free.png", u"s_free.png")
         # Add previous print button
-        self.btnPrevPrint = wx.Button(self.statusBarPanel, wx.ID_ANY, u"预打", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnPrevPrint, 0, 0, 5)
+        self.btnPrevPrint = ImgButton(self.statusBarPanel, u"print.png", u"s_print.png")
         # Add checkout button
-        self.btnCheckout = wx.Button(self.statusBarPanel, wx.ID_ANY, u"埋单", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnCheckout, 0, 0, 5)
+        self.btnCheckout = ImgButton(self.statusBarPanel, u"check_order.png", u"s_check_order.png")
         # Add exit button
-        self.btnExit = wx.Button(self.statusBarPanel, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnExit, 0, 0, 5)
+        self.btnExit = ImgButton(self.statusBarPanel, u"front_exit.png", u"s_front_exit.png")
 
         # Layout
         self.statusBarPanel.SetSizer(sizer)
@@ -694,13 +718,12 @@ class WgtCheckout (wx.Panel):
 
         self.dishesViewPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition,
                                         wx.DefaultSize, wx.STATIC_BORDER | wx.TAB_TRAVERSAL)
-        self.dishesViewPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
-        self.dishesViewPanel.SetMinSize(wx.Size(480, 300))
+        self.dishesViewPanel.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
         # Add dishes list view sizer
         dishes_view_sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.dataViewList = wx.dataview.DataViewCtrl(self.dishesViewPanel, wx.ID_ANY, wx.DefaultPosition,
-                                                     wx.Size(480, 300), 0)
+                                                     wx.DefaultSize, 0)
         self.dataViewList.AppendTextColumn(u"行号", 0)
         self.dataViewList.AppendTextColumn(u"菜品名称", 1)
         self.dataViewList.AppendTextColumn(u"规格", 2)
@@ -708,6 +731,7 @@ class WgtCheckout (wx.Panel):
         self.dataViewList.AppendTextColumn(u"退菜量", 9)
         self.dataViewList.AppendTextColumn(u"价格", 6)
         self.dataViewList.AppendTextColumn(u"加价", 8)
+        self.dataViewList.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         dishes_view_sizer.Add(self.dataViewList, 0, wx.EXPAND, 5)
 
         # Layout dishes list view
@@ -718,6 +742,7 @@ class WgtCheckout (wx.Panel):
 
         # Add checkout type list view sizer
         self.checkoutViewPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(480, 210), wx.TAB_TRAVERSAL)
+        self.checkoutViewPanel.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
         checkout_view_sizer = wx.BoxSizer(wx.VERTICAL)
 
         self.dataViewCheckout = wx.dataview.DataViewCtrl(self.checkoutViewPanel, wx.ID_ANY, wx.DefaultPosition,
@@ -726,6 +751,7 @@ class WgtCheckout (wx.Panel):
         self.dataViewCheckout.AppendTextColumn(u"收银方式", 1)
         self.dataViewCheckout.AppendTextColumn(u"实收金额", 2)
         self.dataViewCheckout.AppendTextColumn(u"付款金额", 3)
+        self.dataViewCheckout.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         checkout_view_sizer.Add(self.dataViewCheckout, 0, wx.EXPAND, 5)
 
         # Layout checkout type list view
@@ -747,7 +773,7 @@ class WgtCheckout (wx.Panel):
     def _init_table_info(self, parent):
         self.tableInfoPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(300, 300),
                                        wx.SIMPLE_BORDER | wx.TAB_TRAVERSAL)
-        self.tableInfoPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        self.tableInfoPanel.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         # Add order number and table number sizer
@@ -1016,7 +1042,7 @@ class WgtCheckout (wx.Panel):
     def _init_cashier_info(self, parent):
         self.cashierPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(300, 210),
                                      wx.STATIC_BORDER | wx.TAB_TRAVERSAL)
-        self.cashierPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        self.cashierPanel.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
 
@@ -1063,6 +1089,7 @@ class WgtCheckout (wx.Panel):
                           size=wx.Size(800, 600), style=wx.TAB_TRAVERSAL)
 
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+        self.SetBackgroundColour(wx.Colour(0x51, 0x1c, 0x0a))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_status_bar(sizer)
@@ -1072,14 +1099,8 @@ class WgtCheckout (wx.Panel):
         self.Layout()
         self.Centre(wx.BOTH)
 
-        # Create an instance of our model...
-        table_num = CtrlTableInfo.get_instance().get_selected_item_id()
-        order_num = CtrlTableInfo.get_instance().get_order_num(table_num)
-        self.model = ModelOrderedDishes(CtrlOrderInfo.get_instance().get_order_dishes_items(order_num))
-        # Tell the DVC to use the model
-        self.dataViewList.AssociateModel(self.model)
-
         # Connect Events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.btnAllDiscount.Bind(wx.EVT_BUTTON, self.on_btn_alldiscount)
         self.btnDishesDiscount.Bind(wx.EVT_BUTTON, self.on_btn_dishes_discount)
@@ -1088,13 +1109,26 @@ class WgtCheckout (wx.Panel):
         self.btnCheckout.Bind(wx.EVT_BUTTON, self.on_btn_checkout)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
 
-        # Initialize
-        self._init_table_data()
+        self.Bind(wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.on_item_activated, self.dataViewCheckout)
+        self.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_item_changed, self.dataViewList)
+
+        # define variable
+        self.model = None
 
     def __del__(self):
         pass
 
     def initialize(self):
+        # Create an instance of our model...
+        table_num = CtrlTableInfo.get_instance().get_selected_item_id()
+        order_num = CtrlTableInfo.get_instance().get_order_num(table_num)
+        self.model = ModelOrderedDishes(CtrlOrderInfo.get_instance().get_order_dishes_items(order_num))
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+
+        # Initialize
+        self._init_table_data()
+
         # Add event listener
         #EvtManager.add_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
 
@@ -1117,21 +1151,49 @@ class WgtCheckout (wx.Panel):
         self.txtOpenMemo.SetLabel(table_item.memo)
 
     # Virtual event handlers, override them in your derived class
+    def on_paint(self, event):
+        dc = wx.ClientDC(self.statusBarPanel)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetSize()
 
-        self.btnAllDiscount.SetMaxSize(wx.Size(60, 60))
-        self.btnDishesDiscount.SetMaxSize(wx.Size(60, 60))
-        self.btnFree.SetMaxSize(wx.Size(60, 60))
-        self.btnPrevPrint.SetMaxSize(wx.Size(60, 60))
-        self.btnCheckout.SetMaxSize(wx.Size(60, 60))
-        self.btnExit.SetMaxSize(wx.Size(60, 60))
-        self.statusBarPanel.SetMaxSize(wx.Size(x, 60))
-        self.dishesViewPanel.SetMinSize(wx.Size(x-300, y-60-220))
-        self.dataViewList.SetMinSize(wx.Size(x-300, y-60-220))
+        self.btnAllDiscount.SetSize(wx.Size(83, 70))
+        self.btnAllDiscount.SetPosition(wx.Point(0, 6))
+
+        self.btnDishesDiscount.SetSize(wx.Size(83, 70))
+        self.btnDishesDiscount.SetPosition(wx.Point(85, 6))
+
+        self.btnFree.SetSize(wx.Size(63, 70))
+        self.btnFree.SetPosition(wx.Point(170, 6))
+
+        self.btnPrevPrint.SetSize(wx.Size(63, 70))
+        self.btnPrevPrint.SetPosition(wx.Point(235, 6))
+
+        self.btnCheckout.SetSize(wx.Size(63, 70))
+        self.btnCheckout.SetPosition(wx.Point(300, 6))
+
+        self.btnExit.SetSize(wx.Size(63, 70))
+        self.btnExit.SetPosition(wx.Point(365, 6))
+
+        self.statusBarPanel.SetSize(wx.Size(x, 82))
+        self.dishesViewPanel.SetMinSize(wx.Size(x-300, y-82-220))
+        self.dataViewList.SetMinSize(wx.Size(x-300, y-82-220))
         self.checkoutViewPanel.SetMinSize(wx.Size(x-300, 210))
         self.dataViewCheckout.SetMinSize(wx.Size(x-300, 210))
+
+        self.Refresh()
 
     def on_btn_alldiscount(self, event):
         pop_whole_discount = PopWholeOrderDiscount(self)
@@ -1156,6 +1218,21 @@ class WgtCheckout (wx.Panel):
     def on_btn_exit(self, event):
         event.Skip()
         AppManager.get_instance().switch_to_application('FrontPage')
+
+    def on_item_activated(self, event):
+        print self.model.GetValue(event.GetItem(), 0)
+
+    def on_item_changed(self, event):
+        try:
+            dishes_code = self.model.GetValue(event.GetItem(), 10)
+            dishes_spec_id = self.model.GetValue(event.GetItem(), 12)
+            dishes_style_id = self.model.GetValue(event.GetItem(), 13)
+            CtrlOrderInfo.get_instance().set_select_dishes_id(dishes_code, dishes_spec_id, dishes_style_id)
+            CtrlOrderInfo.get_instance().set_select_dishes_code(dishes_code)
+        except Exception, ex:
+            print Exception, ":", ex
+            CtrlOrderInfo.get_instance().set_select_dishes_id(None)
+            CtrlOrderInfo.get_instance().set_select_dishes_code(None)
 
 
 if __name__ == '__main__':

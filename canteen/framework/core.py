@@ -3,7 +3,7 @@
 import wx
 
 
-def single_get_first(unicode1): 
+def single_get_first(unicode1):
     str1 = unicode1.encode('gbk') 
     try:         
         ord(str1) 

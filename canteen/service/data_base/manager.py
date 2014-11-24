@@ -108,46 +108,82 @@ def add_item(type_, data):
         return
 
     session = SqlManager.get_instance().session
+    session.flush()
+    session.commit()
+
     item = None
     if type_ == 'AreaInfo':
+        result = session.query(TableInfoArea).filter(TableInfoArea.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = TableInfoArea()
         item.vch_name = data.name
     elif type_ == 'CategoryInfo':
+        result = session.query(DishCategory).filter(DishCategory.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = DishCategory()
         item.vch_name = data.name
     elif type_ == 'DepartmentInfo':
+        result = session.query(UDept).filter(UDept.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = UDept()
         item.vch_name = data.name
     elif type_ == 'SpecInfo':
+        result = session.query(DishSpec).filter(DishSpec.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = DishSpec()
         item.vch_dish_code = data.dish_code
         item.vch_name = data.name
         item.num_price = data.price
     elif type_ == 'StyleInfo':
+        result = session.query(DishStyle).filter(DishStyle.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = DishStyle()
         item.vch_dish_code = data.dish_code
         item.vch_name = data.name
         item.num_priceadd = data.price_add
         item.ch_mountadd = data.amount_add
     elif type_ == 'MinExpenseInfo':
+        result = session.query(TableInfoMinexpense).filter(TableInfoMinexpense.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = TableInfoMinexpense()
         item.vch_name = data.name
         item.num_amount = data.price
     elif type_ == 'SchemeTypeInfo':
+        result = session.query(PrinterSchemeType).filter(PrinterSchemeType.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = PrinterSchemeType()
         item.vch_name = data.name
     elif type_ == 'TableTypeInfo':
+        result = session.query(TableInfoType).filter(TableInfoType.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = TableInfoType()
         item.vch_name = data.name
     elif type_ == 'UnitInfo':
+        result = session.query(Unit).filter(Unit.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = Unit()
         item.vch_name = data.name
     elif type_ == 'PermList':
+        result = session.query(UPermList).filter(UPermList.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = UPermList()
         item.vch_code = data.code
         item.vch_pcode = data.p_code
         item.vch_name = data.name
     elif type_ == 'DishInfo':
+        result = session.query(DishPublish).filter(DishPublish.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = DishPublish()
         item.vch_code = data.code
         item.vch_name = data.name
@@ -159,8 +195,10 @@ def add_item(type_, data):
         item.ch_disabled = data.stop
         item.vch_picname = data.image_url
     elif type_ == 'PrintSchemeInfo':
+        result = session.query(PrinterScheme).filter(PrinterScheme.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = PrinterScheme()
-
         item.vch_name = data.name
         item.num_valid = 1 if data.valid else 0
         item.num_scheme_type = data.scheme_type
@@ -169,6 +207,9 @@ def add_item(type_, data):
             item.num_backup_scheme_id = data.backup
         item.vch_code = data.code
     elif type_ == 'TableInfo':
+        result = session.query(TableInfo).filter(TableInfo.vch_name == data.name).all()
+        if len(result) > 0:
+            return
         item = TableInfo()
         item.vch_code = ''
         item.vch_name = data.name
@@ -440,7 +481,7 @@ def add_user_info(data, li_perm_group):
     for group in li_perm_group:
         if group.selected:
             perm_group = session.query(UPermGroup).filter(UPermGroup.id == group.key).one()
-            user_info.u_perm_lists.append(perm_group)
+            user_info.u_perm_groups.append(perm_group)
 
     session.add(user_info)
     session.flush()

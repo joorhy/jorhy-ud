@@ -11,11 +11,13 @@ from app.home_logic import CtrlHomePage
 from app.app_manager import AppManager
 from app.front.logic.ctrl import *
 from app.front.logic.model import *
+from framework.img_button import ImgButton
 
 import wx
 import wx.xrc
 import wx.dataview
 import time
+import sys
 
 
 ###########################################################################
@@ -180,7 +182,7 @@ class PopOpenTable(wx.Dialog):
             self.txtTableName.SetValue(item.table_name)
             self.txtTableName.Enable(False)
             self.txtPeopleNum.SetValue(str(item.people_num))
-            self.txtOpenPerson.SetValue(u"system")
+            self.txtOpenPerson.SetValue(CtrlFrontLogin.get_instance().get_user())
             self.txtOpenPerson.Enable(False)
             self.txtOpenTime.SetValue(time.strftime('%Y-%m-%d %H:%M:%S'))
             self.txtOpenTime.Enable(False)
@@ -433,43 +435,23 @@ class PopCloseTable (wx.Dialog):
 class WgtFrontPage (wx.Panel):
     def _init_status_bar(self, parent):
         self.statusBarPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition,
-                                       wx.Size(-1, 60), wx.RAISED_BORDER | wx.TAB_TRAVERSAL)
-        self.statusBarPanel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
-        self.statusBarPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
-        self.statusBarPanel.SetMaxSize(wx.Size(-1, 60))
+                                       wx.Size(-1, 82), wx.TAB_TRAVERSAL)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add open table button
-        self.btnOpenTable = wx.Button(self.statusBarPanel, wx.ID_ANY, u"开台", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnOpenTable, 0, 0, 5)
+        self.btnOpenTable = ImgButton(self.statusBarPanel, u"open_table.png", u"s_open_table.png")
         # Add order dishes button
-        self.btnOrderDishes = wx.Button(self.statusBarPanel, wx.ID_ANY, u"点菜", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnOrderDishes, 0, 0, 5)
+        self.btnOrderDishes = ImgButton(self.statusBarPanel, u"order_dishes.png", u"s_order_dishes.png")
         # Add checkout button
-        self.btnCheckout = wx.Button(self.statusBarPanel, wx.ID_ANY, u"结算", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnCheckout, 0, 0, 5)
-        # Add vertical line
-        s_vertical_line = wx.StaticLine(self.statusBarPanel, wx.ID_ANY, wx.DefaultPosition,
-                                        wx.DefaultSize, wx.LI_VERTICAL)
-        sizer.Add(s_vertical_line, 0, wx.EXPAND | wx.ALL, 5)
+        self.btnCheckout = ImgButton(self.statusBarPanel, u"checkout.png", u"s_checkout.png")
         # Add change table button
-        self.btnChangeTable = wx.Button(self.statusBarPanel, wx.ID_ANY, u"转台", wx.DefaultPosition,
-                                        wx.Size(60, 60), 0)
-        sizer.Add(self.btnChangeTable, 0, 0, 5)
+        self.btnChangeTable = ImgButton(self.statusBarPanel, u"change_table.png", u"s_change_table.png")
         # Add status button
-        self.btnCloseTable = wx.Button(self.statusBarPanel, wx.ID_ANY, u"撤台", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnCloseTable, 0, 0, 5)
+        self.btnCloseTable = ImgButton(self.statusBarPanel, u"close_table.png", u"s_close_table.png")
         # Add refresh button
-        self.btnRefresh = wx.Button(self.statusBarPanel, wx.ID_ANY, u"数据刷新", wx.DefaultPosition,
-                                    wx.Size(60, 60), 0)
-        sizer.Add(self.btnRefresh, 0, 0, 5)
-        # Add vertical line
-        s_vertical_line = wx.StaticLine(self.statusBarPanel, wx.ID_ANY, wx.DefaultPosition,
-                                        wx.DefaultSize, wx.LI_VERTICAL)
-        sizer.Add(s_vertical_line, 0, wx.EXPAND | wx.ALL, 5)
+        self.btnRefresh = ImgButton(self.statusBarPanel, u"refresh_table.png", u"s_refresh_table.png")
         # Add exit button
-        self.btnExit = wx.Button(self.statusBarPanel, wx.ID_ANY, u"注销", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnExit, 0, 0, 5)
+        self.btnExit = ImgButton(self.statusBarPanel, u"cancel.png", u"s_cancel.png")
 
         # Layout
         self.statusBarPanel.SetSizer(sizer)
@@ -480,12 +462,11 @@ class WgtFrontPage (wx.Panel):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.dishesSelectorPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(560, 520), wx.TAB_TRAVERSAL)
-        self.dishesSelectorPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_INFOBK))
-        sizer.Add(self.dishesSelectorPanel, 1, wx.EXPAND | wx.RIGHT | wx.TOP, 5)
+        self.dishesSelectorPanel.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        sizer.Add(self.dishesSelectorPanel, 1, wx.EXPAND | wx.RIGHT, 5)
 
         self.tableInfoPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(300, 520), wx.TAB_TRAVERSAL)
-        self.tableInfoPanel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
-        self.tableInfoPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        self.tableInfoPanel.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
 
         table_info_sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_table_info(self.tableInfoPanel, table_info_sizer)
@@ -494,7 +475,7 @@ class WgtFrontPage (wx.Panel):
 
         self.tableInfoPanel.SetSizer(table_info_sizer)
         self.tableInfoPanel.Layout()
-        sizer.Add(self.tableInfoPanel, 1, wx.TOP, 5)
+        sizer.Add(self.tableInfoPanel, 1, wx.EXPAND, 5)
         # Add horizontal line
         s_horizontal_line = wx.StaticLine(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_HORIZONTAL)
         sizer.Add(s_horizontal_line, 0, wx.EXPAND | wx.ALL, 5)
@@ -671,7 +652,6 @@ class WgtFrontPage (wx.Panel):
 
         self.dataViewDishes = wx.dataview.DataViewCtrl(container, wx.ID_ANY, wx.DefaultPosition,
                                                        wx.Size(300, 220), 0)
-        self.dataViewDishes.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
 
         self.dataViewDishes.AppendTextColumn(u"行号", 0)
         self.dataViewDishes.AppendTextColumn(u"菜品名称", 1)
@@ -681,6 +661,7 @@ class WgtFrontPage (wx.Panel):
         self.dataViewDishes.AppendTextColumn(u"退菜量", 5)
         self.dataViewDishes.AppendTextColumn(u"价格", 6)
         self.dataViewDishes.AppendTextColumn(u"实际金额", 7)
+        self.dataViewDishes.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
         sizer.Add(self.dataViewDishes, 0, 0, 5)
 
         parent.Add(sizer, 1, wx.EXPAND, 5)
@@ -730,6 +711,8 @@ class WgtFrontPage (wx.Panel):
                           size=wx.Size(800, 600), style=wx.TAB_TRAVERSAL)
 
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+        self.SetBackgroundColour(wx.Colour(0x51, 0x1c, 0x0a))
+
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_status_bar(sizer)
         self._init_data_info(sizer)
@@ -739,6 +722,7 @@ class WgtFrontPage (wx.Panel):
         self.Centre(wx.BOTH)
 
         # Connect Events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.btnOpenTable.Bind(wx.EVT_BUTTON, self.on_btn_open_table)
         self.btnOrderDishes.Bind(wx.EVT_BUTTON, self.on_btn_order_dishes)
@@ -763,7 +747,7 @@ class WgtFrontPage (wx.Panel):
 
     def initialize(self):
         # Add event listener
-        EvtManager.add_listener(self, EnumEvent.EVT_FRONT_PAGE_REFRESH, self.on_btn_refresh)
+        EvtManager.add_listener(self, EnumEvent.EVT_FRONT_PAGE_REFRESH, self.on_refresh)
 
         x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
@@ -772,27 +756,57 @@ class WgtFrontPage (wx.Panel):
 
     def un_initialize(self):
         # Remove event listener
-        EvtManager.remove_listener(self, EnumEvent.EVT_FRONT_PAGE_REFRESH, self.on_btn_refresh)
+        EvtManager.remove_listener(self, EnumEvent.EVT_FRONT_PAGE_REFRESH, self.on_refresh)
         pass
 
     # Virtual event handlers, override them in your derived class
+    def on_paint(self, event):
+        dc = wx.ClientDC(self.statusBarPanel)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetSize()
 
-        self.btnOpenTable.SetMaxSize(wx.Size(60, 60))
-        self.btnOrderDishes.SetMaxSize(wx.Size(60, 60))
-        self.btnCheckout.SetMaxSize(wx.Size(60, 60))
-        self.btnChangeTable.SetMaxSize(wx.Size(60, 60))
-        self.btnRefresh.SetMaxSize(wx.Size(60, 60))
-        self.btnCloseTable.SetMaxSize(wx.Size(60, 60))
-        self.btnExit.SetMaxSize(wx.Size(60, 60))
-        self.statusBarPanel.SetMaxSize(wx.Size(x, 60))
-        self.dishesSelectorPanel.SetMinSize(wx.Size(x-300, y-60))
-        self.tableInfoPanel.SetMinSize(wx.Size(290, y-60))
-        self.dataViewDishes.SetMinSize(wx.Size(290, y-350))
+        self.btnOpenTable.SetSize(wx.Size(63, 70))
+        self.btnOpenTable.SetPosition(wx.Point(0, 6))
 
-        self._show_table_buttons(x-300, y-60)
+        self.btnOrderDishes.SetSize(wx.Size(65, 70))
+        self.btnOrderDishes.SetPosition(wx.Point(65, 6))
+
+        self.btnCheckout.SetSize(wx.Size(63, 70))
+        self.btnCheckout.SetPosition(wx.Point(130, 6))
+
+        self.btnChangeTable.SetSize(wx.Size(63, 70))
+        self.btnChangeTable.SetPosition(wx.Point(195, 6))
+
+        self.btnRefresh.SetSize(wx.Size(103, 70))
+        self.btnRefresh.SetPosition(wx.Point(260, 6))
+
+        self.btnCloseTable.SetSize(wx.Size(63, 70))
+        self.btnCloseTable.SetPosition(wx.Point(365, 6))
+
+        self.btnExit.SetSize(wx.Size(63, 70))
+        self.btnExit.SetPosition(wx.Point(430, 6))
+
+        self.statusBarPanel.SetSize(wx.Size(x, 82))
+        self.dishesSelectorPanel.SetMinSize(wx.Size(x-300, y-82))
+        self.tableInfoPanel.SetMinSize(wx.Size(290, y-82))
+        self.dataViewDishes.SetMinSize(wx.Size(290, y-372))
+
+        self.Refresh()
+
+        self._show_table_buttons(x-300, y-82)
 
     def on_btn_open_table(self, event):
         event.Skip()
@@ -802,7 +816,7 @@ class WgtFrontPage (wx.Panel):
             dlg.ShowModal()
         else:
             item = CtrlTableInfo.get_instance().get_table_item(selected_table_num)
-            if item is not None and not item.is_open:
+            if item is not None and item.table_status == 0:
                 pop_open_table = PopOpenTable(self, selected_table_num)
                 pop_open_table.ShowModal()
             else:
@@ -817,10 +831,11 @@ class WgtFrontPage (wx.Panel):
             dlg.ShowModal()
         else:
             item = CtrlTableInfo.get_instance().get_table_item(selected_table_num)
-            if item is not None and item.is_open:
+            if item is not None and item.table_status != 0:
                 order_num = CtrlTableInfo.get_instance().get_order_num(selected_table_num)
-                CtrlOrderInfo.get_instance().create_order(order_num)
-                AppManager.get_instance().switch_to_application('OrderDishes')
+                if order_num is not None:
+                    CtrlOrderInfo.get_instance().create_order(order_num, item.table_status)
+                    AppManager.get_instance().switch_to_application('OrderDishes')
             else:
                 dlg = wx.MessageDialog(self, u"此桌未开台", caption=u"点菜")
                 dlg.ShowModal()
@@ -829,16 +844,16 @@ class WgtFrontPage (wx.Panel):
         event.Skip()
         selected_table_num = CtrlTableInfo.get_instance().get_selected_item_id()
         if selected_table_num is None:
-            dlg = wx.MessageDialog(self, u"请选择餐桌", caption=u"点菜")
+            dlg = wx.MessageDialog(self, u"请选择餐桌", caption=u"结算")
             dlg.ShowModal()
         else:
             item = CtrlTableInfo.get_instance().get_table_item(selected_table_num)
-            if item is not None and item.is_open:
+            if item is not None and item.table_status == 2:
                 order_num = CtrlTableInfo.get_instance().get_order_num(selected_table_num)
-                CtrlOrderInfo.get_instance().create_order(order_num)
+                CtrlOrderInfo.get_instance().create_order(order_num, item.table_status)
                 AppManager.get_instance().switch_to_application('CheckOut')
             else:
-                dlg = wx.MessageDialog(self, u"此桌未开台", caption=u"点菜")
+                dlg = wx.MessageDialog(self, u"此桌未点菜", caption=u"结算")
                 dlg.ShowModal()
 
     def on_btn_change_table(self, event):
@@ -849,7 +864,7 @@ class WgtFrontPage (wx.Panel):
             dlg.ShowModal()
         else:
             item = CtrlTableInfo.get_instance().get_table_item(selected_table_num)
-            if item is not None and item.is_open:
+            if item is not None and item.table_status != 0:
                 pop_change_table = PopChangeTable(self, item.table_num)
                 pop_change_table.ShowModal()
             else:
@@ -857,22 +872,24 @@ class WgtFrontPage (wx.Panel):
                 dlg.ShowModal()
 
     def on_btn_refresh(self, event):
-        event.Skip()
+        CtrlTableInfo.get_instance().refresh_table_items()
+
+    def on_refresh(self, event):
         self._refresh_table_info()
         self._refresh_dishes_view()
 
     def on_btn_close_table(self, event):
         selected_table_num = CtrlTableInfo.get_instance().get_selected_item_id()
         if selected_table_num is None:
-            dlg = wx.MessageDialog(self, u"请选择餐桌", caption=u"开台")
+            dlg = wx.MessageDialog(self, u"请选择餐桌", caption=u"撤台")
             dlg.ShowModal()
         else:
             item = CtrlTableInfo.get_instance().get_table_item(selected_table_num)
-            if item is not None and item.is_open:
+            if item is not None and (item.table_status == 1 or item.table_status == 3):
                 pop_close_table = PopCloseTable(self, selected_table_num)
                 pop_close_table.ShowModal()
             else:
-                dlg = wx.MessageDialog(self, u"此桌未开台", caption=u"开台")
+                dlg = wx.MessageDialog(self, u"此桌未开台或未结账", caption=u"撤台")
                 dlg.ShowModal()
 
     def on_btn_table(self, event):
@@ -886,6 +903,7 @@ class WgtFrontPage (wx.Panel):
                 self.tableBtnMap[win_id].SetLabel(btn_label[9:])
         CtrlTableInfo.get_instance().set_selected_item_id(selected_table_num)
         self.tableBtnMap[selected_table_num].SetLabel(u'√        ' + self.tableBtnMap[selected_table_num].GetLabel())
+        self.tableBtnMap[selected_table_num].Refresh()
 
         self._show_table_info()
         self._refresh_dishes_view()
@@ -914,7 +932,7 @@ class WgtFrontPage (wx.Panel):
             self.txtTableName.SetLabel(table_item.table_name)
             self.txtTableType.SetLabel(table_item.table_type)
             self.txtTableArea.SetLabel(table_item.table_area)
-            if table_item.is_open:
+            if table_item.table_status != 0:
                 self.txtOrderNum.SetLabel(table_item.order_num)
                 self.txtOpenTime.SetLabel(table_item.open_time)
                 self.txtWaiter.SetLabel(table_item.waiter)
@@ -944,8 +962,8 @@ class WgtFrontPage (wx.Panel):
             return selected_flag + '\r\n' + table_code + '\r\n' + str(people_num) + u'人桌' + '\r\n'
 
     def _show_table_buttons(self, x, y):
-        column = x / 80
-        row = y / 80
+        column = x / 82
+        row = y / 82
         for (k, v) in self.tableBtnMap.items():
             self.Unbind(wx.EVT_BUTTON, v, handler=self.on_btn_table)
             v.Destroy()
@@ -960,14 +978,18 @@ class WgtFrontPage (wx.Panel):
                 item = table_items[index_]
                 win_id = int(item.table_num)
                 btn_title = self._get_table_title(item.table_num,
-                                                  item.customer_num if item.is_open else item.people_num,
+                                                  item.customer_num if item.table_status != 0 else item.people_num,
                                                   item.amount, item.is_selected)
                 self.tableBtnMap[win_id] = wx.Button(self.dishesSelectorPanel, win_id, btn_title,
-                                                     (j*80, i*80), wx.Size(80, 80), wx.STATIC_BORDER)
-                if item.is_open:
-                    self.tableBtnMap[win_id].SetBackgroundColour(wx.GREEN)
-                else:
-                    self.tableBtnMap[win_id].SetBackgroundColour(wx.RED)
+                                                     (2+j*82, 2+i*82), wx.Size(80, 80), wx.STATIC_BORDER)
+                if item.table_status == 0:
+                    self.tableBtnMap[win_id].SetBackgroundColour(wx.Colour(198, 220, 147))
+                elif item.table_status == 1:
+                    self.tableBtnMap[win_id].SetBackgroundColour(wx.Colour(237, 113, 79))
+                elif item.table_status == 2:
+                    self.tableBtnMap[win_id].SetBackgroundColour(wx.Colour(72, 173, 253))
+                elif item.table_status == 3:
+                    self.tableBtnMap[win_id].SetBackgroundColour(wx.Colour(252, 219, 52))
 
                 self.Bind(wx.EVT_BUTTON, self.on_btn_table, self.tableBtnMap[win_id])
 
@@ -976,7 +998,7 @@ class WgtFrontPage (wx.Panel):
 
     def _refresh_table_info(self):
         x, y = self.GetSize()
-        self._show_table_buttons(x-300, y-60)
+        self._show_table_buttons(x-300, y-82)
 
     def _refresh_dishes_view(self):
         # Refresh data view list

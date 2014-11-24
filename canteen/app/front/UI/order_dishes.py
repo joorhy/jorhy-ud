@@ -11,10 +11,12 @@ from app.home_logic import CtrlHomePage
 from app.app_manager import AppManager
 from app.front.logic.ctrl import *
 from app.front.logic.model import ModelOrderedDishes
+from framework.img_button import ImgButton
 
 import wx
 import wx.xrc
 import wx.dataview
+import sys
 
 ###########################################################################
 ## Class PopDeleteDishes
@@ -316,19 +318,19 @@ class PopOrderDishes (wx.Dialog):
         s_txt_spec.Wrap(-1)
         demand_sizer.Add(s_txt_spec, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        choice_spec = list()
-        self.choiceSpec = wx.Choice(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choice_spec, 0)
-        self.choiceSpec.SetSelection(0)
-        demand_sizer.Add(self.choiceSpec, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        cbx_spec = list()
+        self.cbxSpec = wx.ComboBox(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(110, -1), cbx_spec, 0)
+        self.cbxSpec.SetSelection(0)
+        demand_sizer.Add(self.cbxSpec, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         s_txt_style = wx.StaticText(self, wx.ID_ANY, u"做法：", wx.DefaultPosition, wx.Size(80, -1), wx.ALIGN_RIGHT)
         s_txt_style.Wrap(-1)
         demand_sizer.Add(s_txt_style, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        choice_style = list()
-        self.choiceStyle = wx.Choice(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, choice_style, 0)
-        self.choiceStyle.SetSelection(0)
-        demand_sizer.Add(self.choiceStyle, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        cbx_style = list()
+        self.cbxStyle = wx.ComboBox(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(110, -1), cbx_style, 0)
+        self.cbxStyle.SetSelection(0)
+        demand_sizer.Add(self.cbxStyle, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         dishes_info_sizer.Add(demand_sizer, 1, wx.EXPAND, 5)
 
@@ -359,7 +361,7 @@ class PopOrderDishes (wx.Dialog):
 
         parent.Add(ctrl_sizer, 1, wx.EXPAND, 5)
 
-    def __init__(self, parent, type):
+    def __init__(self, parent, opt_type, dishes_code):
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"点菜操作", pos=wx.DefaultPosition,
                            size=wx.Size(500, 400), style=wx.CAPTION)
 
@@ -371,17 +373,101 @@ class PopOrderDishes (wx.Dialog):
         self.Centre(wx.BOTH)
 
         # Connect Events
+        self.cbxSpec.Bind(wx.EVT_COMBOBOX, self.on_cbx_spec)
+        self.cbxStyle.Bind(wx.EVT_COMBOBOX, self.on_cbx_style)
+
         self.btnConfirm.Bind(wx.EVT_BUTTON, self.on_btn_confirm)
         self.btnCancel.Bind(wx.EVT_BUTTON, self.on_btn_cancel)
 
         # Initialize
-        self.type = type
+        self.type = opt_type
+        self.dishes_code = dishes_code
+        self._init_view()
 
     def __del__(self):
         pass
 
+    def _init_view(self):
+        self.txtDishesName.Enable(False)
+        self.txtDishesCount.Enable(False)
+        self.txtNormalPrice.Enable(False)
+        self.txtAddPrice.Enable(False)
+        if self.type == "add":
+            self._init_add_view()
+        else:
+            self._init_mod_view()
+
+    def _init_add_view(self):
+        dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(str(self.dishes_code))
+        if dishes_item is not None:
+            self.txtDishesName.SetValue(dishes_item.dishes_name)
+            self.txtDishesCount.SetValue('1')
+
+            di_spec = dishes_item.dishes_spec
+            for spec in di_spec:
+                self.cbxSpec.Append(spec["vch_name"], spec)
+            self.cbxSpec.SetSelection(0)
+
+            sel_spec = self.cbxSpec.GetClientData(self.cbxSpec.GetSelection())
+            self.txtNormalPrice.SetValue(str(sel_spec["num_price"]))
+
+            di_style = dishes_item.dishes_style
+            if len(di_style) > 0:
+                for style in di_style:
+                    self.cbxStyle.Append(style["vch_name"], style)
+                self.cbxStyle.SetSelection(0)
+
+                sel_style = self.cbxStyle.GetClientData(self.cbxStyle.GetSelection())
+                self.txtAddPrice.SetValue(str(sel_style["num_priceadd"]))
+            else:
+                self.txtAddPrice.SetValue("")
+
+    def _init_mod_view(self):
+        dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(str(self.dishes_code))
+        if dishes_item is not None:
+            self.txtDishesName.SetValue(dishes_item.dishes_name)
+
+            di_spec = dishes_item.dishes_spec
+            for spec in di_spec:
+                self.cbxSpec.Append(spec["vch_name"], spec)
+
+            di_style = dishes_item.dishes_style
+            for style in di_style:
+                self.cbxStyle.Append(style["vch_name"], style)
+
+            order_num = CtrlOrderInfo.get_instance().get_cur_order_id()
+            if order_num is not None:
+                order_dishes_item = CtrlOrderInfo.get_instance().get_order_dishes_item(order_num)
+                if order_dishes_item is not None:
+                    self.txtDishesCount.SetValue(str(order_dishes_item.dishes_count))
+
+                    self.cbxSpec.SetSelection(di_spec.index(order_dishes_item.dishes_spec))
+                    sel_spec = self.cbxSpec.GetClientData(self.cbxSpec.GetSelection())
+                    self.txtNormalPrice.SetValue(str(sel_spec["num_price"]))
+
+                    self.cbxStyle.SetSelection(di_style.index(order_dishes_item.dishes_style))
+                    sel_style = self.cbxStyle.GetClientData(self.cbxStyle.GetSelection())
+                    self.txtAddPrice.SetValue(str(sel_style["num_priceadd"]))
+
     # Virtual event handlers, override them in your derived class
+    def on_cbx_spec(self, event):
+        sel_spec = self.cbxSpec.GetClientData(self.cbxSpec.GetSelection())
+        self.txtNormalPrice.SetValue(str(sel_spec["num_price"]))
+
+    def on_cbx_style(self, event):
+        sel_style = self.cbxStyle.GetClientData(self.cbxStyle.GetSelection())
+        self.txtAddPrice.SetValue(str(sel_style["num_priceadd"]))
+
     def on_btn_confirm(self, event):
+        style_sel = self.cbxStyle.GetSelection()
+        style_data = None
+        if style_sel != -1:
+            style_data = self.cbxStyle.GetClientData(style_sel)
+
+        CtrlOrderInfo.get_instance().order_dishes(int(self.dishes_code),
+                                                  self.cbxSpec.GetClientData(self.cbxSpec.GetSelection()),
+                                                  style_data,
+                                                  self.txtSpecial.GetValue())
         self.Close()
 
     def on_btn_cancel(self, event):
@@ -459,7 +545,6 @@ class PopModDishesNum (wx.Dialog):
 
     def _init_data_view(self):
         self.txtDishesName.Enable(False)
-        self.txtDishesCount.Enable(False)
         ordered_dishes_item = CtrlOrderInfo.get_instance().get_select_dishes_item()
         if ordered_dishes_item is not None:
             self.txtDishesName.SetValue(ordered_dishes_item.dishes_name)
@@ -467,7 +552,7 @@ class PopModDishesNum (wx.Dialog):
 
     # Virtual event handlers, override them in your derived class
     def on_btn_confirm(self, event):
-        CtrlOrderInfo.get_instance().delete_dishes()
+        CtrlOrderInfo.get_instance().mod_dishes(int(self.txtDishesCount.GetValue()))
         self.Close()
 
     def on_btn_cancel(self, event):
@@ -481,27 +566,17 @@ class PopModDishesNum (wx.Dialog):
 class WgtOrderDishes (wx.Panel):
     def _init_status_bar(self, parent):
         self.statusBarPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition,
-                                       wx.Size(-1, 60), wx.RAISED_BORDER | wx.TAB_TRAVERSAL)
-        self.statusBarPanel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
-        self.statusBarPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+                                       wx.Size(-1, 82), wx.TAB_TRAVERSAL)
 
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add delete dishes button
-        self.btnDeleteDishes = wx.Button(self.statusBarPanel, wx.ID_ANY, u"删菜", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnDeleteDishes, 0, 0, 5)
+        self.btnDeleteDishes = ImgButton(self.statusBarPanel, u"delete_dishes.png", u"s_delete_dishes.png")
         # Add seat button
-        self.btnSeat = wx.Button(self.statusBarPanel, wx.ID_ANY, u"席位", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnSeat, 0, 0, 5)
+        self.btnSeat = ImgButton(self.statusBarPanel, u"seat.png", u"s_seat.png")
         # Add place order button
-        self.btnPlaceOrder = wx.Button(self.statusBarPanel, wx.ID_ANY, u"落单", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnPlaceOrder, 0, 0, 5)
-        # Add vertical line
-        s_vertical_line = wx.StaticLine(self.statusBarPanel, wx.ID_ANY, wx.DefaultPosition,
-                                        wx.DefaultSize, wx.LI_VERTICAL)
-        sizer.Add(s_vertical_line, 0, wx.EXPAND | wx.ALL, 5)
+        self.btnPlaceOrder = ImgButton(self.statusBarPanel, u"place_order.png", u"s_place_order.png")
         # Add exit button
-        self.btnExit = wx.Button(self.statusBarPanel, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.Size(60, 60), 0)
-        sizer.Add(self.btnExit, 0, 0, 5)
+        self.btnExit = ImgButton(self.statusBarPanel, u"front_exit.png", u"s_front_exit.png")
 
         # Layout
         self.statusBarPanel.SetSizer(sizer)
@@ -517,7 +592,6 @@ class WgtOrderDishes (wx.Panel):
 
     def _init_data_view_list(self, parent):
         self.dataViewPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(400, 520), wx.TAB_TRAVERSAL)
-        self.dataViewPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_INFOBK))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         # Add data view list control
@@ -531,17 +605,18 @@ class WgtOrderDishes (wx.Panel):
         self.dataViewCtrl.AppendTextColumn(u"退菜量", 5)
         self.dataViewCtrl.AppendTextColumn(u"价格", 6)
         self.dataViewCtrl.AppendTextColumn(u"实际金额", 7)
+        self.dataViewCtrl.AppendTextColumn(u"落单状态", 11)
+        self.dataViewCtrl.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         sizer.Add(self.dataViewCtrl, 0, 0, 5)
 
         # Layout
         self.dataViewPanel.SetSizer(sizer)
         self.dataViewPanel.Layout()
-        parent.Add(self.dataViewPanel, 1, wx.EXPAND | wx.TOP, 5)
+        parent.Add(self.dataViewPanel, 1, wx.EXPAND, 5)
 
     def _init_order_info(self, parent):
         self.orderPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(400, 520), wx.TAB_TRAVERSAL)
-        self.orderPanel.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
-        self.orderPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        self.orderPanel.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_dishes_search_ctrl(self.orderPanel, sizer)
@@ -549,10 +624,11 @@ class WgtOrderDishes (wx.Panel):
 
         self.orderPanel.SetSizer(sizer)
         self.orderPanel.Layout()
-        parent.Add(self.orderPanel, 1, wx.EXPAND | wx.LEFT | wx.TOP, 5)
+        parent.Add(self.orderPanel, 1, wx.EXPAND | wx.LEFT, 5)
 
     def _init_dishes_search_ctrl(self, container, parent):
-        self.ctrlPanel = wx.Panel(container, wx.ID_ANY, wx.DefaultPosition, wx.Size(380, 180), wx.TAB_TRAVERSAL)
+        self.ctrlPanel = wx.Panel(container, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        self.ctrlPanel.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         # Add search title sizer
@@ -631,11 +707,12 @@ class WgtOrderDishes (wx.Panel):
         parent.Add(self.ctrlPanel, 1, wx.EXPAND | wx.ALL, 5)
 
     def _init_dishes_info_ctrl(self, container, parent):
-        self.dishesPanel = wx.Panel(container, wx.ID_ANY, wx.DefaultPosition, wx.Size(380, 370), wx.TAB_TRAVERSAL)
+        self.dishesPanel = wx.Panel(container, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add dishes list panel
         self.dishesListPanel = wx.Panel(self.dishesPanel, wx.ID_ANY, wx.DefaultPosition,
-                                        wx.Size(322, 370), wx.STATIC_BORDER | wx.TAB_TRAVERSAL)
+                                        wx.DefaultSize, wx.STATIC_BORDER | wx.TAB_TRAVERSAL)
+        self.dishesListPanel.SetBackgroundColour(wx.Colour(0xea, 0xd4, 0x99))
         # Add dishes control button
         self.btnDishesUp = None
         self.btnDishesDown = None
@@ -662,6 +739,7 @@ class WgtOrderDishes (wx.Panel):
                           size=wx.Size(800, 600), style=wx.TAB_TRAVERSAL)
 
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
+        self.SetBackgroundColour(wx.Colour(0x51, 0x1c, 0x0a))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_status_bar(sizer)
@@ -673,6 +751,7 @@ class WgtOrderDishes (wx.Panel):
         self.Centre(wx.BOTH)
 
         # Connect Events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.btnDeleteDishes.Bind(wx.EVT_BUTTON, self.on_btn_delete_dishes)
         self.btnSeat.Bind(wx.EVT_BUTTON, self.on_btn_seat)
@@ -686,6 +765,19 @@ class WgtOrderDishes (wx.Panel):
         self.Bind(wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.on_item_activated, self.dataViewCtrl)
         self.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_item_changed, self.dataViewCtrl)
 
+        # initialize
+        self.dishes_page = 0
+        self.dishesBtnMap = dict()
+        self.type_page = 0
+        self.typeBtnMap = dict()
+
+        # define variable
+        self.model = None
+
+    def __del__(self):
+        pass
+
+    def initialize(self):
         # Create an instance of our model...
         table_num = CtrlTableInfo.get_instance().get_selected_item_id()
         order_num = CtrlTableInfo.get_instance().get_order_num(table_num)
@@ -693,16 +785,6 @@ class WgtOrderDishes (wx.Panel):
         # Tell the DVC to use the model
         self.dataViewCtrl.AssociateModel(self.model)
 
-        # initialize
-        self.dishes_page = 0
-        self.dishesBtnMap = dict()
-        self.type_page = 0
-        self.typeBtnMap = dict()
-
-    def __del__(self):
-        pass
-
-    def initialize(self):
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH, self.on_dishes_items_refresh)
 
@@ -717,23 +799,48 @@ class WgtOrderDishes (wx.Panel):
         pass
 
     # Virtual event handlers, override them in your derived class
+    def on_paint(self, event):
+        dc = wx.ClientDC(self.statusBarPanel)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
     def on_size(self, event):
         event.Skip()
-        x, y = self.GetSize()
+        x, y = self.GetClientSize()
 
-        self.btnDeleteDishes.SetMaxSize(wx.Size(60, 60))
-        self.btnSeat.SetMaxSize(wx.Size(60, 60))
-        self.btnPlaceOrder.SetMaxSize(wx.Size(60, 60))
-        self.btnExit.SetMaxSize(wx.Size(60, 60))
-        self.statusBarPanel.SetMaxSize(wx.Size(x, 60))
-        self.dataViewPanel.SetMinSize(wx.Size(x-400, y-60))
-        self.dataViewCtrl.SetMinSize(wx.Size(x-400, y-60))
-        self.dishesPanel.SetMinSize(wx.Size(380, y-240))
-        self.dishesListPanel.SetMinSize(wx.Size(325, y-240))
-        self.dishesTypePanel.SetMinSize(wx.Size(55, y-240))
+        self.btnDeleteDishes.SetSize(wx.Size(63, 70))
+        self.btnDeleteDishes.SetPosition(wx.Point(0, 6))
 
-        self._show_dishes_buttons(320, y-60-200)
-        self._show_type_buttons(y-60-200)
+        self.btnSeat.SetSize(wx.Size(63, 70))
+        self.btnSeat.SetPosition(wx.Point(65, 6))
+
+        self.btnPlaceOrder.SetSize(wx.Size(63, 70))
+        self.btnPlaceOrder.SetPosition(wx.Point(130, 6))
+
+        self.btnExit.SetSize(wx.Size(63, 70))
+        self.btnExit.SetPosition(wx.Point(195, 6))
+
+        self.statusBarPanel.SetSize(wx.Size(x, 82))
+        self.dataViewPanel.SetMinSize(wx.Size(x-400, y-82))
+        self.dataViewCtrl.SetMinSize(wx.Size(x-400, y-82))
+        self.ctrlPanel.SetSize(wx.Size(380, 180))
+        self.dishesPanel.SetMinSize(wx.Size(380, y-262))
+        self.dishesListPanel.SetMinSize(wx.Size(325, y-262))
+        self.dishesTypePanel.SetMinSize(wx.Size(55, y-262))
+
+        self.Refresh()
+
+        self._show_dishes_buttons(320, y-262)
+        self._show_type_buttons(y-262)
         self._show_dishes_data()
         self._show_table_data()
 
@@ -765,49 +872,47 @@ class WgtOrderDishes (wx.Panel):
     def on_btn_mod_num(self, event):
         pop_mod_num = PopModDishesNum(self)
         pop_mod_num.ShowModal()
-        CtrlOrderInfo.get_instance().mod_dishes(8)
 
     def on_btn_demand(self, event):
-        pop_order_dishes = PopOrderDishes(self, "mod")
+        pop_order_dishes = PopOrderDishes(self, "mod", CtrlOrderInfo.get_instance().get_select_dishes_id())
         pop_order_dishes.ShowModal()
 
     def on_btn_dishes(self, event):
         event.Skip()
-        pop_order_dishes = PopOrderDishes(self, "add")
+        pop_order_dishes = PopOrderDishes(self, "add", event.GetId())
         pop_order_dishes.ShowModal()
-        CtrlOrderInfo.get_instance().order_dishes(event.GetId())
 
     def on_btn_dishes_up(self, event):
         if self.dishes_page > 0:
             self.dishes_page -= 1
             x, y = self.GetSize()
-            self._show_dishes_buttons(320, y-60-200)
+            self._show_dishes_buttons(320, y-262)
 
     def on_btn_dishes_down(self, event):
         self.dishes_page += 1
         x, y = self.GetSize()
-        self._show_dishes_buttons(320, y-60-200)
+        self._show_dishes_buttons(320, y-262)
 
     def on_btn_type(self, event):
         CtrlDishesInfo.get_instance().set_cur_dishes_type(event.GetId())
         self.dishes_page = 0
         x, y = self.GetSize()
-        self._show_dishes_buttons(320, y-60-200)
+        self._show_dishes_buttons(320, y-262)
 
     def on_btn_type_up(self, event):
         if self.type_page > 0:
             self.type_page -= 1
             x, y = self.GetSize()
-            self._show_type_buttons(y-60-200)
+            self._show_type_buttons(y-262)
 
     def on_btn_type_down(self, event):
         self.type_page += 1
         x, y = self.GetSize()
-        self._show_type_buttons(y-60-200)
+        self._show_type_buttons(y-262)
 
     def _show_dishes_buttons(self, x, y):
         column = x / 80
-        row = (y - 30) / 80
+        row = (y - 32) / 80
         start_item_index = column * row * self.dishes_page
         dishes_items = CtrlDishesInfo.get_instance().get_dishes_items()
         if start_item_index >= len(dishes_items):
@@ -830,25 +935,31 @@ class WgtOrderDishes (wx.Panel):
                     win_id = int(item.dishes_code)
                     self.dishesBtnMap[win_id] = wx.Button(self.dishesListPanel, win_id, item.dishes_name,
                                                           (j*80, i*80), wx.Size(80, 80))
-                    self.dishesBtnMap[win_id].SetBackgroundColour(wx.CYAN)
+                    self.dishesBtnMap[win_id].SetBackgroundColour(wx.Colour(234, 210, 140))
 
                     self.Bind(wx.EVT_BUTTON, self.on_btn_dishes, self.dishesBtnMap[win_id])
-        except:
-            pass
+        except Exception, ex:
+            print Exception, ":", ex
 
         if self.btnDishesUp is not None:
             self.btnDishesUp.Destroy()
-        self.btnDishesUp = wx.Button(self.dishesListPanel, -1, u"上一页", (0, y-30), wx.Size(150, 30))
+        self.btnDishesUp = ImgButton(self.dishesListPanel, u"prev_page.png", u"s_prev_page.png",
+                                     "", wx.Colour(0xea, 0xd4, 0x99))
+        self.btnDishesUp.SetPosition(wx.Point(0, y-32))
+        self.btnDishesUp.SetSize(wx.Size(152, 32))
 
         if self.btnDishesDown is not None:
             self.btnDishesDown.Destroy()
-        self.btnDishesDown = wx.Button(self.dishesListPanel, -1, u"下一页", (x-150, y-30), wx.Size(150, 30))
+        self.btnDishesDown = ImgButton(self.dishesListPanel, u"next_page.png", u"s_next_page.png",
+                                       "", wx.Colour(0xea, 0xd4, 0x99))
+        self.btnDishesDown.SetPosition(wx.Point(x-152, y-32))
+        self.btnDishesDown.SetSize(wx.Size(152, 32))
 
         self.btnDishesUp.Bind(wx.EVT_BUTTON, self.on_btn_dishes_up)
         self.btnDishesDown.Bind(wx.EVT_BUTTON, self.on_btn_dishes_down)
 
     def _show_type_buttons(self, y):
-        row = (y - 60) / 50
+        row = (y - 64) / 50
         type_items = CtrlDishesInfo.get_instance().get_type_items()
 
         start_item_index = row * self.type_page
@@ -862,6 +973,11 @@ class WgtOrderDishes (wx.Panel):
         self.typeBtnMap.clear()
 
         try:
+            self.typeBtnMap[10000] = wx.Button(self.dishesTypePanel, 10000, u"全部类型",
+                                              (0, 25), wx.Size(70, 50))
+            self.typeBtnMap[10000].SetBackgroundColour(wx.Colour(241, 197, 102))
+
+            self.Bind(wx.EVT_BUTTON, self.on_btn_type, self.typeBtnMap[10000])
             for i in range(0, row):
                 if i >= len(type_items):
                     break
@@ -869,27 +985,31 @@ class WgtOrderDishes (wx.Panel):
                 item = type_items[i + start_item_index]
                 win_id = item.type_id
                 self.typeBtnMap[win_id] = wx.Button(self.dishesTypePanel, win_id, item.type_name,
-                                                    (0, i*50+25), wx.Size(70, 50))
-                self.typeBtnMap[win_id].SetBackgroundColour(wx.YELLOW)
+                                                    (0, (i+1)*50+25), wx.Size(70, 50))
+                self.typeBtnMap[win_id].SetBackgroundColour(wx.Colour(241, 197, 102))
 
                 self.Bind(wx.EVT_BUTTON, self.on_btn_type, self.typeBtnMap[win_id])
-        except:
-            pass
+        except Exception, ex:
+            print Exception, ":", ex
 
         if self.btnTypeUp is not None:
             self.btnTypeUp.Destroy()
-        self.btnTypeUp = wx.Button(self.dishesTypePanel, -1, u"^", (0, 0), wx.Size(70, 30))
+        self.btnTypeUp = ImgButton(self.dishesTypePanel, u"up.png", u"s_up.png", "", wx.Colour(0xea, 0xd4, 0x99))
+        self.btnTypeUp.SetPosition(wx.Point(0, 0))
+        self.btnTypeUp.SetSize(wx.Size(72, 32))
 
         if self.btnTypeDown is not None:
             self.btnTypeDown.Destroy()
-        self.btnTypeDown = wx.Button(self.dishesTypePanel, -1, u"v", (0, y-30), wx.Size(70, 30))
+        self.btnTypeDown = ImgButton(self.dishesTypePanel, u"down.png", u"s_down.png", "", wx.Colour(0xea, 0xd4, 0x99))
+        self.btnTypeDown.SetPosition(wx.Point(0, y-32))
+        self.btnTypeDown.SetSize(wx.Size(72, 32))
 
         self.btnTypeUp.Bind(wx.EVT_BUTTON, self.on_btn_type_up)
         self.btnTypeDown.Bind(wx.EVT_BUTTON, self.on_btn_type_down)
 
     def _show_dishes_data(self):
         self.txtDishesCode.Enable(False)
-        dishes_code = CtrlOrderInfo.get_instance().get_select_dishes_id()
+        dishes_code = CtrlOrderInfo.get_instance().get_select_dishes_code()
         if dishes_code is not None:
             dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(dishes_code)
             if dishes_item is not None:
@@ -925,11 +1045,14 @@ class WgtOrderDishes (wx.Panel):
 
     def on_item_changed(self, event):
         try:
-            dishes_id = self.model.GetValue(event.GetItem(), 0)
-            dishes_code = CtrlDishesInfo.get_instance().get_code_by_di(dishes_id)
-            CtrlOrderInfo.get_instance().set_select_dishes_id(dishes_code)
-        except:
-            CtrlOrderInfo.get_instance().set_select_dishes_id(None)
+            dishes_code = self.model.GetValue(event.GetItem(), 10)
+            dishes_spec_id = self.model.GetValue(event.GetItem(), 12)
+            dishes_style_id = self.model.GetValue(event.GetItem(), 13)
+            CtrlOrderInfo.get_instance().set_select_dishes_id(dishes_code, dishes_spec_id, dishes_style_id)
+            CtrlOrderInfo.get_instance().set_select_dishes_code(dishes_code)
+        except Exception, ex:
+            print Exception, ":", ex
+            CtrlOrderInfo.get_instance().set_select_dishes_id(None, None, None)
 
         self._show_dishes_data()
 

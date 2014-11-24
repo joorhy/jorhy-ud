@@ -13,11 +13,13 @@ from app.manager.logic.model import *
 from app.manager.logic.data import *
 from app.app_manager import AppManager
 from framework.core import TreeImage
+from framework.img_button import ImgButton
 
 import wx
 import wx.xrc
 import wx.dataview
 from wx.dataview import DataViewColumn
+import sys
 
 ###########################################################################
 ## Class PopAreaSetting
@@ -753,50 +755,31 @@ class PopTypeSetting (wx.Dialog):
 class WgtDiningTable (wx.Panel):
     def _init_status_bar_sizer(self, parent):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
-        sizer.SetMinSize(wx.Size(800, 50))
+        sizer.SetMinSize(wx.Size(800, 82))
 
-        # Add new button
-        self.btnNew = wx.Button(self, wx.ID_ANY, u"新增", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnNew.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnNew, 0, wx.EXPAND, 5)
-        # Add modify button
-        self.btnModify = wx.Button(self, wx.ID_ANY, u"修改", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnModify.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnModify, 0, 0, 5)
-        # Add delete button
-        self.btnDelete = wx.Button(self, wx.ID_ANY, u"删除", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnDelete.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnDelete, 0, 0, 5)
-        # Add batch add button
-        self.btnBatAdd = wx.Button(self, wx.ID_ANY, u"批量增加", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnBatAdd.SetFont(wx.Font(8, 70, 90, 90, False, wx.EmptyString))
-        self.btnBatAdd.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnBatAdd, 0, 0, 5)
-        # Add table type setting button
-        self.btnTableType = wx.Button(self, wx.ID_ANY, u"桌类", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnTableType.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnTableType, 0, 0, 5)
-        # Add area setting button
-        self.btnArea = wx.Button(self, wx.ID_ANY, u"区域", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnArea.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnArea, 0, 0, 5)
-        # Add consumer type setting button
-        self.btnMinExpense = wx.Button(self, wx.ID_ANY, u"最低消费", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnMinExpense.SetFont(wx.Font(8, 70, 90, 90, False, wx.EmptyString))
-        self.btnMinExpense.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnMinExpense, 0, 0, 5)
-        # Add refresh button
-        self.btnRefresh = wx.Button(self, wx.ID_ANY, u"刷新", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnRefresh.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnRefresh, 0, 0, 5)
-        # Add exit button
-        self.btnExit = wx.Button(self, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
-        self.btnExit.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.btnExit, 0, 0, 5)
         # Add fix panel
         self.topPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
         self.topPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
         sizer.Add(self.topPanel, 1, wx.EXPAND, 5)
+
+        # Add new button
+        self.btnNew = ImgButton(self.topPanel, u"new.png", u"s_new.png")
+        # Add modify button
+        self.btnModify = ImgButton(self.topPanel, u"modify.png", u"s_modify.png")
+        # Add delete button
+        self.btnDelete = ImgButton(self.topPanel, u"delete.png", u"s_delete.png")
+        # Add batch add button
+        self.btnBatAdd = ImgButton(self.topPanel, u"bat_add.png", u"s_bat_add.png")
+        # Add table type setting button
+        self.btnTableType = ImgButton(self.topPanel, u"table_type.png", u"s_table_type.png")
+        # Add area setting button
+        self.btnArea = ImgButton(self.topPanel, u"table_area.png", u"s_table_area.png")
+        # Add consumer type setting button
+        self.btnMinExpense = ImgButton(self.topPanel, u"min_expense.png", u"s_min_expense.png")
+        # Add refresh button
+        self.btnRefresh = ImgButton(self.topPanel, u"refresh.png", u"s_refresh.png")
+        # Add exit button
+        self.btnExit = ImgButton(self.topPanel, u"tool_exit.png", u"s_tool_exit.png")
         
         # Layout status bar
         parent.Add(sizer, 1, wx.EXPAND, 5)
@@ -818,6 +801,7 @@ class WgtDiningTable (wx.Panel):
         # Create tree control
         self.treeCtrl = wx.TreeCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TR_DEFAULT_STYLE)
         self.treeCtrl.SetMinSize(wx.Size(-1, 600))
+        self.treeCtrl.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         sizer.Add(self.treeCtrl, 0, wx.EXPAND, 5)
         
         # Layout tree control
@@ -831,13 +815,15 @@ class WgtDiningTable (wx.Panel):
         self.dataViewList = wx.dataview.DataViewCtrl(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, 0)
         self.dataViewList.SetMinSize(wx.Size(-1, 600))
         # Add items into data view list
-        self.dataViewList.AppendTextColumn(u"行号", 0) 
-        self.dataViewList.AppendTextColumn(u"桌号", 1) 
-        self.dataViewList.AppendTextColumn(u"餐桌名", 2) 
-        self.dataViewList.AppendTextColumn(u"类型", 3) 
-        self.dataViewList.AppendTextColumn(u"区域", 4) 
-        self.dataViewList.AppendTextColumn(u"人数", 5) 
-        self.dataViewList.AppendTextColumn(u"最低消费类型", 6, width=100)
+        self.dataViewList.AppendTextColumn(u"行号", 0, align=wx.ALIGN_CENTER)
+        self.dataViewList.AppendTextColumn(u"桌号", 1, align=wx.ALIGN_CENTER)
+        self.dataViewList.AppendTextColumn(u"餐桌名", 2, align=wx.ALIGN_CENTER)
+        self.dataViewList.AppendTextColumn(u"类型", 3, align=wx.ALIGN_CENTER)
+        self.dataViewList.AppendTextColumn(u"区域", 4, align=wx.ALIGN_CENTER)
+        self.dataViewList.AppendTextColumn(u"人数", 5, align=wx.ALIGN_CENTER)
+        self.dataViewList.AppendTextColumn(u"最低消费类型", 6, width=100, align=wx.ALIGN_CENTER)
+        #self.dataViewList.
+        self.dataViewList.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         sizer.Add(self.dataViewList, 0, wx.EXPAND | wx.LEFT, 5)
         
         # Layout data view list
@@ -848,7 +834,7 @@ class WgtDiningTable (wx.Panel):
                           size=wx.Size(800, 600), style=wx.TAB_TRAVERSAL)
         
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
-        self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_3DDKSHADOW))
+        self.SetBackgroundColour(wx.Colour(0x51, 0x1c, 0x0a))
         
         sizer = wx.BoxSizer(wx.VERTICAL)
         
@@ -858,15 +844,10 @@ class WgtDiningTable (wx.Panel):
         self.SetSizer(sizer)
         self.Layout()
         self.Centre(wx.BOTH)
-        
-        # Create an instance of our model...
-        self.model = ModelTable(CtrlTable.get_instance().get_data())
-        CtrlTable.get_instance().refresh_items()
-        
-        # Tell the DVC to use the model
-        self.dataViewList.AssociateModel(self.model)
 
         # Connect Events
+        self.Bind(wx.EVT_PAINT, self.on_paint)
+        #self.Bind(wx.EVT_ERASE_BACKGROUND, self.on_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.btnNew.Bind(wx.EVT_BUTTON, self.on_btn_new)
         self.btnModify.Bind(wx.EVT_BUTTON, self.on_btn_modify)
@@ -880,15 +861,23 @@ class WgtDiningTable (wx.Panel):
 
         self.Bind(wx.EVT_TREE_SEL_CHANGED, self.on_sel_changed, self.treeCtrl)
         self.Bind(wx.EVT_TREE_ITEM_ACTIVATED, self.on_activate, self.treeCtrl)
-        
-        # Show tree control
+
+        # define variable
+        self.model = None
         self.tree_data = None
-        self._show_tree_ctrl()
-    
+
     def __del__(self):
         pass
     
     def initialize(self):
+        # Create an instance of our model...
+        self.model = ModelTable(CtrlTable.get_instance().get_data())
+        CtrlTable.get_instance().refresh_items()
+        # Tell the DVC to use the model
+        self.dataViewList.AssociateModel(self.model)
+        # Show tree control
+        self._show_tree_ctrl()
+
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
         
@@ -900,6 +889,7 @@ class WgtDiningTable (wx.Panel):
         EvtManager.remove_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
     
     def _show_tree_ctrl(self):
+        self.treeCtrl.DeleteAllItems()
         tree_image = TreeImage()
         self.treeCtrl.SetImageList(tree_image.image_list)
         self.il = tree_image.image_list
@@ -959,22 +949,60 @@ class WgtDiningTable (wx.Panel):
         self.model.Cleared()
     
     # Virtual event handlers, override them in your derived class
+    def on_paint(self, event):
+        dc = wx.ClientDC(self.topPanel)
+        dc.Clear()
+
+        sz = self.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        #self.topPanel.Refresh()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
+        #self.btnExit.Show()
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetSize()
 
-        self.btnNew.SetMaxSize(wx.Size(50, 50))
-        self.btnModify.SetMaxSize(wx.Size(50, 50))
-        self.btnDelete.SetMaxSize(wx.Size(50, 50))
-        self.btnBatAdd.SetMaxSize(wx.Size(50, 50))
-        self.btnTableType.SetMaxSize(wx.Size(50, 50))
-        self.btnArea.SetMaxSize(wx.Size(50, 50))
-        self.btnMinExpense.SetMaxSize(wx.Size(50, 50))
-        self.btnRefresh.SetMaxSize(wx.Size(50, 50))
-        self.btnExit.SetMaxSize(wx.Size(50, 50))
-        self.topPanel.SetMaxSize(wx.Size(x-450, 50))
-        self.treeCtrl.SetMinSize(wx.Size(200, y-50))
-        self.dataViewList.SetMinSize(wx.Size(x-200, y-50))
+        self.btnNew.SetSize(wx.Size(63, 70))
+        self.btnNew.SetPosition(wx.Point(0, 6))
+
+        self.btnModify.SetSize(wx.Size(63, 70))
+        self.btnModify.SetPosition(wx.Point(65, 6))
+
+        self.btnDelete.SetSize(wx.Size(63, 70))
+        self.btnDelete.SetPosition(wx.Point(130, 6))
+
+        self.btnBatAdd.SetSize(wx.Size(103, 70))
+        self.btnBatAdd.SetPosition(wx.Point(195, 6))
+
+        self.btnTableType.SetSize(wx.Size(63, 70))
+        self.btnTableType.SetPosition(wx.Point(300, 6))
+
+        self.btnArea.SetSize(wx.Size(63, 70))
+        self.btnArea.SetPosition(wx.Point(365, 6))
+
+        self.btnMinExpense.SetSize(wx.Size(103, 70))
+        self.btnMinExpense.SetPosition(wx.Point(430, 6))
+
+        self.btnRefresh.SetSize(wx.Size(63, 70))
+        self.btnRefresh.SetPosition(wx.Point(535, 6))
+
+        self.btnExit.SetSize(wx.Size(63, 70))
+        self.btnExit.SetPosition(wx.Point(600, 6))
+
+        self.topPanel.SetMaxSize(wx.Size(x, 82))
+        self.treeCtrl.SetMinSize(wx.Size(200, y-82))
+        self.dataViewList.SetMinSize(wx.Size(x-200, y-82))
+
+        self.Refresh()
         
     def on_btn_new(self, event):
         event.Skip()

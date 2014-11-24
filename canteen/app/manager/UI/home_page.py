@@ -10,14 +10,17 @@
 from app.manager.UI.sys_setting import *
 from app.app_manager import AppManager
 from app.home_logic import CtrlHomePage
+from framework.img_button import ImgButton
+from framework.img_any_button import ImgAnyButton
 
 import wx
 import wx.xrc
-
+import sys
 
 ###########################################################################
 ## Class PopPassword
 ###########################################################################
+
 
 class PopPassword (wx.Dialog):
     def _init_ui(self, parent):
@@ -39,7 +42,7 @@ class PopPassword (wx.Dialog):
 
         self.sTxtNew = wx.StaticText(self, wx.ID_ANY, u"新密码：", wx.DefaultPosition, wx.Size(200, -1), wx.ALIGN_RIGHT)
         self.sTxtNew.Wrap(-1)
-        new_sizer.Add(self.sTxtNew, 0, wx.ALIGN_CENTER|wx.ALL, 5)
+        new_sizer.Add(self.sTxtNew, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         self.txtNewPassword = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(200, -1), 0)
         new_sizer.Add(self.txtNewPassword, 0, wx.ALIGN_CENTER | wx.ALL, 5)
@@ -104,6 +107,23 @@ li_func_widget_1 = ['DiningTable', 'DishesPublish', 'Employee', 'PrinterScheme',
 li_func_widget_2 = ['', '', 'UserPermission', 'SchemeRelated', '', 'Register']
 
 li_title = [u"餐厅管理", u"菜品管理", u"员工管理", u"打印设置", u"报表中心", u"系统设置"]
+li_func_img_1 = [(u"table.png", u"s_table.png"), (u"dishes_publish.png", u"s_dishes_publish.png"),
+                 (u"employee_man.png", u"s_employee_man.png"), (u"print_scheme.png", u"s_print_scheme.png"),
+                 (u"sale_info.png", u"s_sale_info.png"), (u"company.png", u"s_company.png")]
+li_func_img_2 = [None, None, (u"role_man.png", u"s_role_man.png"), (u"dishes_relation.png", u"s_dishes_relation.png"),
+                 (u"money_info.png", u"s_money_info.png"), (u"register.png", u"s_register.png")]
+#li_func_title_3 = [(u"area_setting.png", u"s_area_setting.png"), (u"dishes_unit.png", u"s_dishes_unit.png"),
+#                   (u"work_schedule.png", u"s_work_schedule.png"), None,
+#                   (u"business_status.png", u"s_business_status.png"), (u"backup.png", u"s_backup.png")]
+li_func_img_3 = [None, None, None, None,
+                 (u"business_status.png", u"s_business_status.png"), None]
+li_func_img_4 = [None, None, None, None, (u"consume.png", u"s_consume.png"), None]
+li_func_img_5 = [None, None, None, None, (u"billboard.png", u"s_billboard.png"), None]
+li_func_img_6 = [None, None, None, None, None, None]
+
+li_func_images = [li_func_img_1, li_func_img_2, li_func_img_3,
+                  li_func_img_4, li_func_img_5, li_func_img_6]
+
 li_func_title_1 = [u'餐桌设置', u'菜品发布', u'员工管理', u'厨打方案', u'菜品销售查询', u'公司信息']
 li_func_title_2 = [u'', u'', u'权限管理', u'菜品关联', u'收银情况查询', u'注册']
 #li_func_title_3 = [u'区域设置', u'菜品单位设置', u'员工排班', u'', u'营业情况查询', u'数据备份']
@@ -129,12 +149,12 @@ class WgtHomePage (wx.Panel):
         sizer = wx.BoxSizer(wx.VERTICAL)
 
         # Add status bar panel
-        sizer.SetMinSize(wx.Size(800, 50)) 
+        #sizer.SetMinSize(wx.Size(-1, 82))
         self.logoPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
-        self.logoPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNHIGHLIGHT))
-        self.logoPanel.SetMinSize(wx.Size(50, 50))
-        sizer.Add(self.logoPanel, 1, wx.EXPAND | wx.BOTTOM, 5)
-        parent.Add(sizer, 1, 0, 5)
+        self.logoPanel.SetMinSize(wx.Size(800, 82))
+
+        sizer.Add(self.logoPanel, 1, wx.EXPAND, 5)
+        parent.Add(sizer, 1, wx.EXPAND, 5)
         
     def _init_screen_sizer(self, parent):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -151,51 +171,27 @@ class WgtHomePage (wx.Panel):
         
         # Selector panel initialize
         self.selectorPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
-        self.selectorPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_INACTIVECAPTION))
-        
-        selector_sizer = wx.BoxSizer(wx.VERTICAL)
-        
-        # Add enough space on top 
-        selector_top_sizer = wx.BoxSizer(wx.VERTICAL)
-        selector_top_sizer.SetMinSize(wx.Size(200, 50))
-        selector_top_sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
-        selector_sizer.Add(selector_top_sizer, 1, 0, 5)
-        
-        # Set the selector buttons
-        selector_bottom_sizer = wx.BoxSizer(wx.VERTICAL)
-        selector_bottom_sizer.SetMinSize(wx.Size(200, 550))
+        self.selectorPanel.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+
         # Add system setting button
-        self.btnSysSetting = wx.Button(self.selectorPanel, wx.ID_ANY, u"系统设置", wx.DefaultPosition, wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnSysSetting, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.btnSysSetting = ImgButton(self.selectorPanel, u"sys_setting.png", u"s_sys_setting.png", "", None)
         # Add dining room setting button
-        self.btnDiningRoomSetting = wx.Button(self.selectorPanel, wx.ID_ANY, u"餐厅设置",
-                                              wx.Point(50, 50), wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnDiningRoomSetting, 0, wx.ALIGN_CENTER, 5)
+        self.btnDiningRoomSetting = ImgButton(self.selectorPanel, u"dining.png", u"s_dining.png", "", None)
         # Add dishes publish button
-        self.btnDishesPublishing = wx.Button(self.selectorPanel, wx.ID_ANY, u"菜品发布", wx.DefaultPosition,
-                                             wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnDishesPublishing, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.btnDishesPublishing = ImgButton(self.selectorPanel, u"dishes.png", u"s_dishes.png", "", None)
         # Add employee manager button
-        self.btnStaffMan = wx.Button(self.selectorPanel, wx.ID_ANY, u"员工管理", wx.DefaultPosition, wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnStaffMan, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.btnStaffMan = ImgButton(self.selectorPanel, u"employee.png", u"s_employee.png", "", None)
         # Add printer setting button
-        self.btnPrinter = wx.Button(self.selectorPanel, wx.ID_ANY, u"打印设置", wx.DefaultPosition, wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnPrinter, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.btnPrinter = ImgButton(self.selectorPanel, u"printing.png", u"s_printing.png", "", None)
         # Add report forms button
-        self.btnReportForms = wx.Button(self.selectorPanel, wx.ID_ANY, u"报表中心", wx.DefaultPosition, wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnReportForms, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.btnReportForms = ImgButton(self.selectorPanel, u"report.png", u"s_report.png", "", None)
         # Add report forms button
-        self.btnModifyPassword = wx.Button(self.selectorPanel, wx.ID_ANY, u"修改密码", wx.DefaultPosition, wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnModifyPassword, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.btnModifyPassword = ImgButton(self.selectorPanel, u"pwd_setting.png", u"s_pwd_setting.png", "", None)
         # Add exit button
-        self.btnExit = wx.Button(self.selectorPanel, wx.ID_ANY, u"退出", wx.DefaultPosition, wx.DefaultSize, 0)
-        selector_bottom_sizer.Add(self.btnExit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.btnExit = ImgButton(self.selectorPanel, u"exit.png", u"s_exit.png", "", None)
         
         # Layout selector buttons
-        selector_sizer.Add(selector_bottom_sizer, 1, 0, 5)
-        self.selectorPanel.SetSizer(selector_sizer)
         self.selectorPanel.Layout()
-        selector_sizer.Fit(self.selectorPanel)
         sizer.Add(self.selectorPanel, 1, wx.EXPAND | wx.RIGHT, 5)
         parent.Add(sizer, 1, 0, 5)
         
@@ -205,7 +201,7 @@ class WgtHomePage (wx.Panel):
         
         # Function widget panel initialize
         self.funcPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
-        self.funcPanel.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_INACTIVECAPTION))
+        self.funcPanel.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         self.funcPanel.SetMinSize(wx.Size(800, 600))
         
         func_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -213,27 +209,27 @@ class WgtHomePage (wx.Panel):
         # Define function buttons dictionary
         self.di_funcButtons = dict()
         # Add function 1
-        self.btnFunc_1 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnFunc_1 = ImgAnyButton(self.funcPanel)
         func_btn_item_1 = {0: self.btnFunc_1}
         self.di_funcButtons.update(func_btn_item_1)
         # Add function 2
-        self.btnFunc_2 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnFunc_2 = ImgAnyButton(self.funcPanel)
         func_btn_item_2 = {1: self.btnFunc_2}
         self.di_funcButtons.update(func_btn_item_2)
         # Add function 3
-        self.btnFunc_3 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnFunc_3 = ImgAnyButton(self.funcPanel)
         func_btn_item_3 = {2: self.btnFunc_3}
         self.di_funcButtons.update(func_btn_item_3)
         # Add function 4
-        self.btnFunc_4 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnFunc_4 = ImgAnyButton(self.funcPanel)
         func_btn_item_4 = {3: self.btnFunc_4}
         self.di_funcButtons.update(func_btn_item_4)
         # Add function 5
-        self.btnFunc_5 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0)
+        self.btnFunc_5 = ImgAnyButton(self.funcPanel)
         func_btn_item_5 = {4: self.btnFunc_5}
         self.di_funcButtons.update(func_btn_item_5)
         # Add function 6
-        self.btnFunc_6 = wx.Button(self.funcPanel, wx.ID_ANY, u"", wx.DefaultPosition, wx.DefaultSize, 0) 
+        self.btnFunc_6 = ImgAnyButton(self.funcPanel)
         func_btn_item_6 = {5: self.btnFunc_6}
         self.di_funcButtons.update(func_btn_item_6)
         
@@ -249,7 +245,7 @@ class WgtHomePage (wx.Panel):
                           size=wx.Size(800, 600), style=wx.TAB_TRAVERSAL)
 
         self.SetSizeHintsSz(wx.Size(800, 600), wx.DefaultSize)
-        self.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOWFRAME))
+        self.SetBackgroundColour(wx.Colour(0x51, 0x1c, 0x0a))
 
         sizer = wx.BoxSizer(wx.VERTICAL)
         self._init_status_bar_sizer(sizer)
@@ -260,6 +256,7 @@ class WgtHomePage (wx.Panel):
         self.Centre(wx.BOTH)
 
         # Connect Events
+        self.Bind(wx.EVT_PAINT, self.on_logo_paint)
         self.Bind(wx.EVT_SIZE, self.on_size)
         self.btnDiningRoomSetting.Bind(wx.EVT_BUTTON, self.on_dining_room_setting)
         self.btnDishesPublishing.Bind(wx.EVT_BUTTON, self.on_dishes_publishing)
@@ -299,13 +296,56 @@ class WgtHomePage (wx.Panel):
         pass
 
     # Virtual event handlers, override them in your derived class
+    def on_logo_paint(self, event):
+        dc = wx.ClientDC(self.logoPanel)
+        dc.Clear()
+
+        sz = self.logoPanel.GetClientSize()
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\logo.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_bmp = bg_img.ConvertToBitmap()
+
+        mem_dc = wx.MemoryDC()
+        mem_dc.SelectObject(bg_bmp)
+        dc.Blit(0, 0,
+                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
+                mem_dc, 0, 0, wx.COPY, True)
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetSize()
 
-        self.logoPanel.SetMinSize(wx.Size(x, 50))
-        self.selectorPanel.SetMaxSize(wx.Size(200, y-50))
-        self.funcPanel.SetMinSize(wx.Size(x-200, y-50))
+        self.logoPanel.SetSize(wx.Size(x, 82))
+        self.selectorPanel.SetSize(wx.Size(200, y-82))
+        self.funcPanel.SetMinSize(wx.Size(x-200, y-82))
+
+        start_x = 15
+        start_y = (y - 82 - (8 * 51)) / 2
+        btn_w = 162
+        btn_h = 46
+        btn_size = wx.Size(btn_w, btn_h)
+        self.btnSysSetting.SetPosition(wx.Point(start_x, start_y))
+        self.btnSysSetting.SetSize(btn_size)
+
+        self.btnDiningRoomSetting.SetPosition(wx.Point(start_x, start_y + btn_h + 5))
+        self.btnDiningRoomSetting.SetSize(btn_size)
+
+        self.btnDishesPublishing.SetPosition(wx.Point(start_x, start_y + ((btn_h + 5) * 2)))
+        self.btnDishesPublishing.SetSize(btn_size)
+
+        self.btnStaffMan.SetPosition(wx.Point(start_x, start_y + ((btn_h + 5) * 3)))
+        self.btnStaffMan.SetSize(btn_size)
+
+        self.btnPrinter.SetPosition(wx.Point(start_x, start_y + ((btn_h + 5) * 4)))
+        self.btnPrinter.SetSize(btn_size)
+
+        self.btnReportForms.SetPosition(wx.Point(start_x, start_y + ((btn_h + 5) * 5)))
+        self.btnReportForms.SetSize(btn_size)
+
+        self.btnModifyPassword.SetPosition(wx.Point(start_x, start_y + ((btn_h + 5) * 6)))
+        self.btnModifyPassword.SetSize(btn_size)
+
+        self.btnExit.SetPosition(wx.Point(start_x, start_y + ((btn_h + 5) * 7)))
+        self.btnExit.SetSize(btn_size)
 
         self._show_func_buttons()
 
@@ -358,7 +398,6 @@ class WgtHomePage (wx.Panel):
         else:
             AppManager.get_instance().switch_to_application(li_func_widget_1[select_item])
 
-
     def on_func_2(self, event):
         event.Skip()
         select_item = CtrlHomePage.get_instance().get_selected_item()
@@ -402,10 +441,11 @@ class WgtHomePage (wx.Panel):
 
     def _show_function_buttons(self, index):
         func_button_index = 0
-        for li_func_title in li_func_titles:
-            if li_func_title[index] != u'':
+        for li_func_img in li_func_images:
+            if li_func_img[index] is not None:
                 (self.liFuncButtons[func_button_index]).Show()
-                (self.liFuncButtons[func_button_index]).Label = li_func_title[index]
+                (self.liFuncButtons[func_button_index]).set_label(li_func_img[index][0], li_func_img[index][1])
+                (self.liFuncButtons[func_button_index]).SetSize(wx.Size(142, 142))
             func_button_index += 1
 
     def _enable_all_selector(self):
@@ -432,11 +472,11 @@ class WgtHomePage (wx.Panel):
         self.func_num = get_func_number(select_item)
             
         x, y = self.GetSize()
-        btn_y = ((y - 50) - 100) / 2
-        btn_x = ((x - 200) - ((self.func_num * 100) + ((self.func_num - 1) * 10))) / 2
+        btn_y = ((y - 82) - 150) / 2
+        btn_x = ((x - 200) - ((self.func_num * 150) + ((self.func_num - 1) * 10))) / 2
         for i in range(self.func_num):
-            self.di_funcButtons[i].Move(wx.Point(btn_x + (i*110), btn_y))
-            self.di_funcButtons[i].SetSize(wx.Size(100, 100))
+            self.di_funcButtons[i].Move(wx.Point(btn_x + (i*150), btn_y))
+            self.di_funcButtons[i].SetSize(wx.Size(142, 142))
 
     def _set_screen_tile(self):
         self.GetParent().SetTitle(AppManager.get_instance().get_app_title())
