@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 import wx
 
+import logging
+import os
+
 
 def single_get_first(unicode1):
     str1 = unicode1.encode('gbk') 
@@ -181,3 +184,21 @@ class TreeImage(Singleton):
             return self.fl_open_idx
         elif item == 'file_idx':
             return self.fi_idx
+
+
+class Log():
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def initialize(file_name):
+        return
+        '''logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+        logging.basicConfig(format='%(asctime)s-%(name)s-%(levelname)s:%(message)s',
+                            filename=os.path.join(os.getcwd(), file_name), level=logging.DEBUG)'''
+
+    @staticmethod
+    def info(context):
+        return
+        '''print context
+        logging.debug(context)'''

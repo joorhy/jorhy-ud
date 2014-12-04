@@ -20,6 +20,7 @@ import wx.dataview
 from wx.dataview import DataViewColumn
 
 import sys
+import win32print
 
 ###########################################################################
 ## Class PopPrinterScheme
@@ -223,8 +224,12 @@ class PopPrinterScheme(wx.Dialog):
             self.cbxBackup.Append(print_scheme.name, print_scheme)
         #self.cbxBackup.SetSelection(0)
 
-        self.cbxPrintNum.SetSelection(0)
+        li_printer = win32print.EnumPrinters(win32print.PRINTER_ENUM_CONNECTIONS | win32print.PRINTER_ENUM_LOCAL, None, 1)
+        for printer_item in li_printer:
+            self.cbxPrintDriver.Append(printer_item[2], printer_item)
+        self.cbxPrintDriver.SetSelection(0)
 
+        self.cbxPrintNum.SetSelection(0)
         self.txtTrack.Enable(False)
         self.btnPrev.Enable(False)
         self.btnNext.Enable(False)
@@ -258,6 +263,12 @@ class PopPrinterScheme(wx.Dialog):
             if print_scheme.key == data.backup:
                 self.cbxBackup.SetSelection(li_print_scheme.index(print_scheme))
 
+        li_printer = win32print.EnumPrinters(win32print.PRINTER_ENUM_CONNECTIONS | win32print.PRINTER_ENUM_LOCAL, None, 1)
+        for printer_item in li_printer:
+            self.cbxPrintDriver.Append(printer_item[2], printer_item)
+            if data.printer_name == printer_item[2]:
+                self.cbxPrintDriver.SetSelection(li_printer.index(printer_item))
+
         self.cbxPrintNum.SetSelection(data.print_count - 1)
 
     # Virtual event handlers, override them in your derived class
@@ -281,15 +292,27 @@ class PopPrinterScheme(wx.Dialog):
                 scheme_backup = self.cbxBackup.GetClientData(self.cbxBackup.GetSelection())
             else:
                 scheme_backup = None
-        except:
+        except Exception, ex:
+            print Exception, ":", ex
             scheme_backup = None
+
+        try:
+            if not self.cbxPrintDriver.IsEmpty():
+                scheme_printer = self.cbxPrintDriver.GetClientData(self.cbxPrintDriver.GetSelection())
+            else:
+                scheme_printer = None
+        except Exception, ex:
+            print Exception, ":", ex
+            scheme_printer = None
+
         data = DataPrinterScheme(0, int(self.txtCode.GetValue()),
                                  self.txtCode.GetValue(),
                                  self.txtName.GetValue(),
                                  self.ckxValid.GetValue(),
                                  scheme_type.key,
                                  print_count,
-                                 scheme_backup.key if scheme_backup is not None else None)
+                                 scheme_backup.key if scheme_backup is not None else None,
+                                 scheme_printer[2] if scheme_printer is not None else u"")
         if self.type == "add":
             CtrlPrinterScheme.get_instance().add_item(data)
         elif self.type == "mod":
@@ -658,8 +681,8 @@ class PopSchemeType (wx.Dialog):
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
             CtrlSchemeType.get_instance().delete_item(data)
-        except:
-            print 'PopSchemeType on_btn_delete error'
+        except Exception, ex:
+            print Exception, ":", ex
     
     def on_btn_refresh(self, event):
         event.Skip()
@@ -844,8 +867,8 @@ class WgtPrinterScheme(wx.Panel):
             CtrlPrinterScheme.get_instance().set_cur_item_index(index)
             pop_printer_scheme = PopPrinterScheme(self, "mod")
             pop_printer_scheme.ShowModal()
-        except:
-            print 'WgtPrinterScheme on_btn_modify error'
+        except Exception, ex:
+            print Exception, ":", ex
     
     def on_btn_delete(self, event):
         event.Skip()
@@ -855,8 +878,8 @@ class WgtPrinterScheme(wx.Panel):
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
             CtrlPrinterScheme.get_instance().delete_item(data)
-        except:
-            print 'WgtPrinterScheme on_btn_delete error'
+        except Exception, ex:
+            print Exception, ":", ex
         
     def pn_btn_scheme_type(self, event):
         event.Skip()  
@@ -1062,7 +1085,8 @@ class WgtSchemeRelated (wx.Panel):
         item = self.dataViewList.GetCurrentItem()
         try:
             data = self.model.ItemToObject(item)
-        except:
+        except Exception, ex:
+            print Exception, ":", ex
             for item_ in self.model.data:
                 if item_.key == self.tree_data.key:
                     data = item_

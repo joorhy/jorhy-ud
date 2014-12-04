@@ -3,6 +3,49 @@
 from service.data_base.mode import *
 
 
+def get_company_info():
+    session = SqlManager.get_instance().session
+    result = session.query(CompanyInfo).all()
+    if len(result) > 0:
+        info = ModeCompany(result[0])
+        return info
+
+    return None
+
+
+def set_company_info(company_id, company_info):
+    session = SqlManager.get_instance().session
+    session.flush()
+    session.commit()
+
+    if company_id is None:
+        item = CompanyInfo()
+        item.vch_uid = u""
+        item.vch_name = company_info.name
+        item.vch_boss_name = company_info.person
+        item.num_boss_phone = company_info.phone
+        item.vch_email = company_info.email
+        item.vch_address = company_info.address
+        session.add(item)
+    else:
+        session.query(CompanyInfo).filter(CompanyInfo.id == company_id).\
+            update({CompanyInfo.vch_name: company_info.name,
+                    CompanyInfo.vch_boss_name: company_info.person,
+                    CompanyInfo.num_boss_phone: company_info.phone,
+                    CompanyInfo.vch_email: company_info.email,
+                    CompanyInfo.vch_address: company_info.address})
+
+    session.flush()
+    session.commit()
+
+
+def modify_password(user_name, pass_word):
+    session = SqlManager.get_instance().session
+    session.query(UUserinfo).filter(UUserinfo.vch_name == user_name).update({UUserinfo.vch_psw: pass_word})
+    session.flush()
+    session.commit()
+
+
 def get_id(type_):
     session = SqlManager.get_instance().session
     result = None
@@ -538,4 +581,94 @@ def get_password_by_user_name(user_name):
     pass_word = session.query(UUserinfo.vch_psw).filter(UUserinfo.vch_name == user_name).one()
 
     return pass_word[0]
+
+
+def get_business_info(from_date, to_date):
+    session = SqlManager.get_instance().session
+    result = session.query(TableOrder).filter(TableOrder.dt_checkout >=
+                                              from_date.Format("%Y-%m-%d %H:%M:%S")).\
+        filter(TableOrder.dt_checkout <= (to_date.Format("%Y-%m-%d ") + "23:59:59")).all()
+
+    di_business_info = dict()
+    for item in result:
+        checkout_date = item.dt_checkout.strftime("%Y-%m-%d")
+        if checkout_date in di_business_info:
+            business_item = di_business_info[checkout_date]
+            business_item.table_num = business_item.table_num + 1
+            business_item.consumer = business_item.consumer + item.num_table_book.num_consumers
+            business_item.price = business_item.price + item.num_price
+            if item.num_price_real is not None:
+                business_item.real_price = business_item.real_price + item.num_price_real
+        else:
+            business_info = ModeBusinessInfo()
+            business_info.consumer = item.num_table_book.num_consumers
+            business_info.price = item.num_price
+            business_info.real_price = item.num_price_real if item.num_price_real is not None else 0
+            business_info.checkout_time = item.dt_checkout
+            business_info = {checkout_date: business_info}
+            di_business_info.update(business_info)
+
+    return di_business_info
+
+
+def get_sales_info(from_date, to_date):
+    session = SqlManager.get_instance().session
+    result = session.query(TableOrder).filter(TableOrder.dt_checkout >=
+                                              from_date.Format("%Y-%m-%d %H:%M:%S")).\
+        filter(TableOrder.dt_checkout <= (to_date.Format("%Y-%m-%d ") + "23:59:59")).all()
+
+    li_business_info = list()
+    for item in result:
+        sales_info = ModeSalesInfo(item)
+        li_business_info.append(sales_info)
+
+    return li_business_info
+
+
+def get_billboard_info(from_date, to_date, category_id):
+    session = SqlManager.get_instance().session
+    result = session.query(DishPublishLog, DishSpec, DishStyle, Unit, DishCategory).\
+        filter(TableOrder.dt_checkout >= from_date.Format("%Y-%m-%d %H:%M:%S")).\
+        filter(TableOrder.dt_checkout <= (to_date.Format("%Y-%m-%d ") + "23:59:59")).\
+        filter(TableDish.num_batch_id == TableOrder.num_table_dish_batch_id).\
+        filter(DishPublishLog.id == TableDish.num_dish_publish_log_id).\
+        filter(DishPublishLog.num_category == category_id).\
+        outerjoin(DishSpec, DishSpec.id == DishPublishLog.num_spec_id).\
+        outerjoin(DishStyle, DishStyle.id == DishPublishLog.num_style_id).\
+        outerjoin(Unit, Unit.id == DishPublishLog.num_unit).\
+        outerjoin(DishCategory, DishCategory.id == DishPublishLog.num_category).all()
+
+    di_billboard_info = dict()
+    for item in result:
+        dish_money = 0
+        dish_log = item[0]
+        dish_spec = item[1]
+        dish_style = item[2]
+        dish_unit = item[3]
+        dish_category = item[4]
+
+        if dish_spec is not None:
+            dish_money = dish_spec.num_price
+
+        if dish_style is not None:
+            dish_money = dish_money + dish_style.num_priceadd
+
+        bill_board = ModeBillboardInfo()
+        bill_board.dishes_code = dish_log.vch_code
+        bill_board.dishes_name = dish_log.vch_name
+        bill_board.brevity_code = dish_log.vch_spell
+        bill_board.unit = dish_unit.vch_name
+        bill_board.category = dish_category.vch_name
+        bill_board.dishes_count = int(dish_log.num_dish_num)
+        bill_board.total_money = dish_money * int(dish_log.num_dish_num)
+        if bill_board.dishes_code in di_billboard_info:
+            di_billboard_info[bill_board.dishes_code].dishes_count = \
+                di_billboard_info[bill_board.dishes_code].dishes_count + bill_board.dishes_count
+            di_billboard_info[bill_board.dishes_code].total_money = \
+                di_billboard_info[bill_board.dishes_code].total_money + bill_board.total_money
+        else:
+            bill_board_temp = {bill_board.dishes_code: bill_board}
+            di_billboard_info.update(bill_board_temp)
+
+    return di_billboard_info
 

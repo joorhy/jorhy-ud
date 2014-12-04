@@ -5,6 +5,9 @@ from app.manager.logic.data import *
 from app.enum_event import EnumEvent
 from service.data_base.manager import *
 
+import tablib
+tablib.__version__
+
 
 @Singleton
 class CtrlManagerLogin():
@@ -24,11 +27,20 @@ class CtrlManagerLogin():
             if user == self.user and password == self.password:
                 self.check_result = True
             elif get_password_by_user_name(user) == password:
+                self.user = user
+                self.password = password
                 self.check_result = True
         except:
             self.check_result = False
 
         EvtManager.dispatch_event(EnumEvent.EVT_LOGIN)
+
+    def modify_password(self, old_password, new_password):
+        if old_password == self.password:
+            modify_password(self.user, new_password)
+            return True
+
+        return False
 
     def get_result(self):
         return self.check_result
@@ -36,6 +48,25 @@ class CtrlManagerLogin():
     def get_image_path(self):
         return self.img_path
 
+
+@Singleton
+class CtrlCompany():
+    def __init__(self):
+        self.company_id = None
+
+    def get_company_info(self):
+        result = get_company_info()
+        if result is not None:
+            self.company_id = result.id_
+            company_info = DataCompany(result.company_name, result.boss_name, result.company_address,
+                                       result.company_email, result.boss_phone)
+
+            return company_info
+
+        return None
+
+    def set_company_info(self, company_info):
+        set_company_info(self.company_id, company_info)
 
 @Singleton
 class CtrlArea():
@@ -653,7 +684,7 @@ class CtrlPrinterScheme():
         data = list()
         for item in result:
             data_item = DataPrinterScheme(result.index(item) + 1, item.id_, item.code, item.name, item.valid,
-                                          item.type_name, item.count, item.backup_id)
+                                          item.type_name, item.count, item.backup_id, item.printer_name)
             data.append(data_item)
             
         return data
@@ -663,7 +694,7 @@ class CtrlPrinterScheme():
         result = get_all('PrintSchemeInfo')
         for item in result:
             data_item = DataPrinterScheme(result.index(item) + 1, item.id_, item.code, item.name, item.valid,
-                                          item.type_id, item.count, item.backup_id)
+                                          item.type_id, item.count, item.backup_id, item.printer_name)
             self.table_items.append(data_item)
 
     def get_items(self):
@@ -774,3 +805,169 @@ class CtrlPermList():
     def update_item(data):
         if isinstance(data, DataType):
             update_item('PermList', data)
+
+
+@Singleton
+class CtrlBusinessInfo():
+    def __init__(self):
+        self.time_from = None
+        self.time_to = None
+        self.li_business = list()
+
+        self.consume_price = 0
+        self.real_price = 0
+        self.consumer_num = 0
+
+    def get_business_items(self):
+        return self.li_business
+
+    def get_query_time(self):
+        return self.time_from, self.time_to
+
+    def get_summary_info(self):
+        return self.consume_price, self.real_price, self.consumer_num
+
+    def query_business(self, time_from, time_to):
+        self.consume_price = 0
+        self.real_price = 0
+        self.consumer_num = 0
+        self.time_from = time_from
+        self.time_to = time_to
+        del self.li_business[0:len(self.li_business)]
+        result = get_business_info(time_from, time_to)
+        if len(result) > 0:
+            for key, info in result.items():
+                free_price = info.price - info.real_price if info.real_price is not None else 0
+                average_price = round(info.price / info.consumer, 2)
+                self.consume_price = self.consume_price + info.price
+                self.real_price = self.real_price + info.real_price
+                self.consumer_num = self.consumer_num + info.consumer
+                item = DataBusinessInfo(0, 0, info.table_num, info.consumer, info.price, free_price, info.real_price,
+                                        average_price, info.checkout_time)
+                self.li_business.append(item)
+            #self.li_business.sort(lambda x, y: cmp(int(x.consumer_num), int(y.consumer_num)))
+            self.li_business.sort(lambda x, y: cmp(str(x.consume_time.strftime("%Y-%m-%d")),
+                                                   str(y.consume_time.strftime("%Y-%m-%d"))))
+
+        EvtManager.dispatch_event(EnumEvent.EVT_BUSINESS_INFO_REFRESH)
+
+    def export_business(self, file_name):
+        business_data_set = tablib.Dataset()
+        business_header = (u'序号', u'桌次', u'消费人次', u'消费金额', u'优惠金额', u'收款金额', u'人均消费', u'时间')
+        business_data_set.headers = business_header
+        if len(self.li_business) > 0:
+            for item in self.li_business:
+                business_data_set.append([self.li_business.index(item), item.table_num, item.consumer_num,
+                                          item.consume_money, item.free_money, item.real_money, item.average_money,
+                                          item.consume_time])
+
+        business_data_set.title = u'消费报表'
+        business_file = open(file_name, 'wb')
+        business_file.write(business_data_set.xlsx)
+        business_file.close()
+
+
+@Singleton
+class CtrlSalesInfo():
+    def __init__(self):
+        self.time_from = None
+        self.time_to = None
+        self.li_sales = list()
+
+        self.consume_price = 0
+        self.real_price = 0
+        self.consumer_num = 0
+
+    def get_sales_items(self):
+        return self.li_sales
+
+    def get_query_time(self):
+        return self.time_from, self.time_to
+
+    def get_summary_info(self):
+        return self.consume_price, self.real_price, self.consumer_num
+
+    def query_sales(self, time_from, time_to):
+        self.consume_price = 0
+        self.real_price = 0
+        self.consumer_num = 0
+        self.time_from = time_from
+        self.time_to = time_to
+        del self.li_sales[0:len(self.li_sales)]
+        result = get_sales_info(time_from, time_to)
+        if len(result) > 0:
+            for info in result:
+                free_price = info.price - info.real_price if info.real_price is not None else 0
+                self.consume_price = self.consume_price + info.price
+                if info.real_price is not None:
+                    self.real_price = self.real_price + info.real_price
+                self.consumer_num = self.consumer_num + info.consumer
+                item = DataSalesInfo(0, 0, info.table_num, info.consumer, info.price, free_price,
+                                     info.real_price, info.checkout_time)
+                self.li_sales.append(item)
+
+            self.li_sales.sort(lambda x, y: cmp(str(x.consume_time.strftime("%Y-%m-%d %H:%M:%S")),
+                                                str(y.consume_time.strftime("%Y-%m-%d %H:%M:%S"))))
+        EvtManager.dispatch_event(EnumEvent.EVT_SALES_INFO_REFRESH)
+
+    def export_sales(self, file_name):
+        sales_data_set = tablib.Dataset()
+        sales_header = (u'序号', u'桌台', u'人次', u'消费金额', u'优惠金额', u'实际金额', u'时间')
+        sales_data_set.headers = sales_header
+        if len(self.li_sales) > 0:
+            for item in self.li_sales:
+                sales_data_set.append([self.li_sales.index(item), item.table_num, item.consumer_num,
+                                       item.consume_money, item.free_money, item.real_money, item.consume_time])
+
+        sales_data_set.title = u'销售流水查询'
+        sales_file = open(file_name, 'wb')
+        sales_file.write(sales_data_set.xlsx)
+        sales_file.close()
+
+
+@Singleton
+class CtrlBillboardInfo():
+    def __init__(self):
+        self.time_from = None
+        self.time_to = None
+        self.days = None
+        self.li_billboard = list()
+
+    def get_billboard_items(self):
+        return self.li_billboard
+
+    def get_query_time(self):
+        return self.time_from, self.time_to
+
+    def query_billboard(self, time_from, time_to, category_id):
+        self.time_from = time_from
+        self.time_to = time_to
+        self.days = (time_to - time_from).days + 1
+        del self.li_billboard[0:len(self.li_billboard)]
+        result = get_billboard_info(time_from, time_to, category_id)
+        if len(result) > 0:
+            for key, info in result.items():
+                average = info.dishes_count
+                if self.days is not None and self.days > 0:
+                    average = round(float(info.dishes_count) / self.days, 2)
+                item = DataBillboardInfo(0, 0, info.dishes_name, info.brevity_code, info.category, info.unit,
+                                         info.dishes_count, average, info.total_money)
+                self.li_billboard.append(item)
+
+            self.li_billboard.sort(lambda x, y: cmp(int(x.sale_count), int(y.sale_count)), reverse=True)
+        EvtManager.dispatch_event(EnumEvent.EVT_BILLBOARD_INFO_REFRESH)
+
+    def export_billboard(self, file_name):
+        billboard_data_set = tablib.Dataset()
+        billboard_header = (u'序号', u'菜名', u'编码缩写', u'类别', u'单位', u'销售份数', u'日均(份)', u'销售总额')
+        billboard_data_set.headers = billboard_header
+        if len(self.li_billboard) > 0:
+            for item in self.li_billboard:
+                billboard_data_set.append([self.li_billboard.index(item), item.dishes_name, item.brevity_code,
+                                           item.dishes_category, item.dishes_unit, item.sale_count,
+                                           item.average_count, item.total_money])
+
+        billboard_data_set.title = u'菜类销售排名'
+        sales_file = open(file_name, 'wb')
+        sales_file.write(billboard_data_set.xlsx)
+        sales_file.close()

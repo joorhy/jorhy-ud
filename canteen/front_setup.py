@@ -17,8 +17,8 @@ setup(
     #zipfile=None,
     windows=[{"script": './app/front/front_main.py', "icon_resources": [(1, "front.ico")]}])'''
 
-SCRIPT = "{'script'='./app/front/front_main.py', 'icon_resources': [(1, 'manager.ico')]}"
+SCRIPT = "{'script'='./app/front/front_main.py', 'icon_resources': [(1, 'front.ico')]}"
 sys.argv.append('py2exe')
-setup(windows=[{"script": './app/front/front_main.py', "icon_resources": [(1, "front.ico")]}])
+setup(windows=[{"script": './app/front/front_main.py', "icon_resources": [(1, "manager.ico")]}])
 
 # python front_setup.py py2exe -p MySQLdb

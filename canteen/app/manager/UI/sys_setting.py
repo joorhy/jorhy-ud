@@ -8,6 +8,8 @@
 ## PLEASE DO "NOT" EDIT THIS FILE!
 ###########################################################################
 from app.app_manager import AppManager
+from app.manager.logic.ctrl import *
+from app.manager.logic.data import *
 
 import wx
 import wx.xrc
@@ -34,8 +36,8 @@ class PopCompany (wx.Dialog):
         s_txt_name.SetFont(wx.Font(wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString))
         name_sizer.Add(s_txt_name, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        self.m_txtName = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(360, -1), 0)
-        name_sizer.Add(self.m_txtName, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.txtName = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(360, -1), 0)
+        name_sizer.Add(self.txtName, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         g_sizer.Add(name_sizer, 1, wx.EXPAND, 5)
         # Add person in charge sizer
         person_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -43,8 +45,8 @@ class PopCompany (wx.Dialog):
         s_txt_person.Wrap(-1)
         person_sizer.Add(s_txt_person, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        self.m_txtPerson = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(180, -1), 0)
-        person_sizer.Add(self.m_txtPerson, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.txtPerson = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(180, -1), 0)
+        person_sizer.Add(self.txtPerson, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         g_sizer.Add(person_sizer, 1, wx.EXPAND, 5)
         # Add telephone sizer
         telephone_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -53,8 +55,8 @@ class PopCompany (wx.Dialog):
         s_txt_telephone.Wrap(-1)
         telephone_sizer.Add(s_txt_telephone, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        self.m_txtPhone = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(180, -1), 0)
-        telephone_sizer.Add(self.m_txtPhone, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.txtPhone = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(180, -1), 0)
+        telephone_sizer.Add(self.txtPhone, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         g_sizer.Add(telephone_sizer, 1, wx.EXPAND, 5)
         # Add email sizer
         email_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -62,8 +64,8 @@ class PopCompany (wx.Dialog):
         s_txt_email.Wrap(-1)
         email_sizer.Add(s_txt_email, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        self.m_txtEmail = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(360, -1), 0)
-        email_sizer.Add(self.m_txtEmail, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.txtEmail = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(360, -1), 0)
+        email_sizer.Add(self.txtEmail, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         g_sizer.Add(email_sizer, 1, wx.EXPAND, 5)
         # Add address sizer
         address_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -72,8 +74,8 @@ class PopCompany (wx.Dialog):
                                       wx.Size(120, -1), wx.ALIGN_RIGHT)
         s_txt_address.Wrap(-1)
         address_sizer.Add(s_txt_address, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        self.m_txtAddress = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(360, -1), 0)
-        address_sizer.Add(self.m_txtAddress, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.txtAddress = wx.TextCtrl(panel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(360, -1), 0)
+        address_sizer.Add(self.txtAddress, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         g_sizer.Add(address_sizer, 1, wx.EXPAND, 5)
 
         # Layout
@@ -114,14 +116,28 @@ class PopCompany (wx.Dialog):
         # Connect Events
         self.m_btnSave.Bind(wx.EVT_BUTTON, self.on_btn_save)
         self.m_btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
+
+        # Initialize
+        self._init_info()
     
     def __del__(self):
         pass
 
+    def _init_info(self):
+        company_info = CtrlCompany.get_instance().get_company_info()
+        if company_info is not None:
+            self.txtName.SetValue(str(company_info.name))
+            self.txtPerson.SetValue(str(company_info.person))
+            self.txtPhone.SetValue(str(company_info.phone))
+            self.txtAddress.SetValue(str(company_info.address))
+            self.txtEmail.SetValue(str(company_info.email))
+
     # Virtual event handlers, override them in your derived class
     def on_btn_save(self, event):
-        self.Close()
         event.Skip()
+        company_info = DataCompany(self.txtName.GetValue(), self.txtPerson.GetValue(), self.txtAddress.GetValue(),
+                                   self.txtEmail.GetValue(), self.txtPhone.GetValue())
+        CtrlCompany.get_instance().set_company_info(company_info)
     
     def on_btn_exit(self, event):
         event.Skip()

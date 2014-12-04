@@ -41,6 +41,8 @@ class DeviceRegistration(Base):
     id = Column(Integer, primary_key=True)
     vch_device_mac = Column(String(45))
     vch_device_name = Column(String(45))
+    dt_register = Column(DateTime)
+    dt_expiry = Column(DateTime)
 
 
 class DishCategory(Base):
@@ -57,19 +59,20 @@ class DishPublish(Base):
     vch_name = Column(String(45))
     vch_code = Column(String(45), nullable=False)
     vch_spell = Column(String(45))
-    vch_picname = Column(String(45))
-    num_style_id = Column(ForeignKey(u'dish_style.id'), index=True)
-    num_spec_id = Column(ForeignKey(u'dish_spec.id'), index=True)
+    vch_picname = Column(String(45), nullable=False, server_default=text("'" "'"))
+    num_style_id = Column(ForeignKey(u'dish_style.id'), nullable=False, index=True, server_default=text("'0'"))
+    num_spec_id = Column(ForeignKey(u'dish_spec.id'), nullable=False, index=True, server_default=text("'0'"))
     num_category = Column(ForeignKey(u'dish_category.id'), index=True)
     num_unit = Column(ForeignKey(u'unit.id'), index=True)
     num_ticheng = Column(Float)
     num_discount = Column(Float)
     num_change_code = Column(Integer)
     num_printer_scheme_id = Column(ForeignKey(u'printer_scheme.id'), index=True)
-    num_recommend = Column(Integer)
+    num_recommend = Column(Integer, nullable=False, server_default=text("'0'"))
     ch_disabled = Column(String(1))
     ch_is_print = Column(String(1))
     vch_dish_intro = Column(String(100))
+    dt_update = Column(DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
 
     dish_category = relationship(u'DishCategory')
     num_printer_scheme = relationship(u'PrinterScheme')
@@ -85,16 +88,16 @@ class DishPublishLog(Base):
     vch_name = Column(String(45))
     vch_code = Column(String(45), nullable=False)
     vch_spell = Column(String(45))
-    vch_picname = Column(String(45))
-    num_style_id = Column(Integer)
-    num_spec_id = Column(Integer)
+    vch_picname = Column(String(45), nullable=False, server_default=text("'" "'"))
+    num_style_id = Column(Integer, nullable=False, server_default=text("'0'"))
+    num_spec_id = Column(Integer, nullable=False, server_default=text("'0'"))
     num_category = Column(Integer)
     num_unit = Column(Integer)
     num_ticheng = Column(Float)
     num_discount = Column(Float)
     num_change_code = Column(Integer)
     num_printer_scheme_id = Column(Integer)
-    num_recommend = Column(Integer)
+    num_recommend = Column(Integer, nullable=False, server_default=text("'0'"))
     vch_customized_style = Column(String(100))
     num_dish_withdraw_id = Column(ForeignKey(u'dish_publish_log_withdraw.id'), index=True)
     num_dish_num = Column(Integer)
@@ -306,8 +309,10 @@ class TableOrder(Base):
     __tablename__ = 'table_order'
 
     id = Column(Integer, primary_key=True)
+    vch_code = Column(String(45))
     num_table_id = Column(Integer)
     num_price = Column(Float)
+    num_price_real = Column(Float)
     num_price_add = Column(Float)
     num_price_fix = Column(Float)
     vch_print_memo = Column(String(45))
@@ -320,7 +325,6 @@ class TableOrder(Base):
     num_table_dish_batch_id = Column(Integer)
     num_discount_rate = Column(Float)
     num_discount_amount = Column(Float)
-    vch_code = Column(String(45))
 
     num_open_user = relationship(u'UUserinfo')
     num_table_book = relationship(u'TableBook')
@@ -377,6 +381,16 @@ class UScheduleOndutyType(Base):
     num_name = Column(String(45))
 
 
+class UType(Base):
+    __tablename__ = 'u_type'
+
+    id = Column(Integer, primary_key=True)
+    vch_name = Column(String(45))
+    num_perm_batch_id = Column(ForeignKey(u'u_permission.id'), index=True)
+
+    num_perm_batch = relationship(u'UPermission')
+
+
 class UUserLeave(Base):
     __tablename__ = 'u_user_leave'
 
@@ -404,16 +418,16 @@ class UUserdetail(Base):
     __tablename__ = 'u_userdetails'
 
     id = Column(Integer, primary_key=True)
-    vch_realname = Column(String(45))
+    vch_realname = Column(String(45), nullable=False)
     vch_englishname = Column(String(45))
     vch_email = Column(String(45))
-    num_dept_id = Column(ForeignKey(u'u_dept.id'), index=True)
+    num_dept_id = Column(ForeignKey(u'u_dept.id'), nullable=False, index=True)
     vch_duty = Column(String(45))
-    num_userdetails_type_id = Column(ForeignKey(u'u_userdetails_type.id'), index=True)
+    num_userdetails_type_id = Column(ForeignKey(u'u_userdetails_type.id'), nullable=False, index=True)
     vch_phone = Column(String(45))
     num_gender = Column(Integer)
     dt_birthday = Column(DateTime)
-    num_status = Column(Integer)
+    num_status = Column(Integer, nullable=False)
     vch_idcard = Column(String(45))
     vch_address = Column(String(45))
     vch_memo = Column(String(45))
@@ -438,7 +452,6 @@ class UUserinfo(Base):
     num_user_type = Column(Integer)
     num_userdetails_id = Column(ForeignKey(u'u_userdetails.id'), index=True)
 
-    u_perm_groups = relationship(u'UPermGroup', secondary='u_userinfo_has_u_perm_group')
     num_userdetails = relationship(u'UUserdetail')
 
 

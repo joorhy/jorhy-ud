@@ -1004,6 +1004,10 @@ class WgtFrontPage (wx.Panel):
         # Refresh data view list
         table_num = CtrlTableInfo.get_instance().get_selected_item_id()
         order_num = CtrlTableInfo.get_instance().get_order_num(table_num)
+        table_item = CtrlTableInfo.get_instance().get_table_item(table_num)
+        if table_item is not None and table_item.table_status == 2:
+            CtrlOrderInfo.get_instance().create_order(order_num, 2)
+
         result = CtrlOrderInfo.get_instance().get_order_dishes_items(order_num)
         del self.model.data[0:len(self.model.data)]
         for new_obj in result:
@@ -1012,6 +1016,11 @@ class WgtFrontPage (wx.Panel):
             self.dataViewDishes.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
 
         self.model.Cleared()
+
+        self.txtAmount.SetLabel('')
+        order_item = CtrlOrderInfo.get_instance().get_order_item(order_num)
+        if order_item is not None:
+            self.txtAmount.SetLabel(str((order_item.place_money * order_item.all_discount) - order_item.free_price))
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

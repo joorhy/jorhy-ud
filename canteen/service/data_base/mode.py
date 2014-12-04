@@ -98,6 +98,7 @@ class ModePrintScheme():
             self.code = obj.vch_code
             self.backup_id = obj.num_backup_scheme_id
             self.type_name = obj.printer_scheme_type.vch_name if obj.printer_scheme_type is not None else ''
+            self.printer_name = 'Microsoft XPS Document Writer'
 
 
 class ModePrintSchemeType():
@@ -208,3 +209,33 @@ class ModeUnit():
         if isinstance(obj, Unit):
             self.id_ = int(obj.id)
             self.name = obj.vch_name
+
+
+class ModeBusinessInfo():
+    def __init__(self):
+        self.price = 0
+        self.real_price = 0
+        self.checkout_time = ''
+        self.table_num = 1
+        self.consumer = 0
+
+
+class ModeSalesInfo():
+    def __init__(self, order_obj):
+        if isinstance(order_obj, TableOrder):
+            self.price = order_obj.num_price
+            self.real_price = order_obj.num_price_real
+            self.checkout_time = order_obj.dt_checkout
+            self.table_num = order_obj.num_table_book.num_table_id
+            self.consumer = order_obj.num_table_book.num_consumers
+
+
+class ModeBillboardInfo():
+    def __init__(self):
+        self.dishes_code = ''
+        self.dishes_name = ''
+        self.brevity_code = ''
+        self.total_money = 0
+        self.unit = ''
+        self.category = ''
+        self.dishes_count = 0

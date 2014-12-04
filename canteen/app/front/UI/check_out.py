@@ -92,6 +92,7 @@ class PopWholeOrderDiscount (wx.Dialog):
             order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
             if order_item is not None:
                 order_item.all_discount = float(self.txtSrcDiscount.GetValue())
+                CtrlOrderInfo.get_instance().update_checkout_info()
 
         self.Close()
 
@@ -268,6 +269,7 @@ class PopCheckoutDiscount (wx.Dialog):
             order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
             if order_item is not None:
                 order_item.free_price = float(self.txtFree.GetValue())
+                CtrlOrderInfo.get_instance().update_checkout_info()
 
         self.Close()
 
@@ -1052,24 +1054,119 @@ class WgtCheckout (wx.Panel):
         s_txt_cashier_type = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, u"收银方式(非现金)", wx.DefaultPosition,
                                          wx.Size(143, -1), 0 | wx.RAISED_BORDER)
         s_txt_cashier_type.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
-        s_txt_cashier_type.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        s_txt_cashier_type.SetBackgroundColour(wx.Colour(241, 197, 102))
         summary_sizer.Add(s_txt_cashier_type, 0, wx.ALIGN_CENTER, 5)
 
         self.txtMoney = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, u"金额  0.0", wx.DefaultPosition,
                                     wx.Size(162, -1), 0 | wx.RAISED_BORDER)
         self.txtMoney.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
-        self.txtMoney.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+        self.txtMoney.SetBackgroundColour(wx.Colour(241, 197, 102))
         summary_sizer.Add(self.txtMoney, 0, wx.ALIGN_CENTER, 5)
 
         sizer.Add(summary_sizer, 1, wx.EXPAND, 5)
+        # Add coupon sizer
+        coupon_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        s_txt_coupon = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, u"优惠券", wx.DefaultPosition,
+                                   wx.Size(143, -1), 0 | wx.RAISED_BORDER)
+        s_txt_coupon.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        s_txt_coupon.SetBackgroundColour(wx.Colour(241, 197, 102))
+        coupon_sizer.Add(s_txt_coupon, 0, wx.ALIGN_CENTER, 5)
 
-        for i in range(1, 8):
+        self.txtCoupon = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                     wx.Size(163, -1), 0 | wx.RAISED_BORDER)
+        self.txtCoupon.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        self.txtCoupon.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        coupon_sizer.Add(self.txtCoupon, 0, wx.ALIGN_CENTER, 5)
+
+        sizer.Add(coupon_sizer, 1, wx.EXPAND, 5)
+        # Add membership card sizer
+        membership_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        s_txt_membership = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, u"会员卡", wx.DefaultPosition,
+                                       wx.Size(143, -1), 0 | wx.RAISED_BORDER)
+        s_txt_membership.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        s_txt_membership.SetBackgroundColour(wx.Colour(241, 197, 102))
+        membership_sizer.Add(s_txt_membership, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtMembership = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                         wx.Size(163, -1), 0 | wx.RAISED_BORDER)
+        self.txtMembership.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        self.txtMembership.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        membership_sizer.Add(self.txtMembership, 0, wx.ALIGN_CENTER, 5)
+
+        sizer.Add(membership_sizer, 1, wx.EXPAND, 5)
+        # Add pos sizer
+        pos_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        s_txt_pos = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, u"Pos支付 ", wx.DefaultPosition,
+                                wx.Size(143, -1), 0 | wx.RAISED_BORDER)
+        s_txt_pos.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        s_txt_pos.SetBackgroundColour(wx.Colour(241, 197, 102))
+        pos_sizer.Add(s_txt_pos, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtPos = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                  wx.Size(163, -1), 0 | wx.RAISED_BORDER)
+        self.txtPos.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        self.txtPos.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        pos_sizer.Add(self.txtPos, 0, wx.ALIGN_CENTER, 5)
+
+        sizer.Add(pos_sizer, 1, wx.EXPAND, 5)
+        # Add group sizer
+        group_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        s_txt_group = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, u"团购", wx.DefaultPosition,
+                                  wx.Size(143, -1), 0 | wx.RAISED_BORDER)
+        s_txt_group.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        s_txt_group.SetBackgroundColour(wx.Colour(241, 197, 102))
+        group_sizer.Add(s_txt_group, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtGroup = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                    wx.Size(163, -1), 0 | wx.RAISED_BORDER)
+        self.txtGroup.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        self.txtGroup.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        group_sizer.Add(self.txtGroup, 0, wx.ALIGN_CENTER, 5)
+
+        sizer.Add(group_sizer, 1, wx.EXPAND, 5)
+        # Add on credit sizer
+        credit_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        s_txt_credit = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, u"挂账", wx.DefaultPosition,
+                                   wx.Size(143, -1), 0 | wx.RAISED_BORDER)
+        s_txt_credit.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        s_txt_credit.SetBackgroundColour(wx.Colour(241, 197, 102))
+        credit_sizer.Add(s_txt_credit, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtCredit = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                     wx.Size(163, -1), 0 | wx.RAISED_BORDER)
+        self.txtCredit.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        self.txtCredit.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        credit_sizer.Add(self.txtCredit, 0, wx.ALIGN_CENTER, 5)
+
+        sizer.Add(credit_sizer, 1, wx.EXPAND, 5)
+        # Add boss sign sizer
+        boss_sign_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
+        s_txt_boss_sign = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, u"老板签单", wx.DefaultPosition,
+                                      wx.Size(143, -1), 0 | wx.RAISED_BORDER)
+        s_txt_boss_sign.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        s_txt_boss_sign.SetBackgroundColour(wx.Colour(241, 197, 102))
+        boss_sign_sizer.Add(s_txt_boss_sign, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtBossSign = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                       wx.Size(163, -1), 0 | wx.RAISED_BORDER)
+        self.txtBossSign.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
+        self.txtBossSign.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_WINDOW))
+        boss_sign_sizer.Add(self.txtBossSign, 0, wx.ALIGN_CENTER, 5)
+
+        sizer.Add(boss_sign_sizer, 1, wx.EXPAND, 5)
+        # Add reserve sizer
+        for i in range(1, 3):
             line_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
             s_txt_type = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                      wx.Size(143, -1), 0 | wx.RAISED_BORDER)
             s_txt_type.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BACKGROUND))
-            s_txt_type.SetBackgroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNFACE))
+            s_txt_type.SetBackgroundColour(wx.Colour(241, 197, 102))
             line_sizer.Add(s_txt_type, 0, wx.ALIGN_CENTER, 5)
 
             self.txtReserveMoney = wx.TextCtrl(self.cashierPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
@@ -1128,9 +1225,10 @@ class WgtCheckout (wx.Panel):
 
         # Initialize
         self._init_table_data()
+        self._init_consume_data()
 
         # Add event listener
-        #EvtManager.add_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
+        EvtManager.add_listener(self, EnumEvent.EVT_CHECKOUT_INFO_REFRESH, self.on_refresh)
 
         x, y = CtrlHomePage.get_instance().get_screen_size()
         self.SetSize(wx.Size(x, y))
@@ -1139,8 +1237,7 @@ class WgtCheckout (wx.Panel):
 
     def un_initialize(self):
         # Remove event listener
-        #EvtManager.remove_listener(self, EnumEvent.EVT_DINING_ROOM_REFRESH, self.on_btn_refresh)
-        pass
+        EvtManager.remove_listener(self, EnumEvent.EVT_CHECKOUT_INFO_REFRESH, self.on_refresh)
 
     def _init_table_data(self):
         table_num = CtrlTableInfo.get_instance().get_selected_item_id()
@@ -1149,6 +1246,16 @@ class WgtCheckout (wx.Panel):
         self.txtTableNum.SetLabel(table_item.table_num)
         self.txtOpenTime.SetLabel(table_item.open_time)
         self.txtOpenMemo.SetLabel(table_item.memo)
+
+    def _init_consume_data(self):
+        order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
+        if order_id is not None:
+            order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
+            if order_item is not None:
+                self.txtConsume.SetLabel(str(order_item.place_money))
+                self.txtDiscount.SetLabel(str(order_item.all_discount))
+                self.txtFree.SetLabel(str(order_item.free_price))
+                self.txtReceivable.SetLabel(str(order_item.place_money * order_item.all_discount))
 
     # Virtual event handlers, override them in your derived class
     def on_paint(self, event):
@@ -1231,9 +1338,11 @@ class WgtCheckout (wx.Panel):
             CtrlOrderInfo.get_instance().set_select_dishes_code(dishes_code)
         except Exception, ex:
             print Exception, ":", ex
-            CtrlOrderInfo.get_instance().set_select_dishes_id(None)
+            CtrlOrderInfo.get_instance().set_select_dishes_id(None, None, None)
             CtrlOrderInfo.get_instance().set_select_dishes_code(None)
 
+    def on_refresh(self, event):
+        self._init_consume_data()
 
 if __name__ == '__main__':
     app = wx.PySimpleApp()

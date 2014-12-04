@@ -773,7 +773,7 @@ class ModelEmployee(wx.dataview.PyDataViewModel):
                       4: node.duty,
                       5: node.telephone,
                       6: str_sex,
-                      7: node.birthday.strftime("%Y-%m-%d"),
+                      7: node.birthday.strftime("%Y-%m-%d") if node.birthday is not None else "",
                       8: str_state}
             return mapper[col]
         
@@ -1111,3 +1111,229 @@ class ModelSchemeType(wx.dataview.PyDataViewModel):
                 node.code = value
             elif col == 2:
                 node.name = value
+
+
+class ModelBusinessInfo(wx.dataview.PyDataViewModel):
+    def __init__(self, data):
+        wx.dataview.PyDataViewModel.__init__(self)
+
+        self.data = data
+        self.objmapper.UseWeakRefs(True)
+
+    # Report how many columns this model provides data for.
+    def GetColumnCount(self):
+        return 8
+
+    # Map the data column numbers to the data type
+    def GetColumnType(self, col):
+        mapper = {0: 'int',
+                  1: 'int',
+                  2: 'int',
+                  3: 'float',
+                  4: 'float',
+                  5: 'float',
+                  6: 'float',
+                  7: 'string'}
+        return mapper[col]
+
+    def GetChildren(self, parent, children):
+        if not parent:
+            for genre in self.data:
+                children.append(self.ObjectToItem(genre))
+            return len(self.data)
+
+        return 0
+
+    def IsContainer(self, item):
+        # The hidden root is a container
+        if not item:
+            return True
+
+        # but everything else (the song objects) are not
+        return False
+
+    def GetParent(self, item):
+        if not item:
+            return wx.dataview.NullDataViewItem
+
+        return wx.dataview.NullDataViewItem
+
+    def GetValue(self, item, col):
+        # Fetch the data object for this item.
+        node = self.ItemToObject(item)
+        if isinstance(node, DataBusinessInfo):
+            mapper = {0: self.data.index(node),
+                      1: node.table_num,
+                      2: node.consumer_num,
+                      3: node.consume_money,
+                      4: node.free_money,
+                      5: node.real_money,
+                      6: node.average_money,
+                      7: node.consume_time.strftime("%Y-%m-%d")}
+            return mapper[col]
+
+        else:
+            raise RuntimeError("unknown node type")
+
+    def GetAttr(self, item, col, attr):
+        return False
+
+    def SetValue(self, value, item, col):
+        node = self.ItemToObject(item)
+        if isinstance(node, DataSchemeType):
+            if col == 0:
+                node.line = value
+            elif col == 1:
+                node.table_num = value
+            elif col == 2:
+                node.consumer_num = value
+
+
+class ModelSalesInfo(wx.dataview.PyDataViewModel):
+    def __init__(self, data):
+        wx.dataview.PyDataViewModel.__init__(self)
+
+        self.data = data
+        self.objmapper.UseWeakRefs(True)
+
+    # Report how many columns this model provides data for.
+    def GetColumnCount(self):
+        return 8
+
+    # Map the data column numbers to the data type
+    def GetColumnType(self, col):
+        mapper = {0: 'int',
+                  1: 'int',
+                  2: 'int',
+                  3: 'float',
+                  4: 'float',
+                  5: 'float',
+                  6: 'string'}
+        return mapper[col]
+
+    def GetChildren(self, parent, children):
+        if not parent:
+            for genre in self.data:
+                children.append(self.ObjectToItem(genre))
+            return len(self.data)
+
+        return 0
+
+    def IsContainer(self, item):
+        # The hidden root is a container
+        if not item:
+            return True
+
+        # but everything else (the song objects) are not
+        return False
+
+    def GetParent(self, item):
+        if not item:
+            return wx.dataview.NullDataViewItem
+
+        return wx.dataview.NullDataViewItem
+
+    def GetValue(self, item, col):
+        # Fetch the data object for this item.
+        node = self.ItemToObject(item)
+        if isinstance(node, DataSalesInfo):
+            mapper = {0: self.data.index(node),
+                      1: node.table_num,
+                      2: node.consumer_num,
+                      3: node.consume_money,
+                      4: node.free_money,
+                      5: node.real_money,
+                      6: node.consume_time.strftime("%Y-%m-%d %H:%M:%S")}
+            return mapper[col]
+
+        else:
+            raise RuntimeError("unknown node type")
+
+    def GetAttr(self, item, col, attr):
+        return False
+
+    def SetValue(self, value, item, col):
+        node = self.ItemToObject(item)
+        if isinstance(node, DataSchemeType):
+            if col == 0:
+                node.line = value
+            elif col == 1:
+                node.table_num = value
+            elif col == 2:
+                node.consumer_num = value
+
+
+class ModelBillboardInfo(wx.dataview.PyDataViewModel):
+    def __init__(self, data):
+        wx.dataview.PyDataViewModel.__init__(self)
+
+        self.data = data
+        self.objmapper.UseWeakRefs(True)
+
+    # Report how many columns this model provides data for.
+    def GetColumnCount(self):
+        return 8
+
+    # Map the data column numbers to the data type
+    def GetColumnType(self, col):
+        mapper = {0: 'int',
+                  1: 'string',
+                  2: 'string',
+                  3: 'string',
+                  4: 'string',
+                  5: 'float',
+                  6: 'int',
+                  7: 'float'}
+        return mapper[col]
+
+    def GetChildren(self, parent, children):
+        if not parent:
+            for genre in self.data:
+                children.append(self.ObjectToItem(genre))
+            return len(self.data)
+
+        return 0
+
+    def IsContainer(self, item):
+        # The hidden root is a container
+        if not item:
+            return True
+
+        # but everything else (the song objects) are not
+        return False
+
+    def GetParent(self, item):
+        if not item:
+            return wx.dataview.NullDataViewItem
+
+        return wx.dataview.NullDataViewItem
+
+    def GetValue(self, item, col):
+        # Fetch the data object for this item.
+        node = self.ItemToObject(item)
+        if isinstance(node, DataBillboardInfo):
+            mapper = {0: self.data.index(node),
+                      1: node.dishes_name,
+                      2: node.brevity_code,
+                      3: node.dishes_category,
+                      4: node.dishes_unit,
+                      5: node.sale_count,
+                      6: node.average_count,
+                      7: node.total_money}
+            return mapper[col]
+
+        else:
+            raise RuntimeError("unknown node type")
+
+    def GetAttr(self, item, col, attr):
+        return False
+
+    def SetValue(self, value, item, col):
+        node = self.ItemToObject(item)
+        if isinstance(node, DataSchemeType):
+            if col == 0:
+                node.line = value
+            elif col == 1:
+                node.dishes_name = value
+            elif col == 2:
+                node.brevity_code = value

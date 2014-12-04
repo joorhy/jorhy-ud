@@ -94,6 +94,18 @@ class PopPassword (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_ok(self, event):
         event.Skip()
+        if self.txtNewPassword.GetValue() != self.txtVerifyPassword.GetValue():
+            dlg = wx.MessageDialog(self, u"新密码输入不一致", caption=u"修改密码")
+            dlg.ShowModal()
+        else:
+            modify_status = CtrlManagerLogin.get_instance().modify_password(self.txtCurPassword.GetValue(),
+                                                                            self.txtNewPassword.GetValue())
+            if modify_status is False:
+                dlg = wx.MessageDialog(self, u"密码修改失败", caption=u"修改密码")
+                dlg.ShowModal()
+            else:
+                dlg = wx.MessageDialog(self, u"密码修改成功", caption=u"修改密码")
+                dlg.ShowModal()
 
     def on_btn_cancel(self, event):
         event.Skip()
@@ -103,33 +115,38 @@ class PopPassword (wx.Dialog):
 ## Class WgtDeskTop
 ###########################################################################
 
-li_func_widget_1 = ['DiningTable', 'DishesPublish', 'Employee', 'PrinterScheme', '', 'Company']
-li_func_widget_2 = ['', '', 'UserPermission', 'SchemeRelated', '', 'Register']
+li_func_widget_1 = ['DiningTable', 'DishesPublish', 'Employee', 'PrinterScheme', 'BusinessInfo', 'Company']
+li_func_widget_2 = ['', '', 'UserPermission', 'SchemeRelated', 'SalesInfo', 'Register']
+li_func_widget_3 = ['', '', '', '', 'BillboardInfo', '']
 
 li_title = [u"餐厅管理", u"菜品管理", u"员工管理", u"打印设置", u"报表中心", u"系统设置"]
 li_func_img_1 = [(u"table.png", u"s_table.png"), (u"dishes_publish.png", u"s_dishes_publish.png"),
                  (u"employee_man.png", u"s_employee_man.png"), (u"print_scheme.png", u"s_print_scheme.png"),
-                 (u"sale_info.png", u"s_sale_info.png"), (u"company.png", u"s_company.png")]
+                 (u"business_status.png", u"s_business_status.png"), (u"company.png", u"s_company.png")]
 li_func_img_2 = [None, None, (u"role_man.png", u"s_role_man.png"), (u"dishes_relation.png", u"s_dishes_relation.png"),
-                 (u"money_info.png", u"s_money_info.png"), (u"register.png", u"s_register.png")]
+                 (u"consume.png", u"s_consume.png"), (u"register.png", u"s_register.png")]
 #li_func_title_3 = [(u"area_setting.png", u"s_area_setting.png"), (u"dishes_unit.png", u"s_dishes_unit.png"),
 #                   (u"work_schedule.png", u"s_work_schedule.png"), None,
 #                   (u"business_status.png", u"s_business_status.png"), (u"backup.png", u"s_backup.png")]
 li_func_img_3 = [None, None, None, None,
-                 (u"business_status.png", u"s_business_status.png"), None]
-li_func_img_4 = [None, None, None, None, (u"consume.png", u"s_consume.png"), None]
-li_func_img_5 = [None, None, None, None, (u"billboard.png", u"s_billboard.png"), None]
+                 (u"billboard.png", u"s_billboard.png"), None]
+#li_func_img_4 = [None, None, None, None, (u"money_info.png", u"s_money_info.png"), None]
+#li_func_img_5 = [None, None, None, None, (u"sale_info.png", u"s_sale_info.png"), None]
+li_func_img_4 = [None, None, None, None, None, None]
+li_func_img_5 = [None, None, None, None, None, None]
 li_func_img_6 = [None, None, None, None, None, None]
 
 li_func_images = [li_func_img_1, li_func_img_2, li_func_img_3,
                   li_func_img_4, li_func_img_5, li_func_img_6]
 
-li_func_title_1 = [u'餐桌设置', u'菜品发布', u'员工管理', u'厨打方案', u'菜品销售查询', u'公司信息']
-li_func_title_2 = [u'', u'', u'权限管理', u'菜品关联', u'收银情况查询', u'注册']
+li_func_title_1 = [u'餐桌设置', u'菜品发布', u'员工管理', u'厨打方案', u'营业情况查询', u'公司信息']
+li_func_title_2 = [u'', u'', u'权限管理', u'菜品关联', u'消费查询', u'注册']
 #li_func_title_3 = [u'区域设置', u'菜品单位设置', u'员工排班', u'', u'营业情况查询', u'数据备份']
-li_func_title_3 = [u'', u'', u'', u'', u'营业情况查询', u'']
-li_func_title_4 = [u'', u'', u'', u'', u'消费查询', u'']
-li_func_title_5 = [u'', u'', u'', u'', u'菜品排行榜', u'']
+li_func_title_3 = [u'', u'', u'', u'', u'菜品排行榜', u'']
+#li_func_title_4 = [u'', u'', u'', u'', u'收银情况查询', u'']
+li_func_title_4 = [u'', u'', u'', u'', u'', u'']
+#li_func_title_5 = [u'', u'', u'', u'', u'菜品销售查询', u'']
+li_func_title_5 = [u'', u'', u'', u'', u'', u'']
 li_func_title_6 = [u'', u'', u'', u'', u'', u'']
 li_func_titles = [li_func_title_1, li_func_title_2, li_func_title_3,
                   li_func_title_4, li_func_title_5, li_func_title_6]
@@ -411,7 +428,10 @@ class WgtHomePage (wx.Panel):
 
     def on_func_3(self, event):
         event.Skip()
-        self.Refresh()
+        select_item = CtrlHomePage.get_instance().get_selected_item()
+        AppManager.get_instance().set_app_title(li_func_title_3[select_item])
+        self._set_screen_tile()
+        AppManager.get_instance().switch_to_application(li_func_widget_3[select_item])
 
     def on_func_4(self, event):
         event.Skip()
@@ -453,9 +473,7 @@ class WgtHomePage (wx.Panel):
         self.btnDishesPublishing.Enabled = True
         self.btnStaffMan.Enabled = True
         self.btnPrinter.Enabled = True
-        self.btnReportForms.Enabled = False
-        self.btnReportForms.SetBackgroundColour(wx.YELLOW)
-        self.btnReportForms.SetForegroundColour(wx.YELLOW)
+        self.btnReportForms.Enabled = True
         self.btnSysSetting.Enabled = True
         self.btnModifyPassword.Enabled = True
 

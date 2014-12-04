@@ -2,6 +2,15 @@
 #_*_ encoding=utf-8 _*_
 
 
+class DataCompany(object):
+    def __init__(self, name, person, address, email, phone):
+        self.name = name
+        self.person = person
+        self.address = address
+        self.email = email
+        self.phone = phone
+
+
 class DataArea(object):
     def __init__(self, line=0, key=0, name=''):
         self.line = line
@@ -123,7 +132,7 @@ class DataUserRole(object):
 
 
 class DataPrinterScheme(object):
-    def __init__(self, line, key, code, name, valid, scheme_type, print_count, backup):
+    def __init__(self, line, key, code, name, valid, scheme_type, print_count, backup, printer_name):
         self.line = line
         self.key = key
         self.code = code
@@ -132,6 +141,7 @@ class DataPrinterScheme(object):
         self.scheme_type = scheme_type
         self.print_count = print_count
         self.backup = backup
+        self.printer_name = printer_name
 
 
 class DataSchemeType(object):
@@ -149,3 +159,44 @@ class DataPermList(object):
         self.p_code = p_code
         self.name = name
         self.selected = selected
+
+
+class DataBusinessInfo(object):
+    def __init__(self, line, key, table_num, consumer_num, consume_money, free_money,
+                 real_money, average_money, consume_time):
+        self.line = line
+        self.key = key
+        self.table_num = int(table_num)
+        self.consumer_num = int(consumer_num)
+        self.consume_money = consume_money
+        self.free_money = free_money
+        self.real_money = real_money
+        self.average_money = average_money
+        self.consume_time = consume_time
+
+
+class DataSalesInfo(object):
+    def __init__(self, line, key, table_num, consumer_num, consume_money, free_money,
+                 real_money, consume_time):
+        self.line = line
+        self.key = key
+        self.table_num = int(table_num)
+        self.consumer_num = int(consumer_num)
+        self.consume_money = consume_money
+        self.free_money = free_money
+        self.real_money = real_money
+        self.consume_time = consume_time
+
+
+class DataBillboardInfo(object):
+    def __init__(self, line, key, dishes_name, brevity_code, dishes_category, dishes_unit,
+                 sale_count, average_count, total_money):
+        self.line = line
+        self.key = key
+        self.dishes_name = dishes_name
+        self.brevity_code = brevity_code
+        self.dishes_category = dishes_category
+        self.dishes_unit = dishes_unit
+        self.sale_count = sale_count
+        self.average_count = average_count
+        self.total_money = total_money

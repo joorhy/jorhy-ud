@@ -4,9 +4,9 @@ import sys
 from distutils.core import setup
 import py2exe
 
-'''includes = ["encodings", "encodings.*", "MySQLdb"]
+includes = ["encodings", "encodings.*"]
 
-options = {"py2exe":
+'''options = {"py2exe":
            {"compressed": 1,
             "optimize": 2,
             #"ascii": 1,
@@ -22,7 +22,8 @@ setup(
 
 SCRIPT = "{'script'='./app/manager/manager_main.py', 'icon_resources': [(1, 'manager.ico')]}"
 sys.argv.append('py2exe')
-setup(windows=[{"script": './app/manager/manager_main.py', "icon_resources": [(1, "manager.ico")]}])
+setup(options={"py2exe": {"includes": includes}}, windows=[{"script": './app/manager/manager_main.py',
+                                                            "icon_resources": [(1, "manager.ico")]}])
 
 
 # python manager_setup.py py2exe -p MySQLdb

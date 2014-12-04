@@ -13,6 +13,7 @@ class AppManager():
 
         self.login_panel = None
 
+        ''' for manager UI'''
         self.home_page_panel = None
         self.dining_table_panel = None
         self.dishes_publish_panel = None
@@ -20,7 +21,11 @@ class AppManager():
         self.printer_scheme_panel = None
         self.scheme_related_panel = None
         self.user_permission_panel = None
+        self.business_panel = None
+        self.sales_panel = None
+        self.billboard_panel = None
 
+        ''' for front UI'''
         self.front_page_panel = None
         self.order_dishes_panel = None
         self.checkout_panel = None
@@ -72,6 +77,21 @@ class AppManager():
                 from app.manager.UI.employee import WgtPermission
                 self.user_permission_panel = WgtPermission(self.mainScreen)
                 self.user_permission_panel.Hide()
+
+            if self.business_panel is None:
+                from app.manager.UI.report_forms import WgtBusinessInfo
+                self.business_panel = WgtBusinessInfo(self.mainScreen)
+                self.business_panel.Hide()
+
+            if self.sales_panel is None:
+                from app.manager.UI.report_forms import WgtSalesInfo
+                self.sales_panel = WgtSalesInfo(self.mainScreen)
+                self.sales_panel.Hide()
+
+            if self.billboard_panel is None:
+                from app.manager.UI.report_forms import WgtBillboardInfo
+                self.billboard_panel = WgtBillboardInfo(self.mainScreen)
+                self.billboard_panel.Hide()
 
         elif app_type == "front":
             if self.front_page_panel is None:
@@ -150,6 +170,21 @@ class AppManager():
                 from app.manager.UI.employee import WgtPermission
                 self.user_permission_panel = WgtPermission(self.mainScreen)
             self.panel = self.user_permission_panel
+        elif wgt == "BusinessInfo":
+            if self.business_panel is None:
+                from app.manager.UI.report_forms import WgtBusinessInfo
+                self.business_panel = WgtBusinessInfo(self.mainScreen)
+            self.panel = self.business_panel
+        elif wgt == "SalesInfo":
+            if self.sales_panel is None:
+                from app.manager.UI.report_forms import WgtSalesInfo
+                self.sales_panel = WgtSalesInfo(self.mainScreen)
+            self.panel = self.sales_panel
+        elif wgt == "BillboardInfo":
+            if self.billboard_panel is None:
+                from app.manager.UI.report_forms import WgtBillboardInfo
+                self.billboard_panel = WgtBillboardInfo(self.mainScreen)
+            self.panel = self.billboard_panel
         elif wgt == 'FrontPage':
             if self.front_page_panel is None:
                 from app.front.UI.front_page import WgtFrontPage

@@ -150,11 +150,11 @@ class PopCategorySetting (wx.Dialog):
 
 # This is how you pre-establish a file filter so that the dialog
 # only shows the extension(s) you want it to.
-wildcard = "bitmap image (*.png)|*.png|"   ''' \
-           "png image (*.bmp)|*.bmp|"         \
-           "jpg image (*.jpg)|*.jpg|"         \
-           "jpeg image (*.jpeg)|*.jpeg|"      \'
-           "All files (*.*)|*.*"'''
+wildcard = "png image (*.png)|*.png|"    \
+           "jpg image (*.jpg)|*.jpg|"    \
+           "bitmap image (*.bmp)|*.bmp|" \
+           "jpeg image (*.jpeg)|*.jpeg|" \
+           "All files (*.*)|*.*"
 
 
 class PopDishesInfo (wx.Dialog):
@@ -947,7 +947,7 @@ class WgtDishesPublish (wx.Panel):
         dc.Clear()
 
         sz = self.GetClientSize()
-        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
+        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_ANY).Scale(sz.x, 82)
         bg_bmp = bg_img.ConvertToBitmap()
 
         mem_dc = wx.MemoryDC()
@@ -998,7 +998,8 @@ class WgtDishesPublish (wx.Panel):
             item = self.dataViewList.GetCurrentItem()
             try:
                 data = self.model.ItemToObject(item)
-            except:
+            except Exception, ex:
+                print Exception, ":", ex
                 for item_ in self.model.data:
                     if item_.key == self.tree_data.key:
                         data = item_
@@ -1007,8 +1008,8 @@ class WgtDishesPublish (wx.Panel):
             CtrlDishes.get_instance().set_cur_item_index(index_)
             pop_dishes_info = PopDishesInfo(self, "mod")
             pop_dishes_info.ShowModal()
-        except:
-            print 'WgtDishesPublish: on_btn_modify error'
+        except Exception, ex:
+            print Exception, ":", ex
     
     def on_btn_delete(self, event):
         event.Skip()
@@ -1016,7 +1017,8 @@ class WgtDishesPublish (wx.Panel):
             item = self.dataViewList.GetCurrentItem()
             try:
                 data = self.model.ItemToObject(item)
-            except:
+            except Exception, ex:
+                print Exception, ":", ex
                 for item_ in self.model.data:
                     if item_.key == self.tree_data.key:
                         data = item_
@@ -1026,8 +1028,8 @@ class WgtDishesPublish (wx.Panel):
             CtrlDishes.get_instance().delete_item(data)
             CtrlSpec.get_instance().delete_item_by_dish_code(data.code)
             CtrlStyle.get_instance().delete_item_by_dish_code(data.code)
-        except:
-            print 'WgtDishesPublish: on_btn_delete error'
+        except Exception, ex:
+            print Exception, ":", ex
     
     def on_btn_type(self, event):
         event.Skip()

@@ -18,7 +18,15 @@ class EnumEvent(Singleton):
     EVT_PERMISSION_REFRESH = wx.NewId()
     # Printer scheme refresh event
     EVT_PRINTER_SCHEME_REFRESH = wx.NewId()
+    # Business info refresh event
+    EVT_BUSINESS_INFO_REFRESH = wx.NewId()
+    # Sales info refresh event
+    EVT_SALES_INFO_REFRESH = wx.NewId()
+    # Billboard info refresh event
+    EVT_BILLBOARD_INFO_REFRESH = wx.NewId()
     # Front page refresh event
     EVT_FRONT_PAGE_REFRESH = wx.NewId()
     # Order dishes items refresh event
     EVT_ORDER_DISHES_ITEMS_REFRESH = wx.NewId()
+    # checkout info refresh event
+    EVT_CHECKOUT_INFO_REFRESH = wx.NewId()

@@ -4,6 +4,7 @@ from app.front.logic.ctrl import *
 from app.app_manager import AppManager
 from app.front.config import CONFIG
 from service.http_json.http_service import HttpService
+from framework.core import Log
 
 import wx
 import sys
@@ -24,6 +25,8 @@ try:
     CtrlDishesInfo.get_instance().get_dishes_items()
 except Exception, ex:
     print Exception, ":", ex
+
+Log.initialize("manager.log")
 
 AppManager.get_instance().initialize('front')
 AppManager.get_instance().switch_to_application('Login', 'front')

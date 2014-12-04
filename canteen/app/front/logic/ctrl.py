@@ -5,10 +5,12 @@ from framework.core import EvtManager, Singleton
 from app.enum_event import EnumEvent
 from app.front.logic.data import *
 from service.http_json.http_service import HttpService
+from framework.core import Log
 
 import random
 import time
 import re
+from threading import Timer
 
 
 @Singleton
@@ -109,6 +111,8 @@ class CtrlTableInfo():
                     if item.table_status != 0:
                         table_order_tmp = {item.table_id: item.order_num}
                         self.di_table_order.update(table_order_tmp)
+                    #if item.table_status == 2:
+                    #    CtrlOrderInfo.get_instance().create_order(item.order_num, 2)
                     #    item.amount = round(random.random() * 123, 2)
                     self.li_table_items.append(item)
 
@@ -312,8 +316,19 @@ class CtrlOrderInfo():
         self.cur_dishes_code = None
         self.di_order_item = dict()
 
+        self.timer = Timer(1, self.on_timer)
+        self.timer.start()
+
+    def on_timer(self):
+        while True:
+            self.update_order()
+            time.sleep(2)
+
     def get_cur_order_id(self):
         return self.cur_order_num
+
+    def update_checkout_info(self):
+        EvtManager.dispatch_event(EnumEvent.EVT_CHECKOUT_INFO_REFRESH)
 
     def create_order(self, order_num, order_status):
         self.cur_order_num = order_num
@@ -352,6 +367,37 @@ class CtrlOrderInfo():
 
             order_item_tmp = {order_num: item}
             self.di_order_item.update(order_item_tmp)
+
+    def update_order(self):
+        for order_num, order_item in self.di_order_item.items():
+            result = HttpService.get_instance().get_order_info(order_num)
+            if result is not None:
+                order_item.di_place_dishes_items.clear()
+                for info in result:
+                    dishes_item = DataOrderDishesItem()
+                    dishes_item.dishes_code = info["vch_dish_code"]
+                    dishes_details = CtrlDishesInfo.get_instance().get_dishes_item(dishes_item.dishes_code)
+                    spec_id = info["num_spec_id"]
+                    style_id = info["num_style_id"]
+                    if dishes_details is not None:
+                        for spec in dishes_details.dishes_spec:
+                            if spec["id"] == spec_id:
+                                dishes_item.dishes_spec = spec
+                        if dishes_details.dishes_style is not None:
+                            for style in dishes_details.dishes_style:
+                                if style["id"] == style_id:
+                                    dishes_item.dishes_style = style
+                    dishes_item.dishes_count = info["num_dish_num"]
+                    dishes_item.dishes_demand = info["vch_customized_style"]
+                    dishes_key = str(dishes_item.dishes_code) + str(spec_id) + str(style_id)
+                    if dishes_key in order_item.di_place_dishes_items:
+                        order_item.di_place_dishes_items[dishes_key].dishes_count = \
+                            order_item.di_place_dishes_items[dishes_key].dishes_count + dishes_item.dishes_count
+                        order_item.di_place_dishes_items[dishes_key].li_dishes_log_id.append(info["dishId"])
+                    else:
+                        dishes_item.li_dishes_log_id.append(info["dishId"])
+                        order_dishes_item_tmp = {dishes_key: dishes_item}
+                        order_item.di_place_dishes_items.update(order_dishes_item_tmp)
 
     def get_order_item(self, order_num):
         if order_num in self.di_order_item:
@@ -539,6 +585,7 @@ class CtrlOrderInfo():
                 li_ordered_items.append(ordered_item)
                 cur_order_item.place_money = cur_order_item.place_money + ordered_item.dishes_real_amount
         except Exception, ex:
+            Log.info("get_order_dishes_items error")
             print Exception, ":", ex
 
         return li_ordered_items

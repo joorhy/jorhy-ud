@@ -295,7 +295,7 @@ class PopOrderDishes (wx.Dialog):
         price_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         s_txt_price = wx.StaticText(self, wx.ID_ANY, u"价格：", wx.DefaultPosition,
-                                         wx.Size(80, -1), wx.ALIGN_RIGHT)
+                                    wx.Size(80, -1), wx.ALIGN_RIGHT)
         s_txt_price.Wrap(-1)
         price_sizer.Add(s_txt_price, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
@@ -603,7 +603,7 @@ class WgtOrderDishes (wx.Panel):
         self.dataViewCtrl.AppendTextColumn(u"单位", 3)
         self.dataViewCtrl.AppendTextColumn(u"数量", 4)
         self.dataViewCtrl.AppendTextColumn(u"退菜量", 5)
-        self.dataViewCtrl.AppendTextColumn(u"价格", 6)
+        self.dataViewCtrl.AppendTextColumn(u"单价", 6)
         self.dataViewCtrl.AppendTextColumn(u"实际金额", 7)
         self.dataViewCtrl.AppendTextColumn(u"落单状态", 11)
         self.dataViewCtrl.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
