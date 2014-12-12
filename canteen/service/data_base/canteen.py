@@ -3,7 +3,8 @@ from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Tab
 from sqlalchemy.orm import relationship
 from service.data_base.sql_manager import SqlManager
 
-#sqlacodegen mysql://root:123456@localhost/canteen --outfile 1101.py
+# sqlacodegen mysql://root:root3306@211.149.156.126/canteen --outfile 1210.py
+# u_perm_groups = relationship(u'UPermGroup', secondary='u_userinfo_has_u_perm_group')
 
 Base = SqlManager.get_instance().base_model
 metadata = Base.metadata
@@ -60,8 +61,8 @@ class DishPublish(Base):
     vch_code = Column(String(45), nullable=False)
     vch_spell = Column(String(45))
     vch_picname = Column(String(45), nullable=False, server_default=text("'" "'"))
-    num_style_id = Column(ForeignKey(u'dish_style.id'), nullable=False, index=True, server_default=text("'0'"))
-    num_spec_id = Column(ForeignKey(u'dish_spec.id'), nullable=False, index=True, server_default=text("'0'"))
+    num_style_id = Column(ForeignKey(u'dish_style.id'), nullable=False, index=True, server_default=text("'1'"))
+    num_spec_id = Column(ForeignKey(u'dish_spec.id'), nullable=False, index=True)
     num_category = Column(ForeignKey(u'dish_category.id'), index=True)
     num_unit = Column(ForeignKey(u'unit.id'), index=True)
     num_ticheng = Column(Float)
@@ -73,6 +74,7 @@ class DishPublish(Base):
     ch_is_print = Column(String(1))
     vch_dish_intro = Column(String(100))
     dt_update = Column(DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+    num_onsale = Column(Integer, nullable=False, server_default=text("'0'"))
 
     dish_category = relationship(u'DishCategory')
     num_printer_scheme = relationship(u'PrinterScheme')
@@ -89,7 +91,7 @@ class DishPublishLog(Base):
     vch_code = Column(String(45), nullable=False)
     vch_spell = Column(String(45))
     vch_picname = Column(String(45), nullable=False, server_default=text("'" "'"))
-    num_style_id = Column(Integer, nullable=False, server_default=text("'0'"))
+    num_style_id = Column(Integer, nullable=False, server_default=text("'1'"))
     num_spec_id = Column(Integer, nullable=False, server_default=text("'0'"))
     num_category = Column(Integer)
     num_unit = Column(Integer)
@@ -102,6 +104,7 @@ class DishPublishLog(Base):
     num_dish_withdraw_id = Column(ForeignKey(u'dish_publish_log_withdraw.id'), index=True)
     num_dish_num = Column(Integer)
     vch_dish_intro = Column(String(100))
+    num_onsale = Column(Integer, nullable=False, server_default=text("'0'"))
 
     num_dish_withdraw = relationship(u'DishPublishLogWithdraw')
 
@@ -277,6 +280,7 @@ class TableInfo(Base):
     num_area = Column(ForeignKey(u'table_info_area.id'), index=True)
     num_people_amount = Column(Integer)
     num_minexpense_id = Column(ForeignKey(u'table_info_minexpense.id'), index=True)
+    num_table_valid = Column(Integer, nullable=False, server_default=text("'0'"))
 
     table_info_area = relationship(u'TableInfoArea')
     num_minexpense = relationship(u'TableInfoMinexpense')
@@ -325,9 +329,25 @@ class TableOrder(Base):
     num_table_dish_batch_id = Column(Integer)
     num_discount_rate = Column(Float)
     num_discount_amount = Column(Float)
+    num_checkout_type_id = Column(Integer, nullable=False, server_default=text("'3'"))
+    num_pay_yhq = Column(Float, nullable=False, server_default=text("'0'"))
+    num_pay_hyk = Column(Float, nullable=False, server_default=text("'0'"))
+    num_pay_xj = Column(Float, nullable=False, server_default=text("'0'"))
+    num_pay_pos = Column(Float, nullable=False, server_default=text("'0'"))
+    num_pay_tg = Column(Float, nullable=False, server_default=text("'0'"))
+    num_pay_gz = Column(Float, nullable=False, server_default=text("'0'"))
+    num_pay_qd = Column(Float, nullable=False, server_default=text("'0'"))
+    num_pay_fp = Column(Float, nullable=False, server_default=text("'0'"))
 
     num_open_user = relationship(u'UUserinfo')
     num_table_book = relationship(u'TableBook')
+
+
+t_table_order_checkout_type = Table(
+    'table_order_checkout_type', metadata,
+    Column('id', Integer),
+    Column('vch_checkout_type_name', String(45))
+)
 
 
 class UDept(Base):
@@ -423,7 +443,7 @@ class UUserdetail(Base):
     vch_email = Column(String(45))
     num_dept_id = Column(ForeignKey(u'u_dept.id'), nullable=False, index=True)
     vch_duty = Column(String(45))
-    num_userdetails_type_id = Column(ForeignKey(u'u_userdetails_type.id'), nullable=False, index=True)
+    num_userdetails_type_id = Column(ForeignKey(u'u_userdetails_type.id'), index=True)
     vch_phone = Column(String(45))
     num_gender = Column(Integer)
     dt_birthday = Column(DateTime)
@@ -452,6 +472,7 @@ class UUserinfo(Base):
     num_user_type = Column(Integer)
     num_userdetails_id = Column(ForeignKey(u'u_userdetails.id'), index=True)
 
+    u_perm_groups = relationship(u'UPermGroup', secondary='u_userinfo_has_u_perm_group')
     num_userdetails = relationship(u'UUserdetail')
 
 

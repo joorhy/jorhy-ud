@@ -141,7 +141,8 @@ def get_all(type_):
     elif type_ == 'TableInfo':
         result = session.query(TableInfo).all()
         for item in result:
-            data.append(ModeTableInfo(item))
+            if item.num_table_valid == 1:
+                data.append(ModeTableInfo(item))
 
     return data
 
@@ -233,9 +234,12 @@ def add_item(type_, data):
         item.vch_spell = data.spell
         item.num_category = data.category
         item.num_unit = data.unit
+        item.num_spec_id = data.spec_id
         item.num_ticheng = data.commission
         item.num_discount = data.discount
-        item.ch_disabled = data.stop
+        item.num_onsale = 1 if data.on_sale else 0
+        item.num_recommend = 1 if data.recommend else 0
+        item.ch_disabled = "1" if data.stop else "0"
         item.vch_picname = data.image_url
     elif type_ == 'PrintSchemeInfo':
         result = session.query(PrinterScheme).filter(PrinterScheme.vch_name == data.name).all()
@@ -252,7 +256,16 @@ def add_item(type_, data):
     elif type_ == 'TableInfo':
         result = session.query(TableInfo).filter(TableInfo.vch_name == data.name).all()
         if len(result) > 0:
+            session.query(TableInfo).filter(TableInfo.vch_name == data.name).\
+                update({TableInfo.num_table_valid: 1,
+                        TableInfo.num_type: data.table_type,
+                        TableInfo.num_area: data.area,
+                        TableInfo.num_people_amount: data.people_num,
+                        TableInfo.num_minexpense_id: data.min_type})
+            session.flush()
+            session.commit()
             return
+
         item = TableInfo()
         item.vch_code = ''
         item.vch_name = data.name
@@ -300,7 +313,8 @@ def delete_item(type_, data):
     elif type_ == 'PrintSchemeInfo':
         session.query(PrinterScheme).filter(PrinterScheme.id == data.key).delete()
     elif type_ == 'TableInfo':
-        session.query(TableInfo).filter(TableInfo.id == data.key).delete()
+        #session.query(TableInfo).filter(TableInfo.id == data.key).delete()
+        session.query(TableInfo).filter(TableInfo.id == data.key).update({TableInfo.num_table_valid: 0})
 
     session.flush()
     session.commit()
@@ -349,9 +363,12 @@ def update_item(type_, data):
                      DishPublish.vch_spell: data.spell,
                      DishPublish.num_category: data.category,
                      DishPublish.num_unit: data.unit,
+                     DishPublish.num_spec_id: data.spec_id,
                      DishPublish.num_ticheng: data.commission,
                      DishPublish.num_discount: data.discount,
-                     DishPublish.ch_disabled: data.stop,
+                     DishPublish.num_onsale: 1 if data.on_sale else 0,
+                     DishPublish.num_recommend: 1 if data.recommend else 0,
+                     DishPublish.ch_disabled: '1' if data.stop else '0',
                      DishPublish.vch_picname: data.image_url})
     elif type_ == 'PrintSchemeInfo':
         session.query(PrinterScheme).filter(PrinterScheme.id == data.key).\
@@ -495,6 +512,11 @@ def get_perm_by_group(group):
 
 def add_user_info(data, li_perm_group):
     session = SqlManager.get_instance().session
+
+    result = session.query(UUserinfo).filter(UUserinfo.vch_name == data.code).all()
+    if len(result) > 0:
+        return
+
     details = UUserdetail()
     details.vch_realname = data.name
     details.vch_englishname = ''
@@ -514,7 +536,7 @@ def add_user_info(data, li_perm_group):
 
     user_info = UUserinfo()
     user_info.vch_name = data.code
-    user_info.vch_psw = "0000"
+    user_info.vch_psw = data.password
     li_id_item = session.query(UUserdetail.id).all()
     li_id = list()
     for id_item in li_id_item:
@@ -599,12 +621,29 @@ def get_business_info(from_date, to_date):
             business_item.price = business_item.price + item.num_price
             if item.num_price_real is not None:
                 business_item.real_price = business_item.real_price + item.num_price_real
+            business_item.bill_num = business_item.bill_num + item.num_pay_fp
+            business_item.cash = business_item.cash + item.num_pay_xj
+            business_item.coupon = business_item.coupon + item.num_pay_yhq
+            business_item.membership = business_item.membership + item.num_pay_hyk
+            business_item.pos = business_item.pos + item.num_pay_pos
+            business_item.group = business_item.group + item.num_pay_tg
+            business_item.credit = business_item.credit + item.num_pay_gz
+            business_item.boss_sign = business_item.boss_sign + item.num_pay_qd
         else:
             business_info = ModeBusinessInfo()
             business_info.consumer = item.num_table_book.num_consumers
             business_info.price = item.num_price
             business_info.real_price = item.num_price_real if item.num_price_real is not None else 0
             business_info.checkout_time = item.dt_checkout
+            business_info.bill_num = item.num_pay_fp
+            business_info.cash = item.num_pay_xj
+            business_info.coupon = item.num_pay_yhq
+            business_info.membership = item.num_pay_hyk
+            business_info.pos = item.num_pay_pos
+            business_info.group = item.num_pay_tg
+            business_info.credit = item.num_pay_gz
+            business_info.boss_sign = item.num_pay_qd
+
             business_info = {checkout_date: business_info}
             di_business_info.update(business_info)
 
@@ -648,7 +687,7 @@ def get_billboard_info(from_date, to_date, category_id):
         dish_category = item[4]
 
         if dish_spec is not None:
-            dish_money = dish_spec.num_price
+            dish_money = dish_spec.num_price * dish_log.num_discount
 
         if dish_style is not None:
             dish_money = dish_money + dish_style.num_priceadd
@@ -661,11 +700,19 @@ def get_billboard_info(from_date, to_date, category_id):
         bill_board.category = dish_category.vch_name
         bill_board.dishes_count = int(dish_log.num_dish_num)
         bill_board.total_money = dish_money * int(dish_log.num_dish_num)
+        if dish_log.num_dish_withdraw_id == 1:
+            bill_board.retreat_count = dish_log.num_dish_num
+            bill_board.retreat_money = dish_money
+
         if bill_board.dishes_code in di_billboard_info:
             di_billboard_info[bill_board.dishes_code].dishes_count = \
                 di_billboard_info[bill_board.dishes_code].dishes_count + bill_board.dishes_count
             di_billboard_info[bill_board.dishes_code].total_money = \
                 di_billboard_info[bill_board.dishes_code].total_money + bill_board.total_money
+            di_billboard_info[bill_board.dishes_code].retreat_count = \
+                di_billboard_info[bill_board.dishes_code].retreat_count + bill_board.retreat_count
+            di_billboard_info[bill_board.dishes_code].retreat_money = \
+                di_billboard_info[bill_board.dishes_code].retreat_money + bill_board.retreat_money
         else:
             bill_board_temp = {bill_board.dishes_code: bill_board}
             di_billboard_info.update(bill_board_temp)

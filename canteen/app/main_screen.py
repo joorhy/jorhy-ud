@@ -49,4 +49,6 @@ class MainScreen (wx.Frame):
         
     def on_exit(self, event):
         event.Skip()
+        from app.front.logic.ctrl import CtrlWorker
+        CtrlWorker.get_instance().stop()
         self.Destroy()

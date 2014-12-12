@@ -221,14 +221,14 @@ class PopDishesInfo (wx.Dialog):
         # Add label for dishes code
         s_txt_code = wx.StaticText(container, wx.ID_ANY, u"品码：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_code.Wrap(-1)
-        g_sizer.Add(s_txt_code, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        g_sizer.Add(s_txt_code, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add text control for dishes code
         self.txtDishCode = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         g_sizer.Add(self.txtDishCode, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add label for dishes unit
         s_txt_unit = wx.StaticText(container, wx.ID_ANY, u"单位：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_unit.Wrap(-1)
-        g_sizer.Add(s_txt_unit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        g_sizer.Add(s_txt_unit, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add combo box for dishes unit
         cbx_unit_choices = list()
         self.cbxUnit = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
@@ -237,17 +237,31 @@ class PopDishesInfo (wx.Dialog):
         # Add label for dishes discount
         s_txt_discount = wx.StaticText(container, wx.ID_ANY, u"折扣比率：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_discount.Wrap(-1)
-        g_sizer.Add(s_txt_discount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        g_sizer.Add(s_txt_discount, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add text control for dishes discount
         self.txtDiscount = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         g_sizer.Add(self.txtDiscount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add label for dishes commission
         s_txt_commission = wx.StaticText(container, wx.ID_ANY, u"提成比率：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_commission.Wrap(-1)
-        g_sizer.Add(s_txt_commission, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        g_sizer.Add(s_txt_commission, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add label for dishes commission
         self.txtCommission = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         g_sizer.Add(self.txtCommission, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add label for on sale dishes
+        s_txt_on_sale = wx.StaticText(container, wx.ID_ANY, u"特价菜品：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_on_sale.Wrap(-1)
+        g_sizer.Add(s_txt_on_sale, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+        # Add check box for on sale dishes
+        self.cbxOnSale = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
+        g_sizer.Add(self.cbxOnSale, 0, wx.ALIGN_CENTER, 5)
+        # Add label for dishes status
+        s_txt_status = wx.StaticText(container, wx.ID_ANY, u"停用：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_status.Wrap(-1)
+        g_sizer.Add(s_txt_status, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+        # Add check box for dishes state
+        self.cbxStop = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
+        g_sizer.Add(self.cbxStop, 0, wx.ALIGN_CENTER, 5)
 
         # Layout 
         parent.Add(g_sizer, 1, wx.EXPAND, 5)
@@ -258,14 +272,14 @@ class PopDishesInfo (wx.Dialog):
         # Add label for dishes name
         s_txt_name = wx.StaticText(container, wx.ID_ANY, u"菜品名称：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_name.Wrap(-1)
-        g_sizer.Add(s_txt_name, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        g_sizer.Add(s_txt_name, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add text control for dishes name
         self.txtDishName = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         g_sizer.Add(self.txtDishName, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add label for dishes brevity code
         s_txt_brevity_code = wx.StaticText(container, wx.ID_ANY, u"拼音简码：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_brevity_code.Wrap(-1)
-        g_sizer.Add(s_txt_brevity_code, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        g_sizer.Add(s_txt_brevity_code, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add text control for dishes brevity code
         self.txtBrevityCode = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                           wx.DefaultSize, wx.TE_READONLY)
@@ -273,19 +287,29 @@ class PopDishesInfo (wx.Dialog):
         # Add label for dishes type
         s_txt_type = wx.StaticText(container, wx.ID_ANY, u"所属类别：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_type.Wrap(-1)
-        g_sizer.Add(s_txt_type, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        g_sizer.Add(s_txt_type, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add combo box for dishes type
         cbx_category_choices = list()
         self.cbxCategory = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                        wx.Size(110,  -1), cbx_category_choices, 0)
         g_sizer.Add(self.cbxCategory, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for dishes status
-        s_txt_status = wx.StaticText(container, wx.ID_ANY, u"停用：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_status.Wrap(-1)
-        g_sizer.Add(s_txt_status, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add check box for dishes state
-        self.cbxStop = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
-        g_sizer.Add(self.cbxStop, 0, wx.ALIGN_CENTER, 5)
+        # Add label for default dishes spec
+        s_txt_default_spec = wx.StaticText(container, wx.ID_ANY, u"默认规格：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_default_spec.Wrap(-1)
+        g_sizer.Add(s_txt_default_spec, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+        # Add text control for default dishes spec
+        cbx_default_spec_choices = list()
+        self.cbxDefaultSpec = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                          wx.Size(110,  -1), cbx_default_spec_choices, 0)
+        g_sizer.Add(self.cbxDefaultSpec, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add label for recommend dishes
+        s_txt_recommend = wx.StaticText(container, wx.ID_ANY, u"推荐菜品：", wx.DefaultPosition, wx.DefaultSize, 0)
+        s_txt_recommend.Wrap(-1)
+        g_sizer.Add(s_txt_recommend, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+        # Add check box for recommend dishes
+        self.cbxRecommend = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
+        g_sizer.Add(self.cbxRecommend, 0, wx.ALIGN_CENTER, 5)
+
         # Layout 
         parent.Add(g_sizer, 1, wx.EXPAND, 5)
         
@@ -420,9 +444,12 @@ class PopDishesInfo (wx.Dialog):
         self.image_url = ""
         self.item_id = 0
         self._initialize_view()
+        # Add listener
+        EvtManager.add_listener(self, EnumEvent.EVT_DEFAULT_DISHES_SPEC_REFRESH, self.on_default_spec_refresh)
 
     def __del__(self):
-        pass
+        # Remove listener
+        EvtManager.remove_listener(self, EnumEvent.EVT_DEFAULT_DISHES_SPEC_REFRESH, self.on_default_spec_refresh)
 
     def _initialize_view(self):
         if self.type == "add":
@@ -488,15 +515,21 @@ class PopDishesInfo (wx.Dialog):
         self.txtBrevityCode.SetValue(str(data.spell))
         self.txtCommission.SetValue(str(data.commission))
         self.txtDiscount.SetValue(str(data.discount))
+        self.cbxOnSale.SetValue(True if data.on_sale == 1 else False)
+        self.cbxRecommend.SetValue(True if data.recommend == 1 else False)
         self.cbxStop.SetValue(True if data.stop == u'1' else False)
         self.txtTrack.SetLabel(("%d / %d" % (self.index+1, len(items))))
         if data.image_url == "":
             self.bmpImage.SetBitmap(wx.NullBitmap)
         else:
-            dishes_img_url = CtrlManagerLogin.get_instance().get_image_path() + "/" + data.image_url
-            img = wx.Image(dishes_img_url, wx.BITMAP_TYPE_ANY)
-            img.Rescale(165, 165)
-            self.bmpImage.SetBitmap(img.ConvertToBitmap())
+            try:
+                dishes_img_url = CtrlManagerLogin.get_instance().get_image_path() + "/" + data.image_url
+                img = wx.Image(dishes_img_url, wx.BITMAP_TYPE_ANY)
+                img.Rescale(165, 165)
+                self.bmpImage.SetBitmap(img.ConvertToBitmap())
+            except Exception, ex:
+                print Exception.message, ex
+                self.bmpImage.SetBitmap(wx.NullBitmap)
 
         li_unit = CtrlUnit.get_instance().get_data()
         for unit in li_unit:
@@ -509,6 +542,12 @@ class PopDishesInfo (wx.Dialog):
             self.cbxCategory.Append(category.name, category)
             if category.key == data.category:
                 self.cbxCategory.SetSelection(li_category.index(category))
+
+        li_spec = self.model_spec.data
+        for spec in li_spec:
+            self.cbxDefaultSpec.Append(spec.name, spec)
+            if spec.key == data.spec_id:
+                self.cbxDefaultSpec.SetSelection(li_spec.index(spec))
 
     # Virtual event handlers, override them in your derived class
     def on_btn_prev(self, event):
@@ -529,29 +568,33 @@ class PopDishesInfo (wx.Dialog):
 
         unit = self.cbxUnit.GetClientData(self.cbxUnit.GetSelection())
         category = self.cbxCategory.GetClientData(self.cbxCategory.GetSelection())
-        data = DataDishes(0, self.item_id, 
-                          self.txtDishCode.GetValue(),
-                          self.txtDishName.GetValue(),
-                          self.txtBrevityCode.GetValue(),
-                          category.key,
-                          unit.key,
-                          float(self.txtCommission.GetValue()) if self.txtCommission.GetValue() != '' else 0,
-                          float(self.txtDiscount.GetValue()) if self.txtDiscount.GetValue() != '' else 0,
-                          self.cbxStop.GetValue(),
-                          self.image_url, "")
+        default_spec = self.cbxDefaultSpec.GetClientData(self.cbxDefaultSpec.GetSelection())
+        dishes_data = DataDishes(0, self.item_id,
+                                 self.txtDishCode.GetValue(),
+                                 self.txtDishName.GetValue(),
+                                 self.txtBrevityCode.GetValue(),
+                                 category.key,
+                                 unit.key,
+                                 default_spec.key,
+                                 float(self.txtCommission.GetValue()) if self.txtCommission.GetValue() != '' else 0,
+                                 float(self.txtDiscount.GetValue()) if self.txtDiscount.GetValue() != '' else 1,
+                                 self.cbxOnSale.GetValue(),
+                                 self.cbxRecommend.GetValue(),
+                                 self.cbxStop.GetValue(),
+                                 self.image_url, "")
         if self.type == "add":
-            CtrlDishes.get_instance().add_item(data)
             for spec_data in self.model_spec.data:
                 data = DataSpec(dish_code=self.txtDishCode.GetValue(), name=spec_data.name, price=spec_data.price)
                 CtrlSpec.get_instance().add_item(data)
+                dishes_data.spec_id = CtrlSpec.get_instance().get_id()
 
             for style_data in self.model_style.data:
                 data = DataStyle(dish_code=self.txtDishCode.GetValue(), name=style_data.name,
                                  price_add=style_data.price_add, amount_add=style_data.amount_add)
                 CtrlStyle.get_instance().add_item(data)
-        elif self.type == "mod":
-            CtrlDishes.get_instance().update_item(data)
 
+            CtrlDishes.get_instance().add_item(dishes_data)
+        elif self.type == "mod":
             for spec_data in self.model_spec.data:
                 data = DataSpec(key=spec_data.key, dish_code=self.txtDishCode.GetValue(), name=spec_data.name,
                                 price=spec_data.price)
@@ -567,6 +610,8 @@ class PopDishesInfo (wx.Dialog):
                     CtrlStyle.get_instance().update_item(data)
                 else:
                     CtrlStyle.get_instance().add_item(data)
+
+            CtrlDishes.get_instance().update_item(dishes_data)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -644,6 +689,19 @@ class PopDishesInfo (wx.Dialog):
         brevity_code = BrevityCode.multi_get_letter(self.txtDishName.GetValue())
         print brevity_code
         self.txtBrevityCode.SetValue(brevity_code)
+
+    def on_default_spec_refresh(self, event):
+        event.Skip()
+        select_id = self.cbxDefaultSpec.GetSelection()
+        self.cbxDefaultSpec.Clear()
+        li_spec = self.model_spec.data
+        for spec in li_spec:
+            self.cbxDefaultSpec.Append(spec.name, spec)
+
+        if select_id == wx.NOT_FOUND:
+            self.cbxDefaultSpec.SetSelection(0)
+        else:
+            self.cbxDefaultSpec.SetSelection(select_id)
 
 ###########################################################################
 ## Class PopUnitSetting
@@ -1060,6 +1118,7 @@ class WgtDishesPublish (wx.Panel):
         self.tree_data = self.treeCtrl.GetPyData(event.GetItem())
         if isinstance(self.tree_data, DataDishes):
             self.on_btn_modify(event)
+
     
 if __name__ == '__main__':
     app = wx.PySimpleApp()

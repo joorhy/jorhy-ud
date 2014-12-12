@@ -249,6 +249,7 @@ class PopCheckoutDiscount (wx.Dialog):
         self.btnCancel.Bind(wx.EVT_BUTTON, self.on_btn_cancel)
 
         # Initialize
+        self.real_price = 0.0
         self._init_data_view()
 
     def __del__(self):
@@ -260,18 +261,23 @@ class PopCheckoutDiscount (wx.Dialog):
         if order_id is not None:
             order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
             if order_item is not None:
-                self.txtConsumeSum.SetValue(str(order_item.place_money))
+                self.real_price = order_item.place_money * order_item.all_discount
+                self.txtConsumeSum.SetValue(str(self.real_price))
 
     # Virtual event handlers, override them in your derived class
     def on_btn_confirm(self, event):
-        order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
-        if order_id is not None:
-            order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
-            if order_item is not None:
-                order_item.free_price = float(self.txtFree.GetValue())
-                CtrlOrderInfo.get_instance().update_checkout_info()
+        if float(self.txtFree.GetValue()) > self.real_price:
+            dlg = wx.MessageDialog(self, u"减免金额不能大于总金额", caption=u"收银免单")
+            dlg.ShowModal()
+        else:
+            order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
+            if order_id is not None:
+                order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
+                if order_item is not None:
+                    order_item.free_price = float(self.txtFree.GetValue())
+                    CtrlOrderInfo.get_instance().update_checkout_info()
 
-        self.Close()
+            self.Close()
 
     def on_btn_cancel(self, event):
         self.Close()
@@ -346,9 +352,6 @@ class PopPrevPrint (wx.Dialog):
 
         # Layout
         parent.Add(sizer, 1, wx.EXPAND, 5)
-        # Add spacer static text
-        s_txt_spacer = wx.StaticLine(self.infoPanel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_VERTICAL)
-        parent.Add(s_txt_spacer, 0, wx.ALL | wx.EXPAND, 5)
 
     def _init_order_right_info(self, container, parent):
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -373,26 +376,6 @@ class PopPrevPrint (wx.Dialog):
         consume_discount_sizer.Add(self.txtDiscount, 0, wx.ALIGN_CENTER, 5)
 
         sizer.Add(consume_discount_sizer, 1, wx.EXPAND, 5)
-        # Add handout and service charge sizer
-        handout_charge_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        # Add handout
-        s_txt_handout = wx.StaticText(container, wx.ID_ANY, u"赠送：", wx.DefaultPosition,
-                                      wx.Size(60, -1), wx.ALIGN_RIGHT)
-        s_txt_handout.Wrap(-1)
-        handout_charge_sizer.Add(s_txt_handout, 0, wx.ALIGN_CENTER, 5)
-
-        self.txtHandout = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(110, -1), 0)
-        handout_charge_sizer.Add(self.txtHandout, 0, wx.ALIGN_CENTER, 5)
-        # Add service charge
-        s_txt_charge = wx.StaticText(container, wx.ID_ANY, u"服务费：", wx.DefaultPosition,
-                                     wx.Size(60, -1), wx.ALIGN_RIGHT)
-        s_txt_charge.Wrap(-1)
-        handout_charge_sizer.Add(s_txt_charge, 0, wx.ALIGN_CENTER, 5)
-
-        self.txtCharge = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(110, -1), 0)
-        handout_charge_sizer.Add(self.txtCharge, 0, wx.ALIGN_CENTER, 5)
-
-        sizer.Add(handout_charge_sizer, 1, wx.EXPAND, 5)
         # Add fees receivable sizer
         receivable_sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add receivable
@@ -404,14 +387,38 @@ class PopPrevPrint (wx.Dialog):
         self.txtReceivable = wx.TextCtrl(self.infoPanel, wx.ID_ANY, wx.EmptyString,
                                          wx.DefaultPosition, wx.Size(110, -1), 0)
         receivable_sizer.Add(self.txtReceivable, 0, wx.ALIGN_CENTER, 5)
+        # Add free
+        s_txt_free = wx.StaticText(container, wx.ID_ANY, u"免单：", wx.DefaultPosition,
+                                   wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_free.Wrap(-1)
+        receivable_sizer.Add(s_txt_free, 0, wx.ALIGN_CENTER, 5)
 
+        self.txtFree = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                   wx.Size(110, -1), 0)
+        receivable_sizer.Add(self.txtFree, 0, wx.ALIGN_CENTER, 5)
         sizer.Add(receivable_sizer, 1, wx.EXPAND, 5)
+         # Add real price sizer
+        real_price_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add real price
+        s_txt_real_price = wx.StaticText(container, wx.ID_ANY, u"实收：", wx.DefaultPosition,
+                                         wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_real_price.Wrap(-1)
+        real_price_sizer.Add(s_txt_real_price, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtRealPrice = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(110, -1), 0)
+        real_price_sizer.Add(self.txtRealPrice, 0, wx.ALIGN_CENTER, 5)
+        # Add cash
+        s_txt_cash = wx.StaticText(container, wx.ID_ANY, u"现金：", wx.DefaultPosition,
+                                   wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_cash.Wrap(-1)
+        real_price_sizer.Add(s_txt_cash, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtCash = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(110, -1), 0)
+        real_price_sizer.Add(self.txtCash, 0, wx.ALIGN_CENTER, 5)
+        sizer.Add(real_price_sizer, 1, wx.EXPAND, 5)
 
         # Layout
         parent.Add(sizer, 1, wx.EXPAND, 5)
-        # Add spacer static text
-        s_txt_spacer = wx.StaticLine(self.infoPanel, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.LI_VERTICAL)
-        parent.Add(s_txt_spacer, 0, wx.ALL | wx.EXPAND, 5)
 
     def _init_checkout_info(self, parent):
         self.checkoutPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
@@ -419,57 +426,67 @@ class PopPrevPrint (wx.Dialog):
 
         # Add charged and free sizer
         charged_free_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        # Add charged
-        s_txt_charged = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"已收：", wx.DefaultPosition,
-                                      wx.Size(60, -1), wx.ALIGN_RIGHT)
-        s_txt_charged.Wrap(-1)
-        charged_free_sizer.Add(s_txt_charged, 0, wx.ALIGN_CENTER, 5)
+        # Add coupon
+        s_txt_coupon = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"优惠券：", wx.DefaultPosition,
+                                      wx.Size(80, -1), wx.ALIGN_RIGHT)
+        s_txt_coupon.Wrap(-1)
+        charged_free_sizer.Add(s_txt_coupon, 0, wx.ALIGN_CENTER, 5)
 
-        self.txtCharged = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString,
-                                      wx.DefaultPosition, wx.Size(120, -1), 0)
-        charged_free_sizer.Add(self.txtCharged, 0, wx.ALIGN_CENTER, 5)
-        # Add free
-        s_txt_free = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"免单：", wx.DefaultPosition,
-                                   wx.Size(60, -1), wx.ALIGN_RIGHT)
-        s_txt_free.Wrap(-1)
-        charged_free_sizer.Add(s_txt_free, 0, wx.ALIGN_CENTER, 5)
+        self.txtCoupon = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString,
+                                     wx.DefaultPosition, wx.Size(120, -1), 0)
+        charged_free_sizer.Add(self.txtCoupon, 0, wx.ALIGN_CENTER, 5)
+        # Add membership
+        s_txt_membership = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"会员卡：", wx.DefaultPosition,
+                                         wx.Size(80, -1), wx.ALIGN_RIGHT)
+        s_txt_membership.Wrap(-1)
+        charged_free_sizer.Add(s_txt_membership, 0, wx.ALIGN_CENTER, 5)
 
-        self.txtFree = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                   wx.Size(100, -1), 0)
-        charged_free_sizer.Add(self.txtFree, 0, wx.ALIGN_CENTER, 5)
-        # Add rounded
-        s_txt_rounded = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"抹零：", wx.DefaultPosition,
-                                      wx.Size(70, -1), wx.ALIGN_RIGHT)
-        s_txt_rounded.Wrap(-1)
-        charged_free_sizer.Add(s_txt_rounded, 0, wx.ALIGN_CENTER, 5)
+        self.txtMembership = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                         wx.Size(120, -1), 0)
+        charged_free_sizer.Add(self.txtMembership, 0, wx.ALIGN_CENTER, 5)
+        # Add pos
+        s_txt_pos = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"Pos支付：", wx.DefaultPosition,
+                                  wx.Size(80, -1), wx.ALIGN_RIGHT)
+        s_txt_pos.Wrap(-1)
+        charged_free_sizer.Add(s_txt_pos, 0, wx.ALIGN_CENTER, 5)
 
-        self.txtRounded = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                      wx.Size(110, -1), 0)
-        charged_free_sizer.Add(self.txtRounded, 0, wx.ALIGN_CENTER, 5)
-        # Add deposit
-        s_txt_deposit = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"押金：", wx.DefaultPosition,
-                                      wx.Size(60, -1), wx.ALIGN_RIGHT)
-        s_txt_deposit.Wrap(-1)
-        charged_free_sizer.Add(s_txt_deposit, 0, wx.ALIGN_CENTER, 5)
-
-        self.txtDeposit = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                      wx.Size(110, -1), 0)
-        charged_free_sizer.Add(self.txtDeposit, 0, wx.ALIGN_CENTER, 5)
+        self.txtPos = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                  wx.Size(120, -1), 0)
+        charged_free_sizer.Add(self.txtPos, 0, wx.ALIGN_CENTER, 5)
 
         # Layout charged and free sizer
         sizer.Add(charged_free_sizer, 1, wx.EXPAND, 5)
 
         # Add balance sizer
         balance_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        # Add balance
-        s_txt_balance = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"余款：", wx.DefaultPosition,
-                                      wx.Size(60, -1), wx.ALIGN_RIGHT)
-        s_txt_balance.Wrap(-1)
-        balance_sizer.Add(s_txt_balance, 0, wx.ALIGN_CENTER, 5)
+        # Add group
+        s_txt_group = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"团购：", wx.DefaultPosition,
+                                    wx.Size(80, -1), wx.ALIGN_RIGHT)
+        s_txt_group.Wrap(-1)
+        balance_sizer.Add(s_txt_group, 0, wx.ALIGN_CENTER, 5)
 
-        self.txtBalance = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
-                                      wx.Size(120, -1), 0)
-        balance_sizer.Add(self.txtBalance, 0, wx.ALIGN_CENTER, 5)
+        self.txtGroup = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                    wx.Size(120, -1), 0)
+        balance_sizer.Add(self.txtGroup, 0, wx.ALIGN_CENTER, 5)
+
+        # Add credit
+        s_txt_credit = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"挂账：", wx.DefaultPosition,
+                                     wx.Size(80, -1), wx.ALIGN_RIGHT)
+        s_txt_credit.Wrap(-1)
+        balance_sizer.Add(s_txt_credit, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtCredit = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                     wx.Size(120, -1), 0)
+        balance_sizer.Add(self.txtCredit, 0, wx.ALIGN_CENTER, 5)
+        # Add boss sign
+        s_txt_boss_sign = wx.StaticText(self.checkoutPanel, wx.ID_ANY, u"老板签单：", wx.DefaultPosition,
+                                        wx.Size(80, -1), wx.ALIGN_RIGHT)
+        s_txt_boss_sign.Wrap(-1)
+        balance_sizer.Add(s_txt_boss_sign, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtBosssign = wx.TextCtrl(self.checkoutPanel, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
+                                       wx.Size(120, -1), 0)
+        balance_sizer.Add(self.txtBosssign, 0, wx.ALIGN_CENTER, 5)
         # Layout balance sizer
         sizer.Add(balance_sizer, 1, wx.EXPAND, 5)
 
@@ -547,6 +564,7 @@ class PopPrevPrint (wx.Dialog):
 
         # Initialize
         self._init_view_data()
+        self._init_consume_data()
 
     def __del__(self):
         pass
@@ -572,7 +590,36 @@ class PopPrevPrint (wx.Dialog):
                 # Tell the DVC to use the model
                 self.dataViewCtrl.AssociateModel(self.model)
 
-
+    def _init_consume_data(self):
+        self.txtConsume.Enable(False)
+        self.txtDiscount.Enable(False)
+        self.txtFree.Enable(False)
+        self.txtReceivable.Enable(False)
+        self.txtRealPrice.Enable(False)
+        self.txtCoupon.Enable(False)
+        self.txtMembership.Enable(False)
+        self.txtPos.Enable(False)
+        self.txtGroup.Enable(False)
+        self.txtCredit.Enable(False)
+        self.txtBosssign.Enable(False)
+        self.txtCash.Enable(False)
+        order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
+        if order_id is not None:
+            order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
+            if order_item is not None:
+                self.txtConsume.SetLabel(str(order_item.place_money))
+                self.txtDiscount.SetLabel(str(order_item.all_discount))
+                self.txtFree.SetLabel(str(order_item.free_price))
+                self.txtReceivable.SetLabel(str(order_item.place_money * order_item.all_discount))
+                self.txtRealPrice.SetLabel(str(order_item.place_money * order_item.all_discount -
+                                               order_item.free_price))
+                self.txtCoupon.SetValue(str(order_item.cashier_coupon))
+                self.txtMembership.SetValue(str(order_item.cashier_membership))
+                self.txtPos.SetValue(str(order_item.cashier_pos))
+                self.txtGroup.SetValue(str(order_item.cashier_group))
+                self.txtCredit.SetValue(str(order_item.cashier_credit))
+                self.txtBosssign.SetValue(str(order_item.cashier_boss_sign))
+                self.txtCash.SetValue(str(order_item.cashier_cash))
 
     # Virtual event handlers, override them in your derived class
     def on_btn_prev_print(self, event):
@@ -596,25 +643,41 @@ class PopCheckout (wx.Dialog):
         # Add order number sizer
         order_num_sizer = wx.BoxSizer(wx.HORIZONTAL)
         s_txt_order_num = wx.StaticText(self, wx.ID_ANY, u"单号：", wx.DefaultPosition,
-                                        wx.Size(100, -1), wx.ALIGN_RIGHT)
+                                        wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_order_num.Wrap(-1)
         order_num_sizer.Add(s_txt_order_num, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        self.txtOrderNum = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+        self.txtOrderNum = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(120, -1), 0)
         order_num_sizer.Add(self.txtOrderNum, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        s_txt_money = wx.StaticText(self, wx.ID_ANY, u"金额：", wx.DefaultPosition,
+                                    wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_money.Wrap(-1)
+        order_num_sizer.Add(s_txt_money, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtMoney = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(120, -1), 0)
+        order_num_sizer.Add(self.txtMoney, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
         order_info_sizer.Add(order_num_sizer, 1, wx.EXPAND, 5)
 
         # Add money sizer
         money_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        s_txt_bill_num = wx.StaticText(self, wx.ID_ANY, u"发票金额：", wx.DefaultPosition,
+                                       wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_bill_num.Wrap(-1)
+        money_sizer.Add(s_txt_bill_num, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        s_txt_money = wx.StaticText(self, wx.ID_ANY, u"金额：", wx.DefaultPosition,
-                                    wx.Size(100, -1), wx.ALIGN_RIGHT)
-        s_txt_money.Wrap(-1)
-        money_sizer.Add(s_txt_money, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.txtBillNum = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(120, -1), 0)
+        money_sizer.Add(self.txtBillNum, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
-        self.txtMoney = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
-        money_sizer.Add(self.txtMoney, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        s_txt_need_bill = wx.StaticText(self, wx.ID_ANY, u"有发票：", wx.DefaultPosition,
+                                        wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_need_bill.Wrap(-1)
+        money_sizer.Add(s_txt_need_bill, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.cbxNeedBill = wx.CheckBox(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(120, -1), 0)
+        money_sizer.Add(self.cbxNeedBill, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
         order_info_sizer.Add(money_sizer, 1, wx.EXPAND, 5)
 
         parent.Add(order_info_sizer, 1, wx.EXPAND, 5)
@@ -634,7 +697,7 @@ class PopCheckout (wx.Dialog):
 
     def __init__(self, parent):
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"埋单操作", pos=wx.DefaultPosition,
-                           size=wx.Size(300, 200), style=wx.CAPTION)
+                           size=wx.Size(400, 200), style=wx.CAPTION)
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
 
         sizer = wx.BoxSizer(wx.VERTICAL)
@@ -646,10 +709,13 @@ class PopCheckout (wx.Dialog):
         # Connect Events
         self.btnConfirm.Bind(wx.EVT_BUTTON, self.on_btn_confirm)
         self.btnCancel.Bind(wx.EVT_BUTTON, self.on_btn_cancel)
+        self.cbxNeedBill.Bind(wx.EVT_CHECKBOX, self.on_cbx_need_bill)
 
         # Initialize
         self.table_item = None
         self._init_data_view()
+        self.cbxNeedBill.SetValue(False)
+        self.txtBillNum.Enable(False)
 
     def __del__(self):
         pass
@@ -672,12 +738,22 @@ class PopCheckout (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_confirm(self, event):
         if self.table_item is not None:
+            bill_num = 0.0
+            if self.cbxNeedBill.GetValue():
+                bill_num = float(self.txtBillNum.GetValue())
             CtrlOrderInfo.get_instance().check_out(self.table_item.table_id, self.table_item.order_id,
-                                                   self.table_item.order_num)
+                                                   self.table_item.order_num, bill_num)
         self.Close()
 
     def on_btn_cancel(self, event):
         self.Close()
+
+    def on_cbx_need_bill(self, event):
+        if self.cbxNeedBill.GetValue():
+            self.txtBillNum.Enable(True)
+        else:
+            self.txtBillNum.SetValue("")
+            self.txtBillNum.Enable(False)
 
 ###########################################################################
 ## Class WgtCheckout
@@ -891,7 +967,7 @@ class WgtCheckout (wx.Panel):
         # Add handout and service charge
         handout_charge_sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add handout
-        s_txt_handout = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"赠送：", wx.DefaultPosition,
+        s_txt_handout = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"", wx.DefaultPosition,
                                       wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_handout.Wrap(-1)
         handout_charge_sizer.Add(s_txt_handout, 0, wx.ALIGN_CENTER, 5)
@@ -901,7 +977,7 @@ class WgtCheckout (wx.Panel):
         self.txtHandout.Wrap(-1)
         handout_charge_sizer.Add(self.txtHandout, 0, wx.ALIGN_CENTER, 5)
         # Add service charge
-        s_txt_charge = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"服务费：", wx.DefaultPosition,
+        s_txt_charge = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"", wx.DefaultPosition,
                                      wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_charge.Wrap(-1)
         handout_charge_sizer.Add(s_txt_charge, 0, wx.ALIGN_CENTER, 5)
@@ -916,7 +992,7 @@ class WgtCheckout (wx.Panel):
         # Add offset the different and rounding sizer
         offset_rounding_sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add offset the different
-        s_txt_offset = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"抵消差：", wx.DefaultPosition,
+        s_txt_offset = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"", wx.DefaultPosition,
                                      wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_offset.Wrap(-1)
         offset_rounding_sizer.Add(s_txt_offset, 0, wx.ALIGN_CENTER, 5)
@@ -926,7 +1002,7 @@ class WgtCheckout (wx.Panel):
         self.txtOffset.Wrap(-1)
         offset_rounding_sizer.Add(self.txtOffset, 0, wx.ALIGN_CENTER, 5)
 
-        s_txt_rounding = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"抹零：", wx.DefaultPosition,
+        s_txt_rounding = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"", wx.DefaultPosition,
                                        wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_rounding.Wrap(-1)
         offset_rounding_sizer.Add(s_txt_rounding, 0, wx.ALIGN_CENTER, 5)
@@ -971,7 +1047,7 @@ class WgtCheckout (wx.Panel):
         # Add has been charged and deposit sizer
         charged_deposit_sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add has been charged
-        s_txt_charged = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"已收：", wx.DefaultPosition,
+        s_txt_charged = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"实收：", wx.DefaultPosition,
                                       wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_charged.Wrap(-1)
         charged_deposit_sizer.Add(s_txt_charged, 0, wx.ALIGN_CENTER, 5)
@@ -981,7 +1057,7 @@ class WgtCheckout (wx.Panel):
         self.txtCharged.Wrap(-1)
         charged_deposit_sizer.Add(self.txtCharged, 0, wx.ALIGN_CENTER, 5)
         # Add deposit
-        s_txt_deposit = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"押金：", wx.DefaultPosition,
+        s_txt_deposit = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"", wx.DefaultPosition,
                                       wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_deposit.Wrap(-1)
         charged_deposit_sizer.Add(s_txt_deposit, 0, wx.ALIGN_CENTER, 5)
@@ -996,7 +1072,7 @@ class WgtCheckout (wx.Panel):
         # Add balance sizer
         balance_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
-        s_txt_balance = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"余额：", wx.DefaultPosition,
+        s_txt_balance = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"", wx.DefaultPosition,
                                       wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_balance.Wrap(-1)
         balance_sizer.Add(s_txt_balance, 0, wx.ALIGN_CENTER, 5)
@@ -1206,11 +1282,30 @@ class WgtCheckout (wx.Panel):
         self.btnCheckout.Bind(wx.EVT_BUTTON, self.on_btn_checkout)
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
 
+        self.txtCoupon.Bind(wx.EVT_TEXT, self.on_txt_coupon)
+        self.txtMembership.Bind(wx.EVT_TEXT, self.on_txt_membership)
+        self.txtPos.Bind(wx.EVT_TEXT, self.on_txt_pos)
+        self.txtGroup.Bind(wx.EVT_TEXT, self.on_txt_group)
+        self.txtCredit.Bind(wx.EVT_TEXT, self.on_txt_credit)
+        self.txtBossSign.Bind(wx.EVT_TEXT, self.on_txt_boss_sign)
+
+        self.txtCash.Bind(wx.EVT_TEXT, self.on_txt_cash)
+
         self.Bind(wx.dataview.EVT_DATAVIEW_ITEM_ACTIVATED, self.on_item_activated, self.dataViewCheckout)
         self.Bind(wx.dataview.EVT_DATAVIEW_SELECTION_CHANGED, self.on_item_changed, self.dataViewList)
 
         # define variable
+        self.real_price = 0.0
         self.model = None
+        self.cashier_total = 0.0
+        self.cashier_coupon = 0.0
+        self.cashier_membership = 0.0
+        self.cashier_pos = 0.0
+        self.cashier_group = 0.0
+        self.cashier_credit = 0.0
+        self.cashier_boss_sign = 0.0
+
+        self.cash = 0.0
 
     def __del__(self):
         pass
@@ -1247,15 +1342,45 @@ class WgtCheckout (wx.Panel):
         self.txtOpenTime.SetLabel(table_item.open_time)
         self.txtOpenMemo.SetLabel(table_item.memo)
 
+        self.cashier_total = 0.0
+        self.cashier_coupon = 0.0
+        self.cashier_membership = 0.0
+        self.cashier_pos = 0.0
+        self.cashier_group = 0.0
+        self.cashier_credit = 0.0
+        self.cashier_boss_sign = 0.0
+
     def _init_consume_data(self):
+        self.txtChange.Enable(False)
+        self.txtConsume.SetLabel('')
+        self.txtDiscount.SetLabel('')
+        self.txtFree.SetLabel('')
+        self.txtReceivable.SetLabel('')
+        self.txtCharged.SetLabel('')
+        self.txtCoupon.SetLabel('')
+        self.txtMembership.SetLabel('')
+        self.txtPos.SetLabel('')
+        self.txtGroup.SetLabel('')
+        self.txtCredit.SetLabel('')
+        self.txtBossSign.SetLabel('')
+
         order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
         if order_id is not None:
             order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
             if order_item is not None:
+                order_item.cashier_coupon = 0.0
+                order_item.cashier_membership = 0.0
+                order_item.cashier_pos = 0.0
+                order_item.cashier_group = 0.0
+                order_item.cashier_credit = 0.0
+                order_item.cashier_boss_sign = 0.0
+                order_item.cashier_cash = 0.0
                 self.txtConsume.SetLabel(str(order_item.place_money))
                 self.txtDiscount.SetLabel(str(order_item.all_discount))
                 self.txtFree.SetLabel(str(order_item.free_price))
                 self.txtReceivable.SetLabel(str(order_item.place_money * order_item.all_discount))
+                self.real_price = order_item.place_money * order_item.all_discount - order_item.free_price
+                self.txtCharged.SetLabel(str(self.real_price))
 
     # Virtual event handlers, override them in your derived class
     def on_paint(self, event):
@@ -1315,16 +1440,154 @@ class WgtCheckout (wx.Panel):
         pop_checkout_discount.ShowModal()
 
     def on_btn_prev_print(self, event):
-        pop_prev_print = PopPrevPrint(self)
-        pop_prev_print.ShowModal()
+        if self.cash + self.cashier_total - self.real_price < 0:
+            dlg = wx.MessageDialog(self, u"余额不足", caption=u"结账")
+            dlg.ShowModal()
+        else:
+            pop_prev_print = PopPrevPrint(self)
+            pop_prev_print.ShowModal()
 
     def on_btn_checkout(self, event):
-        pop_checkout = PopCheckout(self)
-        pop_checkout.ShowModal()
+        if self.cash + self.cashier_total - self.real_price < 0:
+            dlg = wx.MessageDialog(self, u"余额不足", caption=u"结账")
+            dlg.ShowModal()
+        else:
+            pop_checkout = PopCheckout(self)
+            pop_checkout.ShowModal()
 
     def on_btn_exit(self, event):
         event.Skip()
         AppManager.get_instance().switch_to_application('FrontPage')
+
+    def on_txt_coupon(self, enent):
+        if self.txtCoupon.GetValue() == '':
+            self.cashier_coupon = 0.0
+            self.refresh_cashier_info()
+            return
+
+        try:
+            self.cashier_coupon = float(self.txtCoupon.GetValue())
+            #self.txtCoupon.SetValue(str(self.cashier_coupon))
+            self.refresh_cashier_info()
+        except ValueError:
+            self.txtCoupon.Remove(self.txtCoupon.GetInsertionPoint() - 1, self.txtCoupon.GetInsertionPoint())
+            dlg = wx.MessageDialog(self, u"金额输入错误", caption=u"结账")
+            dlg.ShowModal()
+
+    def on_txt_membership(self, enent):
+        if self.txtMembership.GetValue() == '':
+            self.cashier_membership = 0.0
+            self.refresh_cashier_info()
+            return
+
+        try:
+            self.cashier_membership = float(self.txtMembership.GetValue())
+            #self.txtMembership.SetValue(str(self.cashier_membership))
+            self.refresh_cashier_info()
+        except ValueError:
+            self.txtMembership.Remove(self.txtMembership.GetInsertionPoint() - 1,
+                                      self.txtMembership.GetInsertionPoint())
+            dlg = wx.MessageDialog(self, u"金额输入错误", caption=u"结账")
+            dlg.ShowModal()
+
+    def on_txt_pos(self, enent):
+        if self.txtPos.GetValue() == '':
+            self.cashier_pos = 0.0
+            self.refresh_cashier_info()
+            return
+
+        try:
+            self.cashier_pos = float(self.txtPos.GetValue())
+            #self.txtPos.SetValue(str(self.cashier_pos))
+            self.refresh_cashier_info()
+        except ValueError:
+            self.txtPos.Remove(self.txtPos.GetInsertionPoint() - 1, self.txtPos.GetInsertionPoint())
+            dlg = wx.MessageDialog(self, u"金额输入错误", caption=u"结账")
+            dlg.ShowModal()
+
+    def on_txt_group(self, enent):
+        if self.txtGroup.GetValue() == '':
+            self.cashier_group = 0.0
+            self.refresh_cashier_info()
+            return
+
+        try:
+            self.cashier_group = float(self.txtGroup.GetValue())
+            #self.txtGroup.SetValue(str(self.cashier_group))
+            self.refresh_cashier_info()
+        except ValueError:
+            self.txtGroup.Remove(self.txtGroup.GetInsertionPoint() - 1, self.txtGroup.GetInsertionPoint())
+            dlg = wx.MessageDialog(self, u"金额输入错误", caption=u"结账")
+            dlg.ShowModal()
+
+    def on_txt_credit(self, enent):
+        if self.txtCredit.GetValue() == '':
+            self.cashier_credit = 0.0
+            self.refresh_cashier_info()
+            return
+
+        try:
+            self.cashier_credit = float(self.txtCredit.GetValue())
+            #self.txtCredit.SetValue(str(self.cashier_credit))
+            self.refresh_cashier_info()
+        except ValueError:
+            self.txtCredit.Remove(self.txtCredit.GetInsertionPoint() - 1, self.txtCredit.GetInsertionPoint())
+            dlg = wx.MessageDialog(self, u"金额输入错误", caption=u"结账")
+            dlg.ShowModal()
+
+    def on_txt_boss_sign(self, enent):
+        if self.txtBossSign.GetValue() == '':
+            self.cashier_boss_sign = 0.0
+            self.refresh_cashier_info()
+            return
+
+        try:
+            self.cashier_boss_sign = float(self.txtBossSign.GetValue())
+            #self.txtBossSign.SetValue(str(self.cashier_boss_sign))
+            self.refresh_cashier_info()
+        except ValueError:
+            self.txtBossSign.Remove(self.txtBossSign.GetInsertionPoint() - 1, self.txtBossSign.GetInsertionPoint())
+            dlg = wx.MessageDialog(self, u"金额输入错误", caption=u"结账")
+            dlg.ShowModal()
+
+    def on_txt_cash(self, enent):
+        if self.txtCash.GetValue() == '':
+            self.cash = 0.0
+            self.refresh_cashier_info()
+            return
+
+        try:
+            self.cash = float(self.txtCash.GetValue())
+            self.refresh_cashier_info()
+        except ValueError:
+            self.txtCash.Remove(self.txtCash.GetInsertionPoint() - 1, self.txtCash.GetInsertionPoint())
+            dlg = wx.MessageDialog(self, u"金额输入错误", caption=u"结账")
+            dlg.ShowModal()
+
+    def refresh_cashier_info(self):
+        self.cashier_total = self.cashier_coupon + self.cashier_membership + self.cashier_pos + self.cashier_group + \
+            self.cashier_credit + self.cashier_boss_sign
+
+        if self.cashier_total > self.real_price:
+            raise ValueError
+        else:
+            self.txtMoney.SetLabel(str(self.cashier_total))
+
+        order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
+        if order_id is not None:
+            order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
+            if order_item is not None:
+                order_item.cashier_coupon = self.cashier_coupon
+                order_item.cashier_membership = self.cashier_membership
+                order_item.cashier_pos = self.cashier_pos
+                order_item.cashier_group = self.cashier_group
+                order_item.cashier_credit = self.cashier_credit
+                order_item.cashier_boss_sign = self.cashier_boss_sign
+                order_item.cashier_cash = self.real_price - self.cashier_total
+
+        #self.txtCash.SetValue(str(self.cash))
+        if self.txtCash.GetValue() != '':
+            self.txtChange.SetValue(str(self.cash - self.real_price + self.cashier_total))
 
     def on_item_activated(self, event):
         print self.model.GetValue(event.GetItem(), 0)

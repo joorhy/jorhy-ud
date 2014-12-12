@@ -68,6 +68,14 @@ class DataOrderItem():
         self.order_status = 0
         self.all_discount = 1
         self.free_price = 0
+        self.cashier_cash = 0.0
+        self.cashier_coupon = 0.0
+        self.cashier_membership = 0.0
+        self.cashier_pos = 0.0
+        self.cashier_group = 0.0
+        self.cashier_credit = 0.0
+        self.cashier_boss_sign = 0.0
+        self.bill_num = 0.0
         self.di_order_dishes_items = dict()
         self.di_place_dishes_items = dict()
 

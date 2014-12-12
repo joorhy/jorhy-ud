@@ -111,6 +111,9 @@ class AppManager():
 
         self.mainScreen.Show(True)
 
+    def un_initialize(self):
+        pass
+
     def get_app_title(self):
         return self.app_title
 

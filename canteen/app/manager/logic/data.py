@@ -52,8 +52,8 @@ class DataCategory(object):
 
 
 class DataDishes(object):
-    def __init__(self, line, key, code, name, spell, category, unit,
-                 commission, discount, stop, image_url, printer_scheme, is_print='0'):
+    def __init__(self, line, key, code, name, spell, category, unit, spec_id, commission, discount,
+                 on_sale, recommend, stop, image_url, printer_scheme, is_print='0'):
         self.line = line
         self.key = key
         self.code = code
@@ -61,8 +61,11 @@ class DataDishes(object):
         self.spell = spell
         self.category = category
         self.unit = unit
+        self.spec_id = spec_id
         self.commission = commission
         self.discount = discount
+        self.on_sale = on_sale
+        self.recommend = recommend
         self.stop = stop
         self.image_url = image_url
         self.printer_scheme = printer_scheme
@@ -103,7 +106,7 @@ class DataDepartment(object):
 
 
 class DataEmployee(object):
-    def __init__(self, line, key, code, name, birthday, duty,
+    def __init__(self, line, key, code, name, birthday, duty, password,
                  department, sex, telephone, id_card, state, address, email, note):
         self.line = line
         self.key = key
@@ -111,6 +114,7 @@ class DataEmployee(object):
         self.name = name
         self.birthday = birthday
         self.duty = duty
+        self.password = password
         self.department = department
         self.sex = sex
         self.telephone = telephone
@@ -163,7 +167,8 @@ class DataPermList(object):
 
 class DataBusinessInfo(object):
     def __init__(self, line, key, table_num, consumer_num, consume_money, free_money,
-                 real_money, average_money, consume_time):
+                 real_money, bill_num, average_money, cash, coupon, membership, pos,
+                 group, credit, boss_sign, consume_time):
         self.line = line
         self.key = key
         self.table_num = int(table_num)
@@ -171,13 +176,21 @@ class DataBusinessInfo(object):
         self.consume_money = consume_money
         self.free_money = free_money
         self.real_money = real_money
+        self.bill_num = bill_num
         self.average_money = average_money
+        self.cash = cash
+        self.coupon = coupon
+        self.membership = membership
+        self.pos = pos
+        self.group = group
+        self.credit = credit
+        self.boss_sign = boss_sign
         self.consume_time = consume_time
 
 
 class DataSalesInfo(object):
-    def __init__(self, line, key, table_num, consumer_num, consume_money, free_money,
-                 real_money, consume_time):
+    def __init__(self, line, key, table_num, consumer_num, consume_money, free_money, real_money, bill_num, cash,
+                 coupon, membership, pos, group, credit, boss_sign, consume_time):
         self.line = line
         self.key = key
         self.table_num = int(table_num)
@@ -185,12 +198,20 @@ class DataSalesInfo(object):
         self.consume_money = consume_money
         self.free_money = free_money
         self.real_money = real_money
+        self.bill_num = bill_num
+        self.cash = cash
+        self.coupon = coupon
+        self.membership = membership
+        self.pos = pos
+        self.group = group
+        self.credit = credit
+        self.boss_sign = boss_sign
         self.consume_time = consume_time
 
 
 class DataBillboardInfo(object):
     def __init__(self, line, key, dishes_name, brevity_code, dishes_category, dishes_unit,
-                 sale_count, average_count, total_money):
+                 sale_count, average_count, total_money, retreat_count, retreat_money):
         self.line = line
         self.key = key
         self.dishes_name = dishes_name
@@ -200,3 +221,5 @@ class DataBillboardInfo(object):
         self.sale_count = sale_count
         self.average_count = average_count
         self.total_money = total_money
+        self.retreat_count = retreat_count
+        self.retreat_money = retreat_money

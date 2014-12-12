@@ -60,6 +60,8 @@ class ModeDishPublish():
             self.discount = obj.num_discount
             self.change_code = obj.num_change_code
             self.print_scheme_id = obj.num_printer_scheme_id
+            self.on_sale = obj.num_onsale
+            self.recommend = obj.num_recommend
             self.enable = obj.ch_disabled
             self.is_print = obj.ch_is_print
 
@@ -218,6 +220,14 @@ class ModeBusinessInfo():
         self.checkout_time = ''
         self.table_num = 1
         self.consumer = 0
+        self.bill_num = 0
+        self.cash = 0
+        self.coupon = 0
+        self.membership = 0
+        self.pos = 0
+        self.group = 0
+        self.credit = 0
+        self.boss_sign = 0
 
 
 class ModeSalesInfo():
@@ -228,6 +238,14 @@ class ModeSalesInfo():
             self.checkout_time = order_obj.dt_checkout
             self.table_num = order_obj.num_table_book.num_table_id
             self.consumer = order_obj.num_table_book.num_consumers
+            self.bill_num = order_obj.num_pay_fp
+            self.cash = order_obj.num_pay_xj
+            self.coupon = order_obj.num_pay_yhq
+            self.membership = order_obj.num_pay_hyk
+            self.pos = order_obj.num_pay_pos
+            self.group = order_obj.num_pay_tg
+            self.credit = order_obj.num_pay_gz
+            self.boss_sign = order_obj.num_pay_qd
 
 
 class ModeBillboardInfo():
@@ -239,3 +257,5 @@ class ModeBillboardInfo():
         self.unit = ''
         self.category = ''
         self.dishes_count = 0
+        self.retreat_count = 0
+        self.retreat_money = 0

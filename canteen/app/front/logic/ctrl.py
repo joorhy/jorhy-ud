@@ -51,6 +51,7 @@ class CtrlTableInfo():
         self.li_table_items = list()
         self.li_waiter_items = list()
         self.di_table_order = dict()
+        self.selected_table_num = None
 
         if CONFIG.useTemp:
             self.order_seq = 1
@@ -119,6 +120,7 @@ class CtrlTableInfo():
         return self.li_table_items
 
     def set_selected_item_id(self, table_num):
+        self.selected_table_num = table_num
         for item in self.li_table_items:
             if int(item.table_num) == table_num:
                 item.is_selected = True
@@ -131,6 +133,9 @@ class CtrlTableInfo():
                 return int(item.table_num)
 
         return None
+
+    def get_selected_table_num(self):
+        return self.selected_table_num
 
     def get_free_tables(self):
         li_free_tables = list()
@@ -188,22 +193,30 @@ class CtrlTableInfo():
                 EvtManager.dispatch_event(EnumEvent.EVT_FRONT_PAGE_REFRESH)
 
     def change_table(self, src_table_num, dst_table_num):
-        for item in self.li_table_items:
-            if item.table_num == src_table_num:
-                item.table_num = dst_table_num
-            elif item.table_num == dst_table_num:
-                item.table_num = src_table_num
-
         src_order_num = None
         if int(src_table_num) in self.di_table_order:
             src_order_num = self.di_table_order[int(src_table_num)]
-        if src_order_num is not None:
-            self.di_table_order[int(dst_table_num)] = src_order_num
-            del self.di_table_order[int(src_table_num)]
 
-        self.li_table_items.sort(lambda x, y: cmp(int(x.table_num), int(y.table_num)))
+        src_order_id = None
+        table_item = CtrlTableInfo.get_instance().get_table_item(src_table_num)
+        if table_item is not None:
+            src_order_id = table_item.order_id
 
-        EvtManager.dispatch_event(EnumEvent.EVT_FRONT_PAGE_REFRESH)
+        result = HttpService.get_instance().change_table(src_table_num, dst_table_num, src_order_id)
+        if result is not None:
+            for item in self.li_table_items:
+                if item.table_num == src_table_num:
+                    item.table_num = dst_table_num
+                elif item.table_num == dst_table_num:
+                    item.table_num = src_table_num
+
+            if src_order_num is not None:
+                self.di_table_order[int(dst_table_num)] = src_order_num
+                del self.di_table_order[int(src_table_num)]
+
+            self.li_table_items.sort(lambda x, y: cmp(int(x.table_num), int(y.table_num)))
+
+            EvtManager.dispatch_event(EnumEvent.EVT_FRONT_PAGE_REFRESH)
 
     def get_order_num(self, table_num):
         if table_num in self.di_table_order:
@@ -315,14 +328,6 @@ class CtrlOrderInfo():
         self.cur_dishes_key = None
         self.cur_dishes_code = None
         self.di_order_item = dict()
-
-        self.timer = Timer(1, self.on_timer)
-        self.timer.start()
-
-    def on_timer(self):
-        while True:
-            self.update_order()
-            time.sleep(2)
 
     def get_cur_order_id(self):
         return self.cur_order_num
@@ -667,14 +672,39 @@ class CtrlOrderInfo():
 
             EvtManager.dispatch_event(EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH)
 
-    def check_out(self, table_id, order_id, order_code):
+    def check_out(self, table_id, order_id, order_code, bill_num):
         order_item = CtrlOrderInfo.get_instance().get_order_item(order_code)
         if order_item is not None:
+            order_item.bill_num = bill_num
             '''calculate the real pay of bill'''
             order_item.order_money = (order_item.place_money * order_item.all_discount) - order_item.free_price
             '''send request to remote service'''
             HttpService.get_instance().check_out(table_id, order_id, order_item.all_discount, order_item.free_price,
-                                                 CtrlFrontLogin.get_instance().get_user(), 1)
+                                                 CtrlFrontLogin.get_instance().get_user(), 1, order_item.cashier_cash,
+                                                 order_item.cashier_coupon, order_item.cashier_membership,
+                                                 order_item.cashier_pos, order_item.cashier_group,
+                                                 order_item.cashier_credit, order_item.cashier_boss_sign,
+                                                 order_item.bill_num)
 
             '''change table status to waiting clean state'''
             CtrlTableInfo.get_instance().change_table_status(table_id, 3)
+
+
+@Singleton
+class CtrlWorker():
+    def __init__(self):
+        self.timer = Timer(1, self.on_timer)
+        self.timer.start()
+        self.is_run = True
+
+    def start(self):
+        self.timer.start()
+
+    def stop(self):
+        self.is_run = False
+        self.timer.cancel()
+
+    def on_timer(self):
+        while self.is_run:
+            CtrlOrderInfo.get_instance().update_order()
+            time.sleep(2)

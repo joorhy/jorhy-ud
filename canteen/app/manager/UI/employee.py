@@ -278,13 +278,13 @@ class PopEmployee (wx.Dialog):
         # Add employee's ID number sizer
         id_sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add ID number label
-        s_txt_id = wx.StaticText(container, wx.ID_ANY, u"身份证号：", wx.DefaultPosition, wx.Size(80, -1), 0)
-        s_txt_id.Wrap(-1)
-        s_txt_id.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
-        id_sizer.Add(s_txt_id, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        s_txt_password = wx.StaticText(container, wx.ID_ANY, u"初始密码：", wx.DefaultPosition, wx.Size(80, -1), 0)
+        s_txt_password.Wrap(-1)
+        s_txt_password.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_BTNTEXT))
+        id_sizer.Add(s_txt_password, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add ID number text control
-        self.txtIdCard = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
-        id_sizer.Add(self.txtIdCard, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        self.txtPassword = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+        id_sizer.Add(self.txtPassword, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Layout ID number
         g_sizer.Add(id_sizer, 1, wx.EXPAND, 5)
         
@@ -360,7 +360,21 @@ class PopEmployee (wx.Dialog):
 
     def _init_main_info_3_rows_sizer(self, container, parent):
         # Create 3 rows and 1 column grid sizer
-        g_sizer = wx.GridSizer(3, 1, 0, 0)
+        g_sizer = wx.GridSizer(4, 1, 0, 0)
+
+        # Add employee's id card sizer
+        id_card_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add address label
+        s_txt_id_card = wx.StaticText(container, wx.ID_ANY, u"身份证号：", wx.DefaultPosition, wx.Size(80, -1), 0)
+        s_txt_id_card.Wrap(-1)
+        s_txt_id_card.SetFont(wx.Font(wx.NORMAL_FONT.GetPointSize(), 70, 90, 90, False, wx.EmptyString))
+        s_txt_id_card.SetForegroundColour(wx.SystemSettings.GetColour(wx.SYS_COLOUR_CAPTIONTEXT))
+        id_card_sizer.Add(s_txt_id_card, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add address text control
+        self.txtIdCard = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(400, -1), 0)
+        id_card_sizer.Add(self.txtIdCard, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Layout id card sizer
+        g_sizer.Add(id_card_sizer, 1, wx.EXPAND, 5)
 
         # Add employee's address sizer
         addr_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -492,6 +506,7 @@ class PopEmployee (wx.Dialog):
         
     def _init_mod_view(self):
         self.txtCode.Enable(False)
+        self.txtPassword.Enable(False)
         if self.index < 0:
             self.index = 0
             return
@@ -530,9 +545,10 @@ class PopEmployee (wx.Dialog):
         else:
             self.radioBtnOnDuty.SetValue(False)
             self.radioBtnOffDuty.SetValue(True)
-        
-        birth_day = wx.DateTimeFromDMY(data.birthday.day, data.birthday.month - 1, data.birthday.year)
-        self.dateBirthDay.SetValue(birth_day)
+
+        if data.birthday is not None:
+            birth_day = wx.DateTimeFromDMY(data.birthday.day, data.birthday.month - 1, data.birthday.year)
+            self.dateBirthDay.SetValue(birth_day)
 
         li_department = CtrlDepartment.get_instance().get_data()
         for dept in li_department:
@@ -559,6 +575,7 @@ class PopEmployee (wx.Dialog):
                             self.txtName.GetValue(),
                             self.dateBirthDay.GetValue().Format("%Y-%m-%d %H:%M:%S"),
                             self.txtDuty.GetValue(),
+                            self.txtPassword.GetValue(),
                             department.key,
                             sex_type,
                             self.txtTelephone.GetValue(),
@@ -980,7 +997,8 @@ class WgtEmployee (wx.Panel):
             item = self.dataViewList.GetCurrentItem()
             try:
                 data = self.model.ItemToObject(item)
-            except:
+            except Exception, ex:
+                print Exception, ":", ex
                 for item_ in self.model.data:
                     if item_.key == self.tree_data.key:
                         data = item_
@@ -988,7 +1006,8 @@ class WgtEmployee (wx.Panel):
             CtrlEmployee.get_instance().set_cur_item_index(index_)
             pop_employee = PopEmployee(self, "mod")
             pop_employee.ShowModal()
-        except:
+        except Exception, ex:
+            print Exception, ":", ex
             print 'WgtEmployee: on_btn_modify error'
     
     def on_btn_delete(self, event):

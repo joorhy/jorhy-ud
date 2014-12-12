@@ -505,6 +505,10 @@ class ModelSpec(wx.dataview.PyDataViewModel):
             elif col == 2:
                 node.price = value
 
+        from framework.core import EvtManager
+        from app.enum_event import EnumEvent
+        EvtManager.dispatch_event(EnumEvent.EVT_DEFAULT_DISHES_SPEC_REFRESH)
+
 
 class ModelStyle(wx.dataview.PyDataViewModel):
     def __init__(self, data):
@@ -1168,8 +1172,16 @@ class ModelBusinessInfo(wx.dataview.PyDataViewModel):
                       3: node.consume_money,
                       4: node.free_money,
                       5: node.real_money,
-                      6: node.average_money,
-                      7: node.consume_time.strftime("%Y-%m-%d")}
+                      6: node.bill_num,
+                      7: node.average_money,
+                      8: node.cash,
+                      9: node.coupon,
+                      10: node.membership,
+                      11: node.pos,
+                      12: node.group,
+                      13: node.credit,
+                      14: node.boss_sign,
+                      15: node.consume_time.strftime("%Y-%m-%d")}
             return mapper[col]
 
         else:
@@ -1243,7 +1255,15 @@ class ModelSalesInfo(wx.dataview.PyDataViewModel):
                       3: node.consume_money,
                       4: node.free_money,
                       5: node.real_money,
-                      6: node.consume_time.strftime("%Y-%m-%d %H:%M:%S")}
+                      6: node.bill_num,
+                      7: node.cash,
+                      8: node.coupon,
+                      9: node.membership,
+                      10: node.pos,
+                      11: node.group,
+                      12: node.credit,
+                      13: node.boss_sign,
+                      14: node.consume_time.strftime("%Y-%m-%d %H:%M:%S")}
             return mapper[col]
 
         else:
@@ -1319,7 +1339,9 @@ class ModelBillboardInfo(wx.dataview.PyDataViewModel):
                       4: node.dishes_unit,
                       5: node.sale_count,
                       6: node.average_count,
-                      7: node.total_money}
+                      7: node.total_money,
+                      8: node.retreat_count,
+                      9: float(node.retreat_money)}
             return mapper[col]
 
         else:

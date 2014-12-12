@@ -309,8 +309,9 @@ class CtrlDishes():
         data = list()
         for item in result:
             data_item = DataDishes(result.index(item) + 1, item.id_, item.code, item.name, item.brevity,
-                                   item.category_name, item.unit_name, item.commission, item.discount, item.enable,
-                                   item.picture_url, item.print_scheme_name, item.is_print)
+                                   item.category_name, item.unit_name, item.spec_id, item.commission, item.discount,
+                                   item.on_sale, item.recommend, item.enable, item.picture_url, item.print_scheme_name,
+                                   item.is_print)
             data.append(data_item)
             
         return data
@@ -320,8 +321,9 @@ class CtrlDishes():
         result = get_all('DishInfo')
         for item in result:
             data_item = DataDishes(result.index(item) + 1, item.id_, item.code, item.name, item.brevity,
-                                   item.category_id, item.unit_id, item.commission, item.discount, item.enable,
-                                   item.picture_url, item.print_scheme_id, item.is_print)
+                                   item.category_id, item.unit_id, item.spec_id, item.commission, item.discount,
+                                   item.on_sale, item.recommend, item.enable, item.picture_url, item.print_scheme_id,
+                                   item.is_print)
             self.table_items.append(data_item)
 
     def get_items(self):
@@ -562,8 +564,8 @@ class CtrlEmployee():
         result = get_all('EmployeeInfo')
         data = list()
         for item in result:
-            data_item = DataEmployee(result.index(item) + 1, item.id_, item.code, item.name, item.birthday,
-                                     item.duty, item.dept_name, item.gender, item.telephone, item.id_card,
+            data_item = DataEmployee(result.index(item) + 1, item.id_, item.code, item.name, item.birthday, item.duty,
+                                     item.pass_word,item.dept_name, item.gender, item.telephone, item.id_card,
                                      item.status, item.address, item.email, item.memo)
             data.append(data_item)
             
@@ -573,8 +575,8 @@ class CtrlEmployee():
         del self.table_items[0:len(self.table_items)]
         result = get_all('EmployeeInfo')
         for item in result:
-            data_item = DataEmployee(result.index(item) + 1, item.id_, item.code, item.name, item.birthday,
-                                     item.duty, item.dept_id, item.gender, item.telephone, item.id_card,
+            data_item = DataEmployee(result.index(item) + 1, item.id_, item.code, item.name, item.birthday, item.duty,
+                                     item.pass_word, item.dept_id, item.gender, item.telephone, item.id_card,
                                      item.status, item.address, item.email, item.memo)
             self.table_items.append(data_item)
 
@@ -817,6 +819,14 @@ class CtrlBusinessInfo():
         self.consume_price = 0
         self.real_price = 0
         self.consumer_num = 0
+        self.bill_total = 0
+        self.cash_total = 0
+        self.coupon_total = 0
+        self.membership_total = 0
+        self.pos_total = 0
+        self.group_total = 0
+        self.credit_total = 0
+        self.boss_sign_total = 0
 
     def get_business_items(self):
         return self.li_business
@@ -825,12 +835,22 @@ class CtrlBusinessInfo():
         return self.time_from, self.time_to
 
     def get_summary_info(self):
-        return self.consume_price, self.real_price, self.consumer_num
+        return self.consume_price, self.real_price, self.consumer_num, self.bill_total, self.cash_total, \
+            self.coupon_total, self.membership_total, self.pos_total, self.group_total, self.credit_total, \
+            self.boss_sign_total
 
     def query_business(self, time_from, time_to):
         self.consume_price = 0
         self.real_price = 0
         self.consumer_num = 0
+        self.bill_total = 0
+        self.cash_total = 0
+        self.coupon_total = 0
+        self.membership_total = 0
+        self.pos_total = 0
+        self.group_total = 0
+        self.credit_total = 0
+        self.boss_sign_total = 0
         self.time_from = time_from
         self.time_to = time_to
         del self.li_business[0:len(self.li_business)]
@@ -842,8 +862,17 @@ class CtrlBusinessInfo():
                 self.consume_price = self.consume_price + info.price
                 self.real_price = self.real_price + info.real_price
                 self.consumer_num = self.consumer_num + info.consumer
+                self.bill_total = self.bill_total + info.bill_num
+                self.cash_total = self.cash_total + info.cash
+                self.coupon_total = self.coupon_total + info.coupon
+                self.membership_total = self.membership_total + info.membership
+                self.pos_total = self.pos_total + info.pos
+                self.group_total = self.group_total + info.group
+                self.credit_total = self.credit_total + info.credit
+                self.boss_sign_total = self.boss_sign_total + info.boss_sign
                 item = DataBusinessInfo(0, 0, info.table_num, info.consumer, info.price, free_price, info.real_price,
-                                        average_price, info.checkout_time)
+                                        info.bill_num, average_price, info.cash, info.coupon, info.membership,
+                                        info.pos, info.group, info.credit, info.boss_sign, info.checkout_time)
                 self.li_business.append(item)
             #self.li_business.sort(lambda x, y: cmp(int(x.consumer_num), int(y.consumer_num)))
             self.li_business.sort(lambda x, y: cmp(str(x.consume_time.strftime("%Y-%m-%d")),
@@ -853,13 +882,15 @@ class CtrlBusinessInfo():
 
     def export_business(self, file_name):
         business_data_set = tablib.Dataset()
-        business_header = (u'序号', u'桌次', u'消费人次', u'消费金额', u'优惠金额', u'收款金额', u'人均消费', u'时间')
+        business_header = (u'序号', u'桌次', u'消费人次', u'消费金额', u'优惠金额', u'收款金额', u"发票金额", u'人均消费',
+                           u"现金", u"优惠券", u"会员卡", u"POS支付", u"团购", u"挂账", u"老板签单", u'时间')
         business_data_set.headers = business_header
         if len(self.li_business) > 0:
             for item in self.li_business:
                 business_data_set.append([self.li_business.index(item), item.table_num, item.consumer_num,
-                                          item.consume_money, item.free_money, item.real_money, item.average_money,
-                                          item.consume_time])
+                                          item.consume_money, item.free_money, item.real_money, item.bill_num,
+                                          item.average_money, item.cash, item.coupon, item.membership, item.pos,
+                                          item.group, item.credit, item.boss_sign, item.consume_time])
 
         business_data_set.title = u'消费报表'
         business_file = open(file_name, 'wb')
@@ -877,6 +908,14 @@ class CtrlSalesInfo():
         self.consume_price = 0
         self.real_price = 0
         self.consumer_num = 0
+        self.bill_total = 0
+        self.cash_total = 0
+        self.coupon_total = 0
+        self.membership_total = 0
+        self.pos_total = 0
+        self.group_total = 0
+        self.credit_total = 0
+        self.boss_sign_total = 0
 
     def get_sales_items(self):
         return self.li_sales
@@ -885,12 +924,22 @@ class CtrlSalesInfo():
         return self.time_from, self.time_to
 
     def get_summary_info(self):
-        return self.consume_price, self.real_price, self.consumer_num
+        return self.consume_price, self.real_price, self.consumer_num, self.bill_total, self.cash_total, \
+            self.coupon_total, self.membership_total, self.pos_total, self.group_total, self.credit_total, \
+            self.boss_sign_total
 
     def query_sales(self, time_from, time_to):
         self.consume_price = 0
         self.real_price = 0
         self.consumer_num = 0
+        self.bill_total = 0
+        self.cash_total = 0
+        self.coupon_total = 0
+        self.membership_total = 0
+        self.pos_total = 0
+        self.group_total = 0
+        self.credit_total = 0
+        self.boss_sign_total = 0
         self.time_from = time_from
         self.time_to = time_to
         del self.li_sales[0:len(self.li_sales)]
@@ -902,8 +951,17 @@ class CtrlSalesInfo():
                 if info.real_price is not None:
                     self.real_price = self.real_price + info.real_price
                 self.consumer_num = self.consumer_num + info.consumer
-                item = DataSalesInfo(0, 0, info.table_num, info.consumer, info.price, free_price,
-                                     info.real_price, info.checkout_time)
+                self.bill_total = self.bill_total + info.bill_num
+                self.cash_total = self.cash_total + info.cash
+                self.coupon_total = self.coupon_total + info.coupon
+                self.membership_total = self.membership_total + info.membership
+                self.pos_total = self.pos_total + info.pos
+                self.group_total = self.group_total + info.group
+                self.credit_total = self.credit_total + info.credit
+                self.boss_sign_total = self.boss_sign_total + info.boss_sign
+                item = DataSalesInfo(0, 0, info.table_num, info.consumer, info.price, free_price, info.real_price,
+                                     info.bill_num, info.cash, info.coupon, info.membership, info.pos,
+                                     info.group, info.credit, info.boss_sign, info.checkout_time)
                 self.li_sales.append(item)
 
             self.li_sales.sort(lambda x, y: cmp(str(x.consume_time.strftime("%Y-%m-%d %H:%M:%S")),
@@ -912,12 +970,15 @@ class CtrlSalesInfo():
 
     def export_sales(self, file_name):
         sales_data_set = tablib.Dataset()
-        sales_header = (u'序号', u'桌台', u'人次', u'消费金额', u'优惠金额', u'实际金额', u'时间')
+        sales_header = (u'序号', u'桌台', u'人次', u'消费金额', u'优惠金额', u'实际金额', u"发票金额", u"现金", u"优惠券",
+                        u'会员卡', u"POS支付", u"团购", u"挂账", u"老板签单", u'时间')
         sales_data_set.headers = sales_header
         if len(self.li_sales) > 0:
             for item in self.li_sales:
-                sales_data_set.append([self.li_sales.index(item), item.table_num, item.consumer_num,
-                                       item.consume_money, item.free_money, item.real_money, item.consume_time])
+                sales_data_set.append([self.li_sales.index(item), item.table_num, item.consumer_num, item.consume_money,
+                                       item.free_money, item.real_money, item.bill_num, item.cash, item.coupon,
+                                       item.membership, item.pos, item.group, item.credit, item.boss_sign,
+                                       item.consume_time])
 
         sales_data_set.title = u'销售流水查询'
         sales_file = open(file_name, 'wb')
@@ -951,7 +1012,8 @@ class CtrlBillboardInfo():
                 if self.days is not None and self.days > 0:
                     average = round(float(info.dishes_count) / self.days, 2)
                 item = DataBillboardInfo(0, 0, info.dishes_name, info.brevity_code, info.category, info.unit,
-                                         info.dishes_count, average, info.total_money)
+                                         info.dishes_count, average, info.total_money, info.retreat_count,
+                                         info.retreat_money)
                 self.li_billboard.append(item)
 
             self.li_billboard.sort(lambda x, y: cmp(int(x.sale_count), int(y.sale_count)), reverse=True)
@@ -959,13 +1021,14 @@ class CtrlBillboardInfo():
 
     def export_billboard(self, file_name):
         billboard_data_set = tablib.Dataset()
-        billboard_header = (u'序号', u'菜名', u'编码缩写', u'类别', u'单位', u'销售份数', u'日均(份)', u'销售总额')
+        billboard_header = (u'序号', u'菜名', u'编码缩写', u'类别', u'单位', u'销售份数', u'日均(份)', u'销售总额',
+                            u"退菜份数", u"退菜总额")
         billboard_data_set.headers = billboard_header
         if len(self.li_billboard) > 0:
             for item in self.li_billboard:
                 billboard_data_set.append([self.li_billboard.index(item), item.dishes_name, item.brevity_code,
-                                           item.dishes_category, item.dishes_unit, item.sale_count,
-                                           item.average_count, item.total_money])
+                                           item.dishes_category, item.dishes_unit, item.sale_count, item.average_count,
+                                           item.total_money, item.retreat_count, item.retreat_money])
 
         billboard_data_set.title = u'菜类销售排名'
         sales_file = open(file_name, 'wb')

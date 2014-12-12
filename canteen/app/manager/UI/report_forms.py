@@ -84,8 +84,16 @@ class WgtBusinessInfo (wx.Panel):
         self.dataViewCtrl.AppendTextColumn(u"消费金额", 3)
         self.dataViewCtrl.AppendTextColumn(u"优惠金额", 4)
         self.dataViewCtrl.AppendTextColumn(u"收款金额", 5)
-        self.dataViewCtrl.AppendTextColumn(u"人均消费", 6)
-        self.dataViewCtrl.AppendTextColumn(u"时间", 7)
+        self.dataViewCtrl.AppendTextColumn(u"发票金额", 6)
+        self.dataViewCtrl.AppendTextColumn(u"人均消费", 7)
+        self.dataViewCtrl.AppendTextColumn(u"现金", 8)
+        self.dataViewCtrl.AppendTextColumn(u"优惠券", 9)
+        self.dataViewCtrl.AppendTextColumn(u"会员卡", 10)
+        self.dataViewCtrl.AppendTextColumn(u"POS支付", 11)
+        self.dataViewCtrl.AppendTextColumn(u"团购", 12)
+        self.dataViewCtrl.AppendTextColumn(u"挂账", 13)
+        self.dataViewCtrl.AppendTextColumn(u"老板签单", 14)
+        self.dataViewCtrl.AppendTextColumn(u"时间", 15)
         sizer.Add(self.dataViewCtrl, 0, wx.EXPAND, 5)
 
         self.dataViewPanel.SetSizer(sizer)
@@ -93,10 +101,7 @@ class WgtBusinessInfo (wx.Panel):
         sizer.Fit(self.dataViewPanel)
         parent.Add(self.dataViewPanel, 1, wx.EXPAND, 5)
 
-    def _init_bottom_control(self, parent):
-        self.bottomCtrlPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
-        self.bottomCtrlPanel.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
-
+    def _init_bottom_line_1(self, parent):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add total consume
         s_txt_total = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"消费总额：", wx.DefaultPosition,
@@ -134,6 +139,18 @@ class WgtBusinessInfo (wx.Panel):
         self.txtReal.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         self.txtReal.Wrap(-1)
         sizer.Add(self.txtReal, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add bill number
+        s_txt_bill = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"发票金额：", wx.DefaultPosition,
+                                   wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_bill.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_bill.Wrap(-1)
+        sizer.Add(s_txt_bill, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtBillNum = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                        wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtBillNum.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtBillNum.Wrap(-1)
+        sizer.Add(self.txtBillNum, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add customer number
         s_txt_customers = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"消费人次：", wx.DefaultPosition,
                                         wx.Size(60, -1), wx.ALIGN_RIGHT)
@@ -158,6 +175,119 @@ class WgtBusinessInfo (wx.Panel):
         self.txtAverage.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         self.txtAverage.Wrap(-1)
         sizer.Add(self.txtAverage, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add cash money
+        s_txt_cash = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"现金：", wx.DefaultPosition,
+                                   wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_cash.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_cash.Wrap(-1)
+        sizer.Add(s_txt_cash, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtCash = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                     wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtCash.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtCash.Wrap(-1)
+        sizer.Add(self.txtCash, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        # Layout
+        parent.Add(sizer, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+    def _init_bottom_line_2(self, parent):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add coupon money
+        s_txt_coupon = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"优惠券：", wx.DefaultPosition,
+                                     wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_coupon.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_coupon.Wrap(-1)
+        sizer.Add(s_txt_coupon, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtCoupon = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                       wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtCoupon.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtCoupon.Wrap(-1)
+        sizer.Add(self.txtCoupon, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add membership money
+        s_txt_membership = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"会员卡：", wx.DefaultPosition,
+                                         wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_membership.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_membership.Wrap(-1)
+        sizer.Add(s_txt_membership, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtMembership = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                           wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtMembership.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtMembership.Wrap(-1)
+        sizer.Add(self.txtMembership, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add pos money
+        s_txt_pos = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"POS支付：", wx.DefaultPosition,
+                                  wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_pos.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_pos.Wrap(-1)
+        sizer.Add(s_txt_pos, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtPos = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                    wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtPos.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtPos.Wrap(-1)
+        sizer.Add(self.txtPos, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add group money
+        s_txt_group = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"团购：", wx.DefaultPosition,
+                                    wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_group.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_group.Wrap(-1)
+        sizer.Add(s_txt_group, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtGroup = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                      wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtGroup.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtGroup.Wrap(-1)
+        sizer.Add(self.txtGroup, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add credit money
+        s_txt_credit = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"挂账：", wx.DefaultPosition,
+                                     wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_credit.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_credit.Wrap(-1)
+        sizer.Add(s_txt_credit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtCredit = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                       wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtCredit.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtCredit.Wrap(-1)
+        sizer.Add(self.txtCredit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add boss sign money
+        s_txt_boss_sign = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"老板签单：", wx.DefaultPosition,
+                                        wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_boss_sign.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_boss_sign.Wrap(-1)
+        sizer.Add(s_txt_boss_sign, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtBossSign = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                         wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtBossSign.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtBossSign.Wrap(-1)
+        sizer.Add(self.txtBossSign, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add reserve money
+        s_txt_reserve = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                      wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_reserve.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_reserve.Wrap(-1)
+        sizer.Add(s_txt_reserve, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtReserve = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                        wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtReserve.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtReserve.Wrap(-1)
+        sizer.Add(self.txtReserve, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        # Layout
+        parent.Add(sizer, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+    def _init_bottom_control(self, parent):
+        self.bottomCtrlPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        self.bottomCtrlPanel.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self._init_bottom_line_1(sizer)
+        self._init_bottom_line_2(sizer)
         # Layout
         self.bottomCtrlPanel.SetSizer(sizer)
         self.bottomCtrlPanel.Layout()
@@ -273,7 +403,8 @@ class WgtBusinessInfo (wx.Panel):
 
     def on_refresh(self, event):
         # Refresh data view list
-        consume_price, real_price, consumer_num = CtrlBusinessInfo.get_instance().get_summary_info()
+        consume_price, real_price, consumer_num, bill_total, cash_total, coupon_total, membership_total, pos_total,\
+            group_total, credit_total, boss_sign_total = CtrlBusinessInfo.get_instance().get_summary_info()
         free_price = consume_price - real_price
         average_price = 0
         if consumer_num > 0:
@@ -282,7 +413,16 @@ class WgtBusinessInfo (wx.Panel):
         self.txtFavourable.SetLabel(str(free_price))
         self.txtReal.SetLabel(str(real_price))
         self.txtCustomer.SetLabel(str(consumer_num))
+        self.txtBillNum.SetLabel(str(bill_total))
         self.txtAverage.SetLabel(str(average_price))
+        self.txtCash.SetLabel(str(cash_total))
+        self.txtCoupon.SetLabel(str(coupon_total))
+        self.txtMembership.SetLabel(str(membership_total))
+        self.txtPos.SetLabel(str(pos_total))
+        self.txtGroup.SetLabel(str(group_total))
+        self.txtCredit.SetLabel(str(credit_total))
+        self.txtBossSign.SetLabel(str(boss_sign_total))
+
         self.model.Cleared()
 
 
@@ -349,7 +489,15 @@ class WgtSalesInfo (wx.Panel):
         self.dataViewCtrl.AppendTextColumn(u"消费金额", 3)
         self.dataViewCtrl.AppendTextColumn(u"优惠金额", 4)
         self.dataViewCtrl.AppendTextColumn(u"实际金额", 5)
-        self.dataViewCtrl.AppendTextColumn(u"时间", 6, width=150)
+        self.dataViewCtrl.AppendTextColumn(u"发票金额", 6)
+        self.dataViewCtrl.AppendTextColumn(u"现金", 7)
+        self.dataViewCtrl.AppendTextColumn(u"优惠券", 8)
+        self.dataViewCtrl.AppendTextColumn(u"会员卡", 9)
+        self.dataViewCtrl.AppendTextColumn(u"POS支付", 10)
+        self.dataViewCtrl.AppendTextColumn(u"团购", 11)
+        self.dataViewCtrl.AppendTextColumn(u"挂账", 12)
+        self.dataViewCtrl.AppendTextColumn(u"老板签单", 13)
+        self.dataViewCtrl.AppendTextColumn(u"时间", 14, width=150)
         sizer.Add(self.dataViewCtrl, 0, wx.EXPAND, 5)
 
         self.dataViewPanel.SetSizer(sizer)
@@ -357,10 +505,7 @@ class WgtSalesInfo (wx.Panel):
         sizer.Fit(self.dataViewPanel)
         parent.Add(self.dataViewPanel, 1, wx.EXPAND, 5)
 
-    def _init_bottom_control(self, parent):
-        self.bottomCtrlPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
-        self.bottomCtrlPanel.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
-
+    def _init_bottom_line_1(self, parent):
         sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add total consume
         s_txt_total = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"消费总额：", wx.DefaultPosition,
@@ -398,6 +543,18 @@ class WgtSalesInfo (wx.Panel):
         self.txtReal.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         self.txtReal.Wrap(-1)
         sizer.Add(self.txtReal, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add bill number
+        s_txt_bill = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"发票金额：", wx.DefaultPosition,
+                                   wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_bill.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_bill.Wrap(-1)
+        sizer.Add(s_txt_bill, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtBillNum = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                        wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtBillNum.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtBillNum.Wrap(-1)
+        sizer.Add(self.txtBillNum, 0, wx.ALIGN_CENTER | wx.ALL, 5)
         # Add customer number
         s_txt_customers = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"消费人次：", wx.DefaultPosition,
                                         wx.Size(60, -1), wx.ALIGN_RIGHT)
@@ -422,6 +579,120 @@ class WgtSalesInfo (wx.Panel):
         self.txtAverage.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         self.txtAverage.Wrap(-1)
         sizer.Add(self.txtAverage, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add cash money
+        s_txt_cash = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"现金：", wx.DefaultPosition,
+                                   wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_cash.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_cash.Wrap(-1)
+        sizer.Add(s_txt_cash, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtCash = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                     wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtCash.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtCash.Wrap(-1)
+        sizer.Add(self.txtCash, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        # Layout
+        parent.Add(sizer, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+    def _init_bottom_line_2(self, parent):
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add coupon money
+        s_txt_coupon = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"优惠券：", wx.DefaultPosition,
+                                     wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_coupon.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_coupon.Wrap(-1)
+        sizer.Add(s_txt_coupon, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtCoupon = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                       wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtCoupon.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtCoupon.Wrap(-1)
+        sizer.Add(self.txtCoupon, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add membership money
+        s_txt_membership = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"会员卡：", wx.DefaultPosition,
+                                         wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_membership.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_membership.Wrap(-1)
+        sizer.Add(s_txt_membership, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtMembership = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                           wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtMembership.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtMembership.Wrap(-1)
+        sizer.Add(self.txtMembership, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add pos money
+        s_txt_pos = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"POS支付：", wx.DefaultPosition,
+                                  wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_pos.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_pos.Wrap(-1)
+        sizer.Add(s_txt_pos, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtPos = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                    wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtPos.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtPos.Wrap(-1)
+        sizer.Add(self.txtPos, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add group money
+        s_txt_group = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"团购：", wx.DefaultPosition,
+                                    wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_group.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_group.Wrap(-1)
+        sizer.Add(s_txt_group, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtGroup = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                      wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtGroup.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtGroup.Wrap(-1)
+        sizer.Add(self.txtGroup, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add credit money
+        s_txt_credit = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"挂账：", wx.DefaultPosition,
+                                     wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_credit.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_credit.Wrap(-1)
+        sizer.Add(s_txt_credit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtCredit = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                       wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtCredit.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtCredit.Wrap(-1)
+        sizer.Add(self.txtCredit, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add boss sign money
+        s_txt_boss_sign = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"老板签单：", wx.DefaultPosition,
+                                        wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_boss_sign.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_boss_sign.Wrap(-1)
+        sizer.Add(s_txt_boss_sign, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtBossSign = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                         wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtBossSign.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtBossSign.Wrap(-1)
+        sizer.Add(self.txtBossSign, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+        # Add reserve money
+        s_txt_reserve = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                      wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_reserve.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        s_txt_reserve.Wrap(-1)
+        sizer.Add(s_txt_reserve, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtReserve = wx.StaticText(self.bottomCtrlPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                        wx.Size(60, -1), wx.ALIGN_LEFT)
+        self.txtReserve.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+        self.txtReserve.Wrap(-1)
+        sizer.Add(self.txtReserve, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        # Layout
+        parent.Add(sizer, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+    def _init_bottom_control(self, parent):
+        self.bottomCtrlPanel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL)
+        self.bottomCtrlPanel.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
+
+        sizer = wx.BoxSizer(wx.VERTICAL)
+        self._init_bottom_line_1(sizer)
+        self._init_bottom_line_2(sizer)
+
         # Layout
         self.bottomCtrlPanel.SetSizer(sizer)
         self.bottomCtrlPanel.Layout()
@@ -537,7 +808,8 @@ class WgtSalesInfo (wx.Panel):
 
     def on_refresh(self, event):
         # Refresh data view list
-        consume_price, real_price, consumer_num = CtrlSalesInfo.get_instance().get_summary_info()
+        consume_price, real_price, consumer_num, bill_total, cash_total, coupon_total, membership_total, pos_total,\
+            group_total, credit_total, boss_sign_total = CtrlSalesInfo.get_instance().get_summary_info()
         free_price = consume_price - real_price
         average_price = 0
         if consumer_num > 0:
@@ -547,6 +819,15 @@ class WgtSalesInfo (wx.Panel):
         self.txtReal.SetLabel(str(real_price))
         self.txtCustomer.SetLabel(str(consumer_num))
         self.txtAverage.SetLabel(str(average_price))
+        self.txtBillNum.SetLabel(str(bill_total))
+        self.txtAverage.SetLabel(str(average_price))
+        self.txtCash.SetLabel(str(cash_total))
+        self.txtCoupon.SetLabel(str(coupon_total))
+        self.txtMembership.SetLabel(str(membership_total))
+        self.txtPos.SetLabel(str(pos_total))
+        self.txtGroup.SetLabel(str(group_total))
+        self.txtCredit.SetLabel(str(credit_total))
+        self.txtBossSign.SetLabel(str(boss_sign_total))
 
         self.model.Cleared()
 
@@ -629,6 +910,8 @@ class WgtBillboardInfo (wx.Panel):
         self.dataViewCtrl.AppendTextColumn(u"销售份数", 5)
         self.dataViewCtrl.AppendTextColumn(u"日均(份)", 6)
         self.dataViewCtrl.AppendTextColumn(u"销售总额", 7)
+        self.dataViewCtrl.AppendTextColumn(u"退菜份数", 8)
+        self.dataViewCtrl.AppendTextColumn(u"退菜总额", 9)
         sizer.Add(self.dataViewCtrl, 0, wx.EXPAND, 5)
 
         self.dataViewPanel.SetSizer(sizer)

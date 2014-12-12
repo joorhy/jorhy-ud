@@ -1023,7 +1023,8 @@ class WgtDiningTable (wx.Panel):
             CtrlTable.get_instance().set_cur_item_index(index_)
             pop_table_info = PopTableInfo(self, "mod")
             pop_table_info.ShowModal()
-        except:
+        except Exception, ex:
+            print Exception, ":", ex
             print 'WgtDiningTable: on_btn_modify error'
     
     def on_btn_delete(self, event):
@@ -1032,7 +1033,8 @@ class WgtDiningTable (wx.Panel):
             item = self.dataViewList.GetCurrentItem()
             try:
                 data = self.model.ItemToObject(item)
-            except:
+            except Exception, ex:
+                print Exception, ":", ex
                 for item_ in self.model.data:
                     if item_.key == self.tree_data.key:
                         data = item_
@@ -1040,7 +1042,8 @@ class WgtDiningTable (wx.Panel):
             self.model.data.remove(data)
             self.dataViewList.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
             CtrlTable.get_instance().delete_item(data)
-        except:
+        except Exception, ex:
+            print Exception, ":", ex
             print 'WgtDiningTable: on_btn_delete error'
     
     def on_btn_bat_add(self, event):

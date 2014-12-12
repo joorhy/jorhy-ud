@@ -23,6 +23,7 @@ if not CONFIG.useTemp:
 try:
     CtrlTableInfo.get_instance().get_table_items()
     CtrlDishesInfo.get_instance().get_dishes_items()
+    CtrlWorker.get_instance().start()
 except Exception, ex:
     print Exception, ":", ex
 

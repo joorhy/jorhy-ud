@@ -30,3 +30,5 @@ class EnumEvent(Singleton):
     EVT_ORDER_DISHES_ITEMS_REFRESH = wx.NewId()
     # checkout info refresh event
     EVT_CHECKOUT_INFO_REFRESH = wx.NewId()
+    # default dishes spec refresh event
+    EVT_DEFAULT_DISHES_SPEC_REFRESH = wx.NewId()

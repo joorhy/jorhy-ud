@@ -877,6 +877,7 @@ class WgtFrontPage (wx.Panel):
     def on_refresh(self, event):
         self._refresh_table_info()
         self._refresh_dishes_view()
+        self._set_focus_table()
 
     def on_btn_close_table(self, event):
         selected_table_num = CtrlTableInfo.get_instance().get_selected_item_id()
@@ -907,6 +908,15 @@ class WgtFrontPage (wx.Panel):
 
         self._show_table_info()
         self._refresh_dishes_view()
+
+    def _set_focus_table(self):
+        selected_table_num = CtrlTableInfo.get_instance().get_selected_table_num()
+        if selected_table_num is not None:
+            if self.tableBtnMap[selected_table_num].GetLabel().find(u'√') == -1:
+                CtrlTableInfo.get_instance().set_selected_item_id(selected_table_num)
+                self.tableBtnMap[selected_table_num].SetLabel(u'√        ' +
+                                                              self.tableBtnMap[selected_table_num].GetLabel())
+                self.tableBtnMap[selected_table_num].Refresh()
 
     def _show_table_info(self):
         self.txtOrderNum.SetLabel('')
