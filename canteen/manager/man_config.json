@@ -1,0 +1,10 @@
+{
+"db_address":"211.149.156.126",
+"db_port":3306,
+"db_user":"root",
+"db_password":"root3306",
+"user":"0",
+"password":"0",
+"disk_num":"c",
+"img_path":""
+}
