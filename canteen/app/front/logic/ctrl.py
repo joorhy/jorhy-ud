@@ -819,5 +819,5 @@ class CtrlWorker():
 
     def on_timer(self):
         while self.is_run:
-            #CtrlOrderInfo.get_instance().update_order()
-            time.sleep(5)
+            CtrlOrderInfo.get_instance().update_order()
+            time.sleep(2)

@@ -23,11 +23,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="ctrl.py" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ctrl.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/front/logic/ctrl.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.44023323" vertical-offset="12803" max-vertical-offset="13838">
-              <caret line="776" column="76" selection-start-line="776" selection-start-column="76" selection-end-line="776" selection-end-column="76" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="13277" max-vertical-offset="13838">
+              <caret line="819" column="4" selection-start-line="819" selection-start-column="4" selection-end-line="819" selection-end-column="4" />
               <folding>
                 <element signature="e#18950#19051#0" expanded="false" />
                 <element signature="e#19109#19205#0" expanded="false" />
@@ -36,10 +36,30 @@
           </provider>
         </entry>
       </file>
+      <file leaf-file-name="cx_front_setup.py" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/cx_front_setup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425">
+              <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="cx_manager_setup.py" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/cx_manager_setup.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.6060606" vertical-offset="0" max-vertical-offset="561">
+              <caret line="21" column="2" selection-start-line="21" selection-start-column="2" selection-end-line="21" selection-end-column="27" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="front_page.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/front/UI/front_page.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="14207" max-vertical-offset="17612">
+            <state vertical-scroll-proportion="0.0" vertical-offset="14501" max-vertical-offset="17782">
               <caret line="853" column="0" selection-start-line="853" selection-start-column="0" selection-end-line="853" selection-end-column="0" />
               <folding />
             </state>
@@ -49,7 +69,7 @@
       <file leaf-file-name="app_manager.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/app_manager.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="3266" max-vertical-offset="3638">
+            <state vertical-scroll-proportion="0.0" vertical-offset="3519" max-vertical-offset="3655">
               <caret line="207" column="0" selection-start-line="207" selection-start-column="0" selection-end-line="207" selection-end-column="0" />
               <folding />
             </state>
@@ -59,7 +79,7 @@
       <file leaf-file-name="data.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/front/logic/data.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-31.655172" vertical-offset="0" max-vertical-offset="1785">
+            <state vertical-scroll-proportion="0.0" vertical-offset="918" max-vertical-offset="1785">
               <caret line="54" column="29" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
               <folding />
             </state>
@@ -69,18 +89,8 @@
       <file leaf-file-name="check_out.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/front/UI/check_out.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-5.6896553" vertical-offset="22615" max-vertical-offset="27523">
+            <state vertical-scroll-proportion="0.0" vertical-offset="22933" max-vertical-offset="27676">
               <caret line="1349" column="41" selection-start-line="1349" selection-start-column="41" selection-end-line="1349" selection-end-column="41" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="model.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/front/logic/model.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="2273" max-vertical-offset="3060">
-              <caret line="151" column="75" selection-start-line="151" selection-start-column="75" selection-end-line="151" selection-end-column="75" />
               <folding />
             </state>
           </provider>
@@ -89,18 +99,8 @@
       <file leaf-file-name="http_service.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/service/http_json/http_service.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="505" max-vertical-offset="4556">
+            <state vertical-scroll-proportion="0.0" vertical-offset="629" max-vertical-offset="4607">
               <caret line="37" column="8" selection-start-line="37" selection-start-column="8" selection-end-line="37" selection-end-column="8" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="order_dishes.py" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/front/UI/order_dishes.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.5172415" vertical-offset="7655" max-vertical-offset="18071">
-              <caret line="467" column="31" selection-start-line="467" selection-start-column="31" selection-end-line="467" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -109,7 +109,7 @@
       <file leaf-file-name="front_main.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/front/front_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="155" max-vertical-offset="527">
+            <state vertical-scroll-proportion="0.0" vertical-offset="425" max-vertical-offset="663">
               <caret line="25" column="37" selection-start-line="25" selection-start-column="37" selection-end-line="25" selection-end-column="37" />
               <folding />
             </state>
@@ -119,7 +119,7 @@
       <file leaf-file-name="manager_main.py" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/manager/manager_main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="391">
+            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="493">
               <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
@@ -185,8 +185,8 @@
         <option value="$PROJECT_DIR$/app/front/logic/data.py" />
         <option value="$PROJECT_DIR$/app/front/UI/order_dishes.py" />
         <option value="$PROJECT_DIR$/app/front/front_main.py" />
-        <option value="$PROJECT_DIR$/app/front/logic/ctrl.py" />
         <option value="$PROJECT_DIR$/app/front/UI/check_out.py" />
+        <option value="$PROJECT_DIR$/app/front/logic/ctrl.py" />
       </list>
     </option>
   </component>
@@ -222,6 +222,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -324,7 +325,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -617,26 +617,26 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32899022" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3257329" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20089285" sideWeight="0.5882353" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21428572" sideWeight="0.5908046" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.20089285" sideWeight="0.5879479" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21428572" sideWeight="0.58957654" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.29153094" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.20089285" sideWeight="0.4117647" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21428572" sideWeight="0.4087948" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3490566" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.30781758" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.30781758" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3257329" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -653,9 +653,9 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.22098215" sideWeight="0.49875313" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21428572" sideWeight="0.49875313" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.35016286" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -865,7 +865,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="4116" max-vertical-offset="4522">
           <caret line="260" column="30" selection-start-line="260" selection-start-column="30" selection-end-line="260" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -873,7 +872,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="2775" max-vertical-offset="5491">
           <caret line="184" column="61" selection-start-line="184" selection-start-column="61" selection-end-line="184" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -881,7 +879,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33236995" vertical-offset="395" max-vertical-offset="5984">
           <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -889,7 +886,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-7.3103447" vertical-offset="6537" max-vertical-offset="18581">
           <caret line="409" column="39" selection-start-line="409" selection-start-column="39" selection-end-line="409" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -897,7 +893,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="9643" max-vertical-offset="17663">
           <caret line="579" column="30" selection-start-line="579" selection-start-column="30" selection-end-line="579" selection-end-column="30" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -905,7 +900,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1721" max-vertical-offset="3910">
           <caret line="112" column="24" selection-start-line="112" selection-start-column="20" selection-end-line="112" selection-end-column="24" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -921,7 +915,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.033240996" vertical-offset="19698" max-vertical-offset="23154">
           <caret line="1162" column="43" selection-start-line="1162" selection-start-column="43" selection-end-line="1162" selection-end-column="43" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -929,7 +922,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1597" max-vertical-offset="8534">
           <caret line="103" column="4" selection-start-line="103" selection-start-column="4" selection-end-line="103" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -937,7 +929,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="16748" max-vertical-offset="17493">
           <caret line="1013" column="28" selection-start-line="1013" selection-start-column="28" selection-end-line="1013" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -945,7 +936,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33333334" vertical-offset="135039" max-vertical-offset="287963">
           <caret line="7951" column="0" selection-start-line="7951" selection-start-column="0" selection-end-line="7951" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -953,7 +943,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="255">
           <caret line="1" column="29" selection-start-line="1" selection-start-column="29" selection-end-line="1" selection-end-column="29" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -961,7 +950,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.14905149" vertical-offset="13528" max-vertical-offset="99076">
           <caret line="800" column="50" selection-start-line="800" selection-start-column="50" selection-end-line="800" selection-end-column="50" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -977,7 +965,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="3630" max-vertical-offset="9435">
           <caret line="209" column="4" selection-start-line="209" selection-start-column="4" selection-end-line="209" selection-end-column="4" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -985,23 +972,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="4909" max-vertical-offset="13549">
           <caret line="296" column="4" selection-start-line="296" selection-start-column="4" selection-end-line="296" selection-end-column="4" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cx_front_setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="8" max-vertical-offset="425">
-          <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/cx_manager_setup.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.13350785" vertical-offset="0" max-vertical-offset="442">
-          <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1009,7 +979,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="170">
           <caret line="4" column="0" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1031,7 +1000,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/front/UI/order_dishes.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.5172415" vertical-offset="7655" max-vertical-offset="18071">
+        <state vertical-scroll-proportion="0.0" vertical-offset="7939" max-vertical-offset="18224">
           <caret line="467" column="31" selection-start-line="467" selection-start-column="31" selection-end-line="467" selection-end-column="31" />
           <folding />
         </state>
@@ -1079,7 +1048,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/front/UI/check_out.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-5.6896553" vertical-offset="22615" max-vertical-offset="27523">
+        <state vertical-scroll-proportion="0.0" vertical-offset="22933" max-vertical-offset="27676">
           <caret line="1349" column="41" selection-start-line="1349" selection-start-column="41" selection-end-line="1349" selection-end-column="41" />
           <folding />
         </state>
@@ -1087,7 +1056,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/front/logic/data.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-31.655172" vertical-offset="0" max-vertical-offset="1785">
+        <state vertical-scroll-proportion="0.0" vertical-offset="918" max-vertical-offset="1785">
           <caret line="54" column="29" selection-start-line="54" selection-start-column="29" selection-end-line="54" selection-end-column="29" />
           <folding />
         </state>
@@ -1095,12 +1064,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/front/logic/ctrl.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.44023323" vertical-offset="12803" max-vertical-offset="13838">
-          <caret line="776" column="76" selection-start-line="776" selection-start-column="76" selection-end-line="776" selection-end-column="76" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="13277" max-vertical-offset="13838">
+          <caret line="819" column="4" selection-start-line="819" selection-start-column="4" selection-end-line="819" selection-end-column="4" />
           <folding>
             <element signature="e#18950#19051#0" expanded="false" />
             <element signature="e#19109#19205#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cx_front_setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="425">
+          <caret line="20" column="2" selection-start-line="20" selection-start-column="2" selection-end-line="20" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cx_manager_setup.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6060606" vertical-offset="0" max-vertical-offset="561">
+          <caret line="21" column="2" selection-start-line="21" selection-start-column="2" selection-end-line="21" selection-end-column="27" />
+          <folding />
         </state>
       </provider>
     </entry>
