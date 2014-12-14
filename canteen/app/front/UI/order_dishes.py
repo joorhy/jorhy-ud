@@ -602,7 +602,7 @@ class WgtOrderDishes (wx.Panel):
         self.dataViewCtrl.AppendTextColumn(u"规格", 2)
         self.dataViewCtrl.AppendTextColumn(u"单位", 3)
         self.dataViewCtrl.AppendTextColumn(u"数量", 4)
-        self.dataViewCtrl.AppendTextColumn(u"退菜量", 5)
+        #self.dataViewCtrl.AppendTextColumn(u"退菜量", 5)
         self.dataViewCtrl.AppendTextColumn(u"单价", 6)
         self.dataViewCtrl.AppendTextColumn(u"实际金额", 7)
         self.dataViewCtrl.AppendTextColumn(u"落单状态", 11)
@@ -784,6 +784,8 @@ class WgtOrderDishes (wx.Panel):
         self.model = ModelOrderedDishes(CtrlOrderInfo.get_instance().get_order_dishes_items(order_num))
         # Tell the DVC to use the model
         self.dataViewCtrl.AssociateModel(self.model)
+
+        self._show_table_data()
 
         # Add event listener
         EvtManager.add_listener(self, EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH, self.on_dishes_items_refresh)

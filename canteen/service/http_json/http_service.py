@@ -184,10 +184,11 @@ class HttpService():
 
         return None
 
-    def del_dishes(self, dishes_id, dishes_code, count, desc):
+    def del_dishes(self, order_id, dishes_id, dishes_code, count, desc):
         try:
-            del_dishes_url = "/canteen/table/dishBack?para={\"dishId\":" + str(dishes_id) + ",\"dishCode\":" \
-                             + str(dishes_code) + ",\"number\":" + str(count) + ",\"desc\":\"" + desc + "\"}"
+            del_dishes_url = "/canteen/table/dishBack?para={\"orderId\":" + str(order_id) + ",\"dishId\":" \
+                             + str(dishes_id) + ",\"dishCode\":" + str(dishes_code) + ",\"number\":" \
+                             + str(count) + ",\"desc\":\"" + desc + "\"}"
             self.conn = httplib.HTTPConnection(self.ip_address, self.port)
             self.conn.request("GET", del_dishes_url)
             response = self.conn.getresponse()
@@ -211,6 +212,29 @@ class HttpService():
                             + ",\"payXj\":" + str(cash) + ",\"payPos\":" + str(pos) + ",\"payTg\":" + str(group) \
                             + ",\"payGz\":" + str(credit) + ",\"payQd\":" + str(boss_sign) + ",\"payFp\":" \
                             + str(bill_num) + "}"
+            self.conn = httplib.HTTPConnection(self.ip_address, self.port)
+            self.conn.request("GET", check_out_url)
+            response = self.conn.getresponse()
+            if response.status == 200:
+                json_txt = response.read()
+                result = json.loads(json_txt)
+                return result
+        except Exception, ex:
+            print Exception, ":", ex
+            return None
+
+        return None
+
+    def prev_print(self, table_id, order_id, all_discount, free_price, checkout_person, check_type, cash, coupon,
+                   membership, pos, group, credit, boss_sign):
+        try:
+            check_out_url = "/canteen/order/prePrint?para={\"tableId\":" + str(table_id) + ",\"orderId\":" \
+                            + str(order_id) + ",\"checkoutType\":" + str(check_type) + ",\"cashier\":\"" \
+                            + checkout_person + "\",\"discountRate\":" + str(all_discount) + ",\"discountAmount\":" \
+                            + str(free_price) + ",\"payYhq\":" + str(coupon) + ",\"payHyk\":" + str(membership) \
+                            + ",\"payXj\":" + str(cash) + ",\"payPos\":" + str(pos) + ",\"payTg\":" + str(group) \
+                            + ",\"payGz\":" + str(credit) + ",\"payQd\":" + str(boss_sign) + ",\"payFp\":" \
+                            + '0' + "}"
             print check_out_url
             self.conn = httplib.HTTPConnection(self.ip_address, self.port)
             self.conn.request("GET", check_out_url)

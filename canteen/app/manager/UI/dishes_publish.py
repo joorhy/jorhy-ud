@@ -523,6 +523,7 @@ class PopDishesInfo (wx.Dialog):
             self.bmpImage.SetBitmap(wx.NullBitmap)
         else:
             try:
+                self.image_url = data.image_url
                 dishes_img_url = CtrlManagerLogin.get_instance().get_image_path() + "/" + data.image_url
                 img = wx.Image(dishes_img_url, wx.BITMAP_TYPE_ANY)
                 img.Rescale(165, 165)
@@ -643,6 +644,11 @@ class PopDishesInfo (wx.Dialog):
 
     def on_btn_clean(self, event):
         event.Skip()
+        dishes_img_url = CtrlManagerLogin.get_instance().get_image_path() + "/" + self.image_url
+        try:
+            os.remove(dishes_img_url)
+        except WindowsError:
+            pass
         self.image_url = ""
         self.bmpImage.SetBitmap(wx.NullBitmap)
 

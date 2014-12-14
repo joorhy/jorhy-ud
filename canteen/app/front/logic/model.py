@@ -146,7 +146,7 @@ class ModelOrderedDishes(wx.dataview.PyDataViewModel):
                       2: node.dishes_spec,
                       3: node.dishes_unit['vch_name'],
                       4: node.dishes_count,
-                      5: "",
+                      5: node.dishes_retreat_count,
                       6: node.dishes_amount,
                       7: node.dishes_real_amount,
                       8: node.dishes_real_amount - node.dishes_real_amount,

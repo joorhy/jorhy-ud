@@ -402,9 +402,12 @@ class PopTableBatAdd (wx.Dialog):
         i_from = int(self.txtFrom.GetValue())
         i_to = int(self.txtTo.GetValue())
         i_people_num = int(self.txtPeopleNum.GetValue())
+        li_table = list()
         for index_ in range(i_from, i_to + 1):
-            CtrlTable.get_instance().add_item(DataTable(0, 0, ("餐桌%d" % index_), table_type.key, area.key,
-                                         i_people_num, min_expense.key))
+            table_info = DataTable(0, 0, ("餐桌%d" % index_), table_type.key, area.key, i_people_num, min_expense.key)
+            li_table.append(table_info)
+
+        CtrlTable.get_instance().add_items(li_table)
 
     def on_btn_exit(self, event):
         event.Skip()
@@ -947,6 +950,8 @@ class WgtDiningTable (wx.Panel):
             self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
                     
         self.model.Cleared()
+        self.btnNew.Refresh()
+        self.Refresh()
     
     # Virtual event handlers, override them in your derived class
     def on_paint(self, event):

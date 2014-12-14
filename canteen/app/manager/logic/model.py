@@ -1166,7 +1166,7 @@ class ModelBusinessInfo(wx.dataview.PyDataViewModel):
         # Fetch the data object for this item.
         node = self.ItemToObject(item)
         if isinstance(node, DataBusinessInfo):
-            mapper = {0: self.data.index(node),
+            mapper = {0: self.data.index(node) + 1,
                       1: node.table_num,
                       2: node.consumer_num,
                       3: node.consume_money,
@@ -1249,7 +1249,7 @@ class ModelSalesInfo(wx.dataview.PyDataViewModel):
         # Fetch the data object for this item.
         node = self.ItemToObject(item)
         if isinstance(node, DataSalesInfo):
-            mapper = {0: self.data.index(node),
+            mapper = {0: self.data.index(node) + 1,
                       1: node.table_num,
                       2: node.consumer_num,
                       3: node.consume_money,
@@ -1332,7 +1332,7 @@ class ModelBillboardInfo(wx.dataview.PyDataViewModel):
         # Fetch the data object for this item.
         node = self.ItemToObject(item)
         if isinstance(node, DataBillboardInfo):
-            mapper = {0: self.data.index(node),
+            mapper = {0: self.data.index(node) + 1,
                       1: node.dishes_name,
                       2: node.brevity_code,
                       3: node.dishes_category,

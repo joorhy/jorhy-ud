@@ -524,7 +524,7 @@ class PopEmployee (wx.Dialog):
         self.dataViewRole.AssociateModel(self.model)
 
         self.user_id = data.key
-        self.txtCode.SetValue(str(data.key))
+        self.txtCode.SetValue(str(data.code))
         self.txtName.SetValue(data.name)
         self.txtDuty.SetValue(data.duty)
         self.txtTelephone.SetValue(str(data.telephone))

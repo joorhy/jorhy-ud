@@ -189,7 +189,9 @@ class CtrlTable():
     def add_items(li_data):
         for data in li_data:
             if isinstance(data, DataTable):
-                add_item('TableInfo', data)
+                bat_add_items('TableInfo', data)
+
+        bat_add_commit()
         EvtManager.dispatch_event(EnumEvent.EVT_DINING_ROOM_REFRESH)
             
     @staticmethod

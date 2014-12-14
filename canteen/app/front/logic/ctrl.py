@@ -96,26 +96,27 @@ class CtrlTableInfo():
                     self.li_table_items.append(item)
             else:
                 result = HttpService.get_instance().get_table_items()
-                for info in result:
-                    item = DataTableItem()
-                    item.table_id = info['num_table_id']
-                    item.table_num = str(info['num_table_id'])
-                    item.table_name = info['vch_name']
-                    item.open_time = info['dt_checkin_start']
-                    item.table_type = info['vch_table_type']
-                    item.table_area = info['vch_table_area']
-                    item.table_status = int(info['ch_openflag'])
-                    item.people_num = info['num_people_amount']
-                    item.customer_num = info['num_consumers']
-                    item.order_id = info['num_order_id']
-                    item.order_num = info['vch_code']
-                    if item.table_status != 0:
-                        table_order_tmp = {item.table_id: item.order_num}
-                        self.di_table_order.update(table_order_tmp)
-                    #if item.table_status == 2:
-                    #    CtrlOrderInfo.get_instance().create_order(item.order_num, 2)
-                    #    item.amount = round(random.random() * 123, 2)
-                    self.li_table_items.append(item)
+                if result is not None:
+                    for info in result:
+                        item = DataTableItem()
+                        item.table_id = info['num_table_id']
+                        item.table_num = str(info['num_table_id'])
+                        item.table_name = info['vch_name']
+                        item.open_time = info['dt_checkin_start']
+                        item.table_type = info['vch_table_type']
+                        item.table_area = info['vch_table_area']
+                        item.table_status = int(info['ch_openflag'])
+                        item.people_num = info['num_people_amount']
+                        item.customer_num = info['num_consumers']
+                        item.order_id = info['num_order_id']
+                        item.order_num = info['vch_code']
+                        if item.table_status != 0:
+                            table_order_tmp = {item.table_id: item.order_num}
+                            self.di_table_order.update(table_order_tmp)
+                        #if item.table_status == 2:
+                        #    CtrlOrderInfo.get_instance().create_order(item.order_num, 2)
+                        #    item.amount = round(random.random() * 123, 2)
+                        self.li_table_items.append(item)
 
         return self.li_table_items
 
@@ -358,17 +359,34 @@ class CtrlOrderInfo():
                                 for style in dishes_details.dishes_style:
                                     if style["id"] == style_id:
                                         dishes_item.dishes_style = style
-                        dishes_item.dishes_count = info["num_dish_num"]
+
+                        if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
+                            dishes_item.dishes_count = info["num_dish_num"]
+                        else:
+                            dishes_item.dishes_retreat_count = 1
+
                         dishes_item.dishes_demand = info["vch_customized_style"]
                         dishes_key = str(dishes_item.dishes_code) + str(spec_id) + str(style_id)
                         if dishes_key in item.di_place_dishes_items:
                             item.di_place_dishes_items[dishes_key].dishes_count = \
                                 item.di_place_dishes_items[dishes_key].dishes_count + dishes_item.dishes_count
-                            item.di_place_dishes_items[dishes_key].li_dishes_log_id.append(info["dishId"])
+
+                            item.di_place_dishes_items[dishes_key].dishes_retreat_count = \
+                                item.di_place_dishes_items[dishes_key].dishes_retreat_count + \
+                                dishes_item.dishes_retreat_count
+
+                            if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
+                                item.di_place_dishes_items[dishes_key].li_dishes_log_id.append(info["dishId"])
                         else:
-                            dishes_item.li_dishes_log_id.append(info["dishId"])
+                            if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
+                                dishes_item.li_dishes_log_id.append(info["dishId"])
+
                             order_dishes_item_tmp = {dishes_key: dishes_item}
                             item.di_place_dishes_items.update(order_dishes_item_tmp)
+
+            for (dishes_key, dishes_item) in item.di_place_dishes_items.items():
+                if dishes_item.dishes_count == 0:
+                    del item.di_place_dishes_items[dishes_key]
 
             order_item_tmp = {order_num: item}
             self.di_order_item.update(order_item_tmp)
@@ -392,17 +410,32 @@ class CtrlOrderInfo():
                             for style in dishes_details.dishes_style:
                                 if style["id"] == style_id:
                                     dishes_item.dishes_style = style
-                    dishes_item.dishes_count = info["num_dish_num"]
+                    if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
+                        dishes_item.dishes_count = info["num_dish_num"]
+                    else:
+                        dishes_item.dishes_retreat_count = 1
+
                     dishes_item.dishes_demand = info["vch_customized_style"]
                     dishes_key = str(dishes_item.dishes_code) + str(spec_id) + str(style_id)
                     if dishes_key in order_item.di_place_dishes_items:
                         order_item.di_place_dishes_items[dishes_key].dishes_count = \
                             order_item.di_place_dishes_items[dishes_key].dishes_count + dishes_item.dishes_count
-                        order_item.di_place_dishes_items[dishes_key].li_dishes_log_id.append(info["dishId"])
+                        order_item.di_place_dishes_items[dishes_key].dishes_retreat_count = \
+                            order_item.di_place_dishes_items[dishes_key].dishes_retreat_count + \
+                            dishes_item.dishes_retreat_count
+
+                        if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
+                            order_item.di_place_dishes_items[dishes_key].li_dishes_log_id.append(info["dishId"])
                     else:
-                        dishes_item.li_dishes_log_id.append(info["dishId"])
+                        if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
+                            dishes_item.li_dishes_log_id.append(info["dishId"])
+
                         order_dishes_item_tmp = {dishes_key: dishes_item}
                         order_item.di_place_dishes_items.update(order_dishes_item_tmp)
+
+                for (dishes_key, dishes_item) in order_item.di_place_dishes_items.items():
+                    if dishes_item.dishes_count == 0:
+                        del order_item.di_place_dishes_items[dishes_key]
 
     def get_order_item(self, order_num):
         if order_num in self.di_order_item:
@@ -454,7 +487,7 @@ class CtrlOrderInfo():
         elif self.cur_dishes_key in cur_order_item.di_place_dishes_items:
             ordered_dishes_item.dishes_count = cur_order_item.di_place_dishes_items[self.cur_dishes_key].dishes_count
 
-        dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(str(self.cur_dishes_key))
+        dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(str(self.cur_dishes_code))
         if dishes_item is not None:
             ordered_dishes_item.dishes_name = dishes_item.dishes_name
 
@@ -489,13 +522,21 @@ class CtrlOrderInfo():
         if self.cur_dishes_key in cur_order_item.di_order_dishes_items:
             del cur_order_item.di_order_dishes_items[self.cur_dishes_key]
 
+        order_id = 0
+        table_num = CtrlTableInfo.get_instance().get_selected_item_id()
+        if table_num is not None:
+            table_item = CtrlTableInfo.get_instance().get_table_item(table_num)
+            order_id = table_item.order_id
+
         if self.cur_dishes_key in cur_order_item.di_place_dishes_items:
             dishes_item = cur_order_item.di_place_dishes_items[self.cur_dishes_key]
             for dishes_log_id in dishes_item.li_dishes_log_id:
-                HttpService.get_instance().del_dishes(dishes_log_id, dishes_item.dishes_code, 1, del_reason)
+                HttpService.get_instance().del_dishes(order_id, dishes_log_id, dishes_item.dishes_code, 1, del_reason)
+                cur_order_item.di_place_dishes_items[self.cur_dishes_key].dishes_retreat_count += 1
             del cur_order_item.di_place_dishes_items[self.cur_dishes_key]
 
             self.cur_dishes_key = None
+
         EvtManager.dispatch_event(EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH)
 
     def plus_dishes(self):
@@ -503,7 +544,16 @@ class CtrlOrderInfo():
         if self.cur_dishes_key in cur_order_item.di_order_dishes_items:
             cur_order_item.di_order_dishes_items[self.cur_dishes_key].dishes_count += 1
 
-            EvtManager.dispatch_event(EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH)
+        if self.cur_dishes_key in cur_order_item.di_place_dishes_items:
+            table_num = CtrlTableInfo.get_instance().get_selected_item_id()
+            if table_num is not None:
+                table_item = CtrlTableInfo.get_instance().get_table_item(table_num)
+                if table_item is not None:
+                    self.add_dishes_in_place_order(table_item.table_id, table_item.order_id,
+                                                   cur_order_item.di_place_dishes_items[self.cur_dishes_key])
+                    cur_order_item.di_place_dishes_items[self.cur_dishes_key].dishes_count += 1
+
+        EvtManager.dispatch_event(EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH)
 
     def minus_dishes(self):
         cur_order_item = self.di_order_item[self.cur_order_num]
@@ -514,17 +564,25 @@ class CtrlOrderInfo():
             else:
                 cur_order_item.di_order_dishes_items[self.cur_dishes_key].dishes_count -= 1
 
+        order_id = 0
+        table_num = CtrlTableInfo.get_instance().get_selected_item_id()
+        if table_num is not None:
+            table_item = CtrlTableInfo.get_instance().get_table_item(table_num)
+            order_id = table_item.order_id
+
         if self.cur_dishes_key in cur_order_item.di_place_dishes_items:
-            dishes_item = cur_order_item.di_order_dishes_items[self.cur_dishes_key]
+            dishes_item = cur_order_item.di_place_dishes_items[self.cur_dishes_key]
             if len(dishes_item.li_dishes_log_id) > 0:
-                HttpService.get_instance().del_dishes(dishes_item.li_dishes_log_id[0], dishes_item.dishes_code, 1, "")
+                HttpService.get_instance().del_dishes(order_id, dishes_item.li_dishes_log_id[0],
+                                                      dishes_item.dishes_code, 1, "")
                 del dishes_item.li_dishes_log_id[0]
 
-            if cur_order_item.di_order_dishes_items[self.cur_dishes_key].dishes_count <= 1:
-                del cur_order_item.di_order_dishes_items[self.cur_dishes_key]
+            if cur_order_item.di_place_dishes_items[self.cur_dishes_key].dishes_count <= 1:
+                del cur_order_item.di_place_dishes_items[self.cur_dishes_key]
                 self.cur_dishes_key = None
             else:
-                cur_order_item.di_order_dishes_items[self.cur_dishes_key].dishes_count -= 1
+                cur_order_item.di_place_dishes_items[self.cur_dishes_key].dishes_retreat_count += 1
+                cur_order_item.di_place_dishes_items[self.cur_dishes_key].dishes_count -= 1
 
             EvtManager.dispatch_event(EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH)
 
@@ -553,6 +611,7 @@ class CtrlOrderInfo():
                 ordered_item.dishes_spec = item.dishes_spec['vch_name']
                 ordered_item.dishes_unit = dishes_item.dishes_unit
                 ordered_item.dishes_count = item.dishes_count
+                ordered_item.dishes_retreat_count = item.dishes_retreat_count
                 ordered_item.dishes_amount = item.dishes_spec['num_price']
                 add_price = 0
                 if item.dishes_style is not None:
@@ -577,6 +636,7 @@ class CtrlOrderInfo():
                 ordered_item.dishes_spec = item.dishes_spec['vch_name']
                 ordered_item.dishes_unit = dishes_item.dishes_unit
                 ordered_item.dishes_count = item.dishes_count
+                ordered_item.dishes_retreat_count = item.dishes_retreat_count
                 ordered_item.dishes_amount = item.dishes_spec['num_price']
                 add_price = 0
                 if item.dishes_style is not None:
@@ -617,6 +677,7 @@ class CtrlOrderInfo():
                 ordered_item.dishes_spec = item.dishes_spec['vch_name']
                 ordered_item.dishes_unit = dishes_item.dishes_unit
                 ordered_item.dishes_count = item.dishes_count
+                ordered_item.dishes_retreat_count = item.dishes_retreat_count
                 ordered_item.dishes_amount = item.dishes_spec['num_price']
                 add_price = 0
                 if item.dishes_style is not None:
@@ -659,8 +720,11 @@ class CtrlOrderInfo():
             if result is not None:
                 cur_order_item = self.di_order_item[self.cur_order_num]
                 for (key, item) in cur_order_item.di_order_dishes_items.items():
-                    cur_place_item_tmp = {key: item}
-                    cur_order_item.di_place_dishes_items.update(cur_place_item_tmp)
+                    if key in cur_order_item.di_place_dishes_items:
+                        cur_order_item.di_place_dishes_items[key].dishes_count += item.dishes_count
+                    else:
+                        cur_place_item_tmp = {key: item}
+                        cur_order_item.di_place_dishes_items.update(cur_place_item_tmp)
                 cur_order_item.di_order_dishes_items.clear()
 
                 for info in result:
@@ -671,6 +735,43 @@ class CtrlOrderInfo():
             CtrlTableInfo.get_instance().change_table_status(table_id, 2)
 
             EvtManager.dispatch_event(EnumEvent.EVT_ORDER_DISHES_ITEMS_REFRESH)
+
+    def get_add_dishes_item(self, item):
+        ordered_item = DataOrderedDishesItem()
+        dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(str(item.dishes_code))
+        ordered_item.dishes_code = dishes_item.dishes_code
+        ordered_item.dishes_spec_id = item.dishes_spec['id']
+        if item.dishes_style is not None:
+            ordered_item.dishes_style_id = item.dishes_style['id'] if len(item.dishes_style) > 0 \
+                else 0
+        ordered_item.dishes_name = dishes_item.dishes_name
+        ordered_item.dishes_spec = item.dishes_spec['vch_name']
+        ordered_item.dishes_unit = dishes_item.dishes_unit
+        ordered_item.dishes_count = item.dishes_count
+        ordered_item.dishes_retreat_count = item.dishes_retreat_count
+        ordered_item.dishes_amount = item.dishes_spec['num_price']
+        add_price = 0
+        if item.dishes_style is not None:
+            if len(item.dishes_style) > 0 and item.dishes_style['ch_mountadd'] == 1:
+                add_price = item.dishes_style['num_priceadd']
+
+        ordered_item.dishes_real_amount = item.dishes_spec['num_price'] + add_price
+        ordered_item.dishes_real_amount = ordered_item.dishes_real_amount * ordered_item.dishes_count
+        ordered_item.dishes_status = u"新增"
+
+        return ordered_item
+
+    def add_dishes_in_place_order(self, table_id, order_id, order_item, dishes_count=1):
+        item = self.get_add_dishes_item(order_item)
+        json_str = "[{\"code\":" + item.dishes_code + ",\"spec\":" + str(item.dishes_spec_id) + ",\"style\":"\
+                   + str(item.dishes_style_id) + ",\"num\":" + str(dishes_count) + ",\"customizedStyle\":\"" \
+                   + item.customer_demand + "\"}]"
+
+        result = HttpService.get_instance().add_dishes(table_id, order_id, json_str)
+        if result is not None:
+            return True
+
+        return False
 
     def check_out(self, table_id, order_id, order_code, bill_num):
         order_item = CtrlOrderInfo.get_instance().get_order_item(order_code)
@@ -689,6 +790,18 @@ class CtrlOrderInfo():
             '''change table status to waiting clean state'''
             CtrlTableInfo.get_instance().change_table_status(table_id, 3)
 
+    def prev_print(self, table_id, order_id, order_code):
+        order_item = CtrlOrderInfo.get_instance().get_order_item(order_code)
+        if order_item is not None:
+            '''calculate the real pay of bill'''
+            order_item.order_money = (order_item.place_money * order_item.all_discount) - order_item.free_price
+            '''send request to remote service'''
+            HttpService.get_instance().prev_print(table_id, order_id, order_item.all_discount, order_item.free_price,
+                                                  CtrlFrontLogin.get_instance().get_user(), 1, order_item.cashier_cash,
+                                                  order_item.cashier_coupon, order_item.cashier_membership,
+                                                  order_item.cashier_pos, order_item.cashier_group,
+                                                  order_item.cashier_credit, order_item.cashier_boss_sign)
+
 
 @Singleton
 class CtrlWorker():
@@ -706,5 +819,5 @@ class CtrlWorker():
 
     def on_timer(self):
         while self.is_run:
-            CtrlOrderInfo.get_instance().update_order()
-            time.sleep(2)
+            #CtrlOrderInfo.get_instance().update_order()
+            time.sleep(5)

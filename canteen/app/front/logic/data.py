@@ -53,6 +53,7 @@ class DataOrderDishesItem():
         self.dishes_id = 0
         self.dishes_code = 0
         self.dishes_count = 0
+        self.dishes_retreat_count = 0
         self.dishes_spec = None
         self.dishes_style = None
         self.dishes_unit = ""
@@ -90,6 +91,7 @@ class DataOrderedDishesItem():
         self.customer_demand = ""
         self.dishes_unit = ""
         self.dishes_count = 0
+        self.dishes_retreat_count = 0
         self.dishes_amount = 0
         self.dishes_real_amount = 0
         self.dishes_status = u"新增"

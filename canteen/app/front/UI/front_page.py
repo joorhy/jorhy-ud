@@ -987,7 +987,7 @@ class WgtFrontPage (wx.Panel):
                     break
                 item = table_items[index_]
                 win_id = int(item.table_num)
-                btn_title = self._get_table_title(item.table_num,
+                btn_title = self._get_table_title(item.table_name,
                                                   item.customer_num if item.table_status != 0 else item.people_num,
                                                   item.amount, item.is_selected)
                 self.tableBtnMap[win_id] = wx.Button(self.dishesSelectorPanel, win_id, btn_title,

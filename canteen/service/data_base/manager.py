@@ -152,8 +152,8 @@ def add_item(type_, data):
         return
 
     session = SqlManager.get_instance().session
-    session.flush()
-    session.commit()
+    #session.flush()
+    #session.commit()
 
     item = None
     if type_ == 'AreaInfo':
@@ -175,7 +175,8 @@ def add_item(type_, data):
         item = UDept()
         item.vch_name = data.name
     elif type_ == 'SpecInfo':
-        result = session.query(DishSpec).filter(DishSpec.vch_name == data.name).all()
+        result = session.query(DishSpec).filter(DishSpec.vch_name == data.name).\
+            filter(DishSpec.vch_dish_code == data.dish_code).all()
         if len(result) > 0:
             return
         item = DishSpec()
@@ -183,7 +184,8 @@ def add_item(type_, data):
         item.vch_name = data.name
         item.num_price = data.price
     elif type_ == 'StyleInfo':
-        result = session.query(DishStyle).filter(DishStyle.vch_name == data.name).all()
+        result = session.query(DishStyle).filter(DishStyle.vch_name == data.name).\
+            filter(DishStyle.vch_dish_code == data.dish_code).all()
         if len(result) > 0:
             return
         item = DishStyle()
@@ -275,6 +277,40 @@ def add_item(type_, data):
         item.num_minexpense_id = data.min_type
 
     session.add(item)
+    session.flush()
+    session.commit()
+
+
+def bat_add_items(type_, data):
+    if data is None:
+        return
+
+    item = None
+    session = SqlManager.get_instance().session
+    if type_ == 'TableInfo':
+        result = session.query(TableInfo).filter(TableInfo.vch_name == data.name).all()
+        if len(result) > 0:
+            session.query(TableInfo).filter(TableInfo.vch_name == data.name).\
+                update({TableInfo.num_table_valid: 1,
+                        TableInfo.num_type: data.table_type,
+                        TableInfo.num_area: data.area,
+                        TableInfo.num_people_amount: data.people_num,
+                        TableInfo.num_minexpense_id: data.min_type})
+            return
+
+        item = TableInfo()
+        item.vch_code = ''
+        item.vch_name = data.name
+        item.num_type = data.table_type
+        item.num_area = data.area
+        item.num_people_amount = data.people_num
+        item.num_minexpense_id = data.min_type
+
+    session.add(item)
+
+
+def bat_add_commit():
+    session = SqlManager.get_instance().session
     session.flush()
     session.commit()
 
@@ -700,7 +736,7 @@ def get_billboard_info(from_date, to_date, category_id):
         bill_board.category = dish_category.vch_name
         bill_board.dishes_count = int(dish_log.num_dish_num)
         bill_board.total_money = dish_money * int(dish_log.num_dish_num)
-        if dish_log.num_dish_withdraw_id == 1:
+        if dish_log.num_dish_withdraw_id != 0:
             bill_board.retreat_count = dish_log.num_dish_num
             bill_board.retreat_money = dish_money
 

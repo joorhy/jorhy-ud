@@ -563,6 +563,7 @@ class PopPrevPrint (wx.Dialog):
         self.btnExit.Bind(wx.EVT_BUTTON, self.on_btn_exit)
 
         # Initialize
+        self.table_item = None
         self._init_view_data()
         self._init_consume_data()
 
@@ -577,10 +578,10 @@ class PopPrevPrint (wx.Dialog):
         select_table_num = CtrlTableInfo.get_instance().get_selected_item_id()
         if select_table_num is not None:
             # Initialize table info
-            table_item = CtrlTableInfo.get_instance().get_table_item(select_table_num)
-            self.txtTableNum.SetValue(str(table_item.table_num))
-            self.txtOpenTime.SetValue(table_item.open_time)
-            self.txtMemo.SetValue(table_item.memo)
+            self.table_item = CtrlTableInfo.get_instance().get_table_item(select_table_num)
+            self.txtTableNum.SetValue(str(self.table_item.table_num))
+            self.txtOpenTime.SetValue(self.table_item.open_time)
+            self.txtMemo.SetValue(self.table_item.memo)
             # Initialize order info
             order_num = CtrlTableInfo.get_instance().get_order_num(select_table_num)
             if order_num is not None:
@@ -624,6 +625,9 @@ class PopPrevPrint (wx.Dialog):
     # Virtual event handlers, override them in your derived class
     def on_btn_prev_print(self, event):
         event.Skip()
+        if self.table_item is not None:
+            CtrlOrderInfo.get_instance().prev_print(self.table_item.table_id, self.table_item.order_id,
+                                                    self.table_item.order_num)
         self.Close()
 
     def on_btn_exit(self, event):
@@ -806,8 +810,9 @@ class WgtCheckout (wx.Panel):
         self.dataViewList.AppendTextColumn(u"菜品名称", 1)
         self.dataViewList.AppendTextColumn(u"规格", 2)
         self.dataViewList.AppendTextColumn(u"数量", 4)
-        self.dataViewList.AppendTextColumn(u"退菜量", 9)
-        self.dataViewList.AppendTextColumn(u"价格", 6)
+        self.dataViewList.AppendTextColumn(u"退菜量", 5)
+        self.dataViewList.AppendTextColumn(u"单价", 6)
+        self.dataViewList.AppendTextColumn(u"实际金额", 7)
         self.dataViewList.AppendTextColumn(u"加价", 8)
         self.dataViewList.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         dishes_view_sizer.Add(self.dataViewList, 0, wx.EXPAND, 5)
@@ -1047,7 +1052,7 @@ class WgtCheckout (wx.Panel):
         # Add has been charged and deposit sizer
         charged_deposit_sizer = wx.BoxSizer(wx.HORIZONTAL)
         # Add has been charged
-        s_txt_charged = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"实收：", wx.DefaultPosition,
+        s_txt_charged = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"实收现金：", wx.DefaultPosition,
                                       wx.Size(60, -1), wx.ALIGN_RIGHT)
         s_txt_charged.Wrap(-1)
         charged_deposit_sizer.Add(s_txt_charged, 0, wx.ALIGN_CENTER, 5)
@@ -1337,10 +1342,12 @@ class WgtCheckout (wx.Panel):
     def _init_table_data(self):
         table_num = CtrlTableInfo.get_instance().get_selected_item_id()
         table_item = CtrlTableInfo.get_instance().get_table_item(table_num)
-        self.txtOrderNum.SetLabel(table_item.order_num if table_item.order_num is not None else "")
-        self.txtTableNum.SetLabel(table_item.table_num)
-        self.txtOpenTime.SetLabel(table_item.open_time)
-        self.txtOpenMemo.SetLabel(table_item.memo)
+        if table_item is not None:
+            self.txtOrderNum.SetLabel(table_item.order_num if table_item.order_num is not None else "")
+            self.txtTableNum.SetLabel(table_item.table_num)
+            if table_item.open_time is not None:
+                self.txtOpenTime.SetLabel(table_item.open_time)
+            self.txtOpenMemo.SetLabel(table_item.memo)
 
         self.cashier_total = 0.0
         self.cashier_coupon = 0.0
@@ -1363,6 +1370,8 @@ class WgtCheckout (wx.Panel):
         self.txtGroup.SetLabel('')
         self.txtCredit.SetLabel('')
         self.txtBossSign.SetLabel('')
+        self.txtCash.SetValue('')
+        self.txtChange.SetValue('')
 
         order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
         if order_id is not None:
@@ -1440,12 +1449,8 @@ class WgtCheckout (wx.Panel):
         pop_checkout_discount.ShowModal()
 
     def on_btn_prev_print(self, event):
-        if self.cash + self.cashier_total - self.real_price < 0:
-            dlg = wx.MessageDialog(self, u"余额不足", caption=u"结账")
-            dlg.ShowModal()
-        else:
-            pop_prev_print = PopPrevPrint(self)
-            pop_prev_print.ShowModal()
+        pop_prev_print = PopPrevPrint(self)
+        pop_prev_print.ShowModal()
 
     def on_btn_checkout(self, event):
         if self.cash + self.cashier_total - self.real_price < 0:
@@ -1584,10 +1589,12 @@ class WgtCheckout (wx.Panel):
                 order_item.cashier_credit = self.cashier_credit
                 order_item.cashier_boss_sign = self.cashier_boss_sign
                 order_item.cashier_cash = self.real_price - self.cashier_total
+                self.txtCharged.SetLabel(str(order_item.cashier_cash))
 
-        #self.txtCash.SetValue(str(self.cash))
         if self.txtCash.GetValue() != '':
             self.txtChange.SetValue(str(self.cash - self.real_price + self.cashier_total))
+        else:
+            self.txtChange.SetValue('')
 
     def on_item_activated(self, event):
         print self.model.GetValue(event.GetItem(), 0)
