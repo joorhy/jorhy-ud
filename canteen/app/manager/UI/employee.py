@@ -958,6 +958,16 @@ class WgtEmployee (wx.Panel):
                 bg_bmp.GetWidth(), bg_bmp.GetHeight(),
                 mem_dc, 0, 0, wx.COPY, True)
 
+        self._refresh_btns()
+
+    def _refresh_btns(self):
+        self.btnNew.Refresh()
+        self.btnModify.Refresh()
+        self.btnDelete.Refresh()
+        self.btnDepartment.Refresh()
+        self.btnRefresh.Refresh()
+        self.btnExit.Refresh()
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetSize()
@@ -1226,6 +1236,15 @@ class WgtPermission (wx.Panel):
         dc.Blit(0, 0,
                 bg_bmp.GetWidth(), bg_bmp.GetHeight(),
                 mem_dc, 0, 0, wx.COPY, True)
+
+        self._refresh_btns()
+
+    def _refresh_btns(self):
+        self.btnNew.Refresh()
+        self.btnModify.Refresh()
+        self.btnDelete.Refresh()
+        self.btnRefresh.Refresh()
+        self.btnExit.Refresh()
 
     def on_size(self, event):
         event.Skip()

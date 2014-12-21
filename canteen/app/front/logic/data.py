@@ -54,10 +54,12 @@ class DataOrderDishesItem():
         self.dishes_code = 0
         self.dishes_count = 0
         self.dishes_retreat_count = 0
+        self.dishes_spec_discount = 1.0
+        self.dishes_price = 0
         self.dishes_spec = None
         self.dishes_style = None
-        self.dishes_unit = ""
-        self.dishes_demand = ""
+        self.dishes_unit = ''
+        self.dishes_demand = ''
         self.li_dishes_log_id = list()
 
 
@@ -66,6 +68,7 @@ class DataOrderItem():
         self.order_num = 0
         self.order_money = 0
         self.place_money = 0
+        self.real_money = 0
         self.order_status = 0
         self.all_discount = 1
         self.free_price = 0
@@ -77,6 +80,8 @@ class DataOrderItem():
         self.cashier_credit = 0.0
         self.cashier_boss_sign = 0.0
         self.bill_num = 0.0
+        self.change_num = 0.0
+        self.dishes_discount = 0.0
         self.di_order_dishes_items = dict()
         self.di_place_dishes_items = dict()
 
@@ -84,16 +89,25 @@ class DataOrderItem():
 class DataOrderedDishesItem():
     def __init__(self):
         self.dishes_code = ''
-        self.dishes_name = ""
-        self.dishes_spec = ""
+        self.dishes_name = ''
+        self.dishes_spec = ''
         self.dishes_spec_id = 0
         self.dishes_style_id = 0
-        self.customer_demand = ""
-        self.dishes_unit = ""
+        self.customer_demand = ''
+        self.dishes_unit = ''
         self.dishes_count = 0
         self.dishes_retreat_count = 0
+        self.dishes_spec_discount = 1.0
         self.dishes_amount = 0
+        self.dishes_recive_amount = 0
         self.dishes_real_amount = 0
         self.dishes_status = u"新增"
+
+
+class DataDishesDiscount():
+    def __init__(self, dishes_id, dishes_code, dishes_discount = 1.0):
+        self.dishes_id = dishes_id
+        self.dishes_code = dishes_code
+        self.dishes_discount = dishes_discount
 
 

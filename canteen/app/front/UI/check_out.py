@@ -109,6 +109,18 @@ class PopDishesDiscount (wx.Dialog):
         # Add discount info
         discount_sizer = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, wx.EmptyString), wx.VERTICAL)
         discount_sizer.SetMinSize(wx.Size(-1, 120))
+        # Add dishes name sizer
+        dishes_name_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.s_txt_dishes_name = wx.StaticText(self, wx.ID_ANY, u"菜品名称：", wx.DefaultPosition,
+                                               wx.Size(100, -1), wx.ALIGN_RIGHT)
+        self.s_txt_dishes_name.Wrap(-1)
+        dishes_name_sizer.Add(self.s_txt_dishes_name, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        self.txtDishesName = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
+        dishes_name_sizer.Add(self.txtDishesName, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        discount_sizer.Add(dishes_name_sizer, 1, wx.EXPAND, 5)
+
         # Add source discount sizer
         src_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
         self.s_txt_src_discount = wx.StaticText(self, wx.ID_ANY, u"菜品折扣：", wx.DefaultPosition,
@@ -122,7 +134,7 @@ class PopDishesDiscount (wx.Dialog):
         discount_sizer.Add(src_discount_sizer, 1, wx.EXPAND, 5)
 
         # Add special discount sizer
-        '''special_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        special_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
 
         self.s_txt_spec_discount = wx.StaticText(self, wx.ID_ANY, u"特批折扣：", wx.DefaultPosition,
                                                  wx.Size(100, -1), wx.ALIGN_RIGHT)
@@ -131,7 +143,7 @@ class PopDishesDiscount (wx.Dialog):
 
         self.txtSpecDiscount = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         special_discount_sizer.Add(self.txtSpecDiscount, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        discount_sizer.Add(special_discount_sizer, 1, wx.EXPAND, 5)'''
+        discount_sizer.Add(special_discount_sizer, 1, wx.EXPAND, 5)
 
         parent.Add(discount_sizer, 1, wx.EXPAND, 5)
 
@@ -170,15 +182,36 @@ class PopDishesDiscount (wx.Dialog):
         pass
 
     def _init_data_view(self):
+        self.txtDishesName.Enable(False)
         self.txtSrcDiscount.Enable(False)
         dishes_code = CtrlOrderInfo.get_instance().get_select_dishes_code()
         if dishes_code is not None:
             dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(dishes_code)
             if dishes_item is not None:
+                self.txtDishesName.SetValue(dishes_item.dishes_name)
                 self.txtSrcDiscount.SetValue(str(dishes_item.dishes_discount))
+
+        order_code = CtrlOrderInfo.get_instance().get_cur_order_id()
+        if order_code is not None:
+            order_item = CtrlOrderInfo.get_instance().get_order_item(order_code)
+            dishes_code = CtrlOrderInfo.get_instance().get_select_dishes_id()
+            if order_item is not None and dishes_code is not None:
+                di_place_dishes_items = order_item.di_place_dishes_items
+                if dishes_code in di_place_dishes_items:
+                    self.txtSpecDiscount.SetValue(str(di_place_dishes_items[dishes_code].dishes_spec_discount))
 
     # Virtual event handlers, override them in your derived class
     def on_btn_confirm(self, event):
+        order_code = CtrlOrderInfo.get_instance().get_cur_order_id()
+        if order_code is not None:
+            order_item = CtrlOrderInfo.get_instance().get_order_item(order_code)
+            dishes_code = CtrlOrderInfo.get_instance().get_select_dishes_id()
+            if order_item is not None and dishes_code is not None:
+                di_place_dishes_items = order_item.di_place_dishes_items
+                if dishes_code in di_place_dishes_items:
+                    di_place_dishes_items[dishes_code].dishes_spec_discount = float(self.txtSpecDiscount.GetValue())
+                    CtrlOrderInfo.get_instance().update_checkout_info()
+
         self.Close()
 
     def on_btn_cancel(self, event):
@@ -515,6 +548,7 @@ class PopPrevPrint (wx.Dialog):
         self.dataViewCtrl.AppendTextColumn(u"退菜量", 5)
         self.dataViewCtrl.AppendTextColumn(u"价格", 6)
         self.dataViewCtrl.AppendTextColumn(u"实际金额", 7)
+        self.dataViewCtrl.AppendTextColumn(u"折扣", 14)
         sizer.Add(self.dataViewCtrl, 0, wx.EXPAND, 5)
 
         # Layout
@@ -627,7 +661,13 @@ class PopPrevPrint (wx.Dialog):
         event.Skip()
         if self.table_item is not None:
             CtrlOrderInfo.get_instance().prev_print(self.table_item.table_id, self.table_item.order_id,
-                                                    self.table_item.order_num)
+                                                    self.table_item.order_num, float(self.txtDiscount.GetValue()),
+                                                    float(self.txtFree.GetValue()), float(self.txtRealPrice.GetValue()),
+                                                    float(self.txtCoupon.GetValue()),
+                                                    float(self.txtMembership.GetValue()), float(self.txtPos.GetValue()),
+                                                    float(self.txtGroup.GetValue()), float(self.txtCredit.GetValue()),
+                                                    float(self.txtBosssign.GetValue())
+                                                    )
         self.Close()
 
     def on_btn_exit(self, event):
@@ -814,6 +854,7 @@ class WgtCheckout (wx.Panel):
         self.dataViewList.AppendTextColumn(u"单价", 6)
         self.dataViewList.AppendTextColumn(u"实际金额", 7)
         self.dataViewList.AppendTextColumn(u"加价", 8)
+        self.dataViewList.AppendTextColumn(u"折扣", 14)
         self.dataViewList.SetBackgroundColour(wx.Colour(0xff, 0xe9, 0xad))
         dishes_view_sizer.Add(self.dataViewList, 0, wx.EXPAND, 5)
 
@@ -968,6 +1009,21 @@ class WgtCheckout (wx.Panel):
         consume_discount_sizer.Add(self.txtDiscount, 0, wx.ALIGN_CENTER, 5)
 
         sizer.Add(consume_discount_sizer, 1, wx.EXPAND, 5)
+
+        '''# Add consume and discount sizer
+        dishes_discount_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        # Add consume
+        s_txt_dishes_discount = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"菜品优惠：", wx.DefaultPosition,
+                                              wx.Size(60, -1), wx.ALIGN_RIGHT)
+        s_txt_dishes_discount.Wrap(-1)
+        dishes_discount_sizer.Add(s_txt_dishes_discount, 0, wx.ALIGN_CENTER, 5)
+
+        self.txtDishesDiscount = wx.StaticText(self.tableInfoPanel, wx.ID_ANY, u"", wx.DefaultPosition,
+                                               wx.Size(100, -1), wx.ALIGN_CENTRE)
+        self.txtDishesDiscount.Wrap(-1)
+        dishes_discount_sizer.Add(self.txtDishesDiscount, 0, wx.ALIGN_CENTER, 5)
+
+        sizer.Add(dishes_discount_sizer, 1, wx.EXPAND, 5)'''
 
         # Add handout and service charge
         handout_charge_sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -1384,12 +1440,20 @@ class WgtCheckout (wx.Panel):
                 order_item.cashier_credit = 0.0
                 order_item.cashier_boss_sign = 0.0
                 order_item.cashier_cash = 0.0
+                order_item.dishes_discount = 0.0
+
+                dishes_price = 0.0
+                for (key, item) in order_item.di_place_dishes_items.items():
+                    dishes_price += item.dishes_price * item.dishes_spec_discount * item.dishes_count
+
                 self.txtConsume.SetLabel(str(order_item.place_money))
                 self.txtDiscount.SetLabel(str(order_item.all_discount))
                 self.txtFree.SetLabel(str(order_item.free_price))
-                self.txtReceivable.SetLabel(str(order_item.place_money * order_item.all_discount))
-                self.real_price = order_item.place_money * order_item.all_discount - order_item.free_price
+                self.txtReceivable.SetLabel(str(order_item.real_money * order_item.all_discount))
+                self.real_price = dishes_price * order_item.all_discount - order_item.free_price
                 self.txtCharged.SetLabel(str(self.real_price))
+                #order_item.dishes_discount = order_item.place_money - dishes_price
+                #self.txtDishesDiscount.SetLabel(str(order_item.dishes_discount))
 
     # Virtual event handlers, override them in your derived class
     def on_paint(self, event):
@@ -1405,6 +1469,16 @@ class WgtCheckout (wx.Panel):
         dc.Blit(0, 0,
                 bg_bmp.GetWidth(), bg_bmp.GetHeight(),
                 mem_dc, 0, 0, wx.COPY, True)
+
+        self._refresh_btns()
+
+    def _refresh_btns(self):
+        self.btnAllDiscount.Refresh()
+        self.btnDishesDiscount.Refresh()
+        self.btnFree.Refresh()
+        self.btnPrevPrint.Refresh()
+        self.btnCheckout.Refresh()
+        self.btnExit.Refresh()
 
     def on_size(self, event):
         event.Skip()
@@ -1441,8 +1515,12 @@ class WgtCheckout (wx.Panel):
         pop_whole_discount.ShowModal()
 
     def on_btn_dishes_discount(self, event):
-        pop_dishes_discount = PopDishesDiscount(self)
-        pop_dishes_discount.ShowModal()
+        if CtrlOrderInfo.get_instance().get_select_dishes_id() is None:
+            dlg = wx.MessageDialog(self, u"请选择菜品", caption=u"结账")
+            dlg.ShowModal()
+        else:
+            pop_dishes_discount = PopDishesDiscount(self)
+            pop_dishes_discount.ShowModal()
 
     def on_btn_free_order(self, event):
         pop_checkout_discount = PopCheckoutDiscount(self)
@@ -1578,6 +1656,10 @@ class WgtCheckout (wx.Panel):
         else:
             self.txtMoney.SetLabel(str(self.cashier_total))
 
+        change_num = self.cash - self.real_price + self.cashier_total
+        if change_num < 0:
+            change_num = 0
+
         order_id = CtrlOrderInfo.get_instance().get_cur_order_id()
         if order_id is not None:
             order_item = CtrlOrderInfo.get_instance().get_order_item(order_id)
@@ -1589,10 +1671,11 @@ class WgtCheckout (wx.Panel):
                 order_item.cashier_credit = self.cashier_credit
                 order_item.cashier_boss_sign = self.cashier_boss_sign
                 order_item.cashier_cash = self.real_price - self.cashier_total
+                order_item.change_num = change_num
                 self.txtCharged.SetLabel(str(order_item.cashier_cash))
 
         if self.txtCash.GetValue() != '':
-            self.txtChange.SetValue(str(self.cash - self.real_price + self.cashier_total))
+            self.txtChange.SetValue(str(change_num))
         else:
             self.txtChange.SetValue('')
 
@@ -1612,6 +1695,17 @@ class WgtCheckout (wx.Panel):
             CtrlOrderInfo.get_instance().set_select_dishes_code(None)
 
     def on_refresh(self, event):
+        table_num = CtrlTableInfo.get_instance().get_selected_item_id()
+        order_num = CtrlTableInfo.get_instance().get_order_num(table_num)
+        result = CtrlOrderInfo.get_instance().get_order_dishes_items(order_num)
+        del self.model.data[0:len(self.model.data)]
+        for new_obj in result:
+            item = self.model.ObjectToItem(new_obj)
+            self.model.data.append(new_obj)
+            self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
+
+        self.model.Cleared()
+
         self._init_consume_data()
 
 if __name__ == '__main__':

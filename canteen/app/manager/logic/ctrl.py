@@ -313,7 +313,7 @@ class CtrlDishes():
             data_item = DataDishes(result.index(item) + 1, item.id_, item.code, item.name, item.brevity,
                                    item.category_name, item.unit_name, item.spec_id, item.commission, item.discount,
                                    item.on_sale, item.recommend, item.enable, item.picture_url, item.print_scheme_name,
-                                   item.is_print)
+                                   item.command, item.is_print)
             data.append(data_item)
             
         return data
@@ -325,7 +325,7 @@ class CtrlDishes():
             data_item = DataDishes(result.index(item) + 1, item.id_, item.code, item.name, item.brevity,
                                    item.category_id, item.unit_id, item.spec_id, item.commission, item.discount,
                                    item.on_sale, item.recommend, item.enable, item.picture_url, item.print_scheme_id,
-                                   item.is_print)
+                                   item.command, item.is_print)
             self.table_items.append(data_item)
 
     def get_items(self):
@@ -814,7 +814,9 @@ class CtrlPermList():
 @Singleton
 class CtrlBusinessInfo():
     def __init__(self):
+        self.date_from = None
         self.time_from = None
+        self.date_to = None
         self.time_to = None
         self.li_business = list()
 
@@ -834,14 +836,14 @@ class CtrlBusinessInfo():
         return self.li_business
 
     def get_query_time(self):
-        return self.time_from, self.time_to
+        return self.date_from, self.time_from, self.date_to, self.time_to
 
     def get_summary_info(self):
         return self.consume_price, self.real_price, self.consumer_num, self.bill_total, self.cash_total, \
             self.coupon_total, self.membership_total, self.pos_total, self.group_total, self.credit_total, \
             self.boss_sign_total
 
-    def query_business(self, time_from, time_to):
+    def query_business(self, date_from, time_from, date_to, time_to):
         self.consume_price = 0
         self.real_price = 0
         self.consumer_num = 0
@@ -853,10 +855,12 @@ class CtrlBusinessInfo():
         self.group_total = 0
         self.credit_total = 0
         self.boss_sign_total = 0
+        self.date_from = date_from
         self.time_from = time_from
+        self.date_to = date_to
         self.time_to = time_to
         del self.li_business[0:len(self.li_business)]
-        result = get_business_info(time_from, time_to)
+        result = get_business_info(date_from, time_from, date_to, time_to)
         if len(result) > 0:
             for key, info in result.items():
                 free_price = info.price - info.real_price if info.real_price is not None else 0
@@ -903,7 +907,9 @@ class CtrlBusinessInfo():
 @Singleton
 class CtrlSalesInfo():
     def __init__(self):
+        self.date_from = None
         self.time_from = None
+        self.date_to = None
         self.time_to = None
         self.li_sales = list()
 
@@ -923,14 +929,14 @@ class CtrlSalesInfo():
         return self.li_sales
 
     def get_query_time(self):
-        return self.time_from, self.time_to
+        return self.date_from, self.time_from, self.date_to, self.time_to
 
     def get_summary_info(self):
         return self.consume_price, self.real_price, self.consumer_num, self.bill_total, self.cash_total, \
             self.coupon_total, self.membership_total, self.pos_total, self.group_total, self.credit_total, \
             self.boss_sign_total
 
-    def query_sales(self, time_from, time_to):
+    def query_sales(self, date_from, time_from, date_to, time_to):
         self.consume_price = 0
         self.real_price = 0
         self.consumer_num = 0
@@ -942,10 +948,12 @@ class CtrlSalesInfo():
         self.group_total = 0
         self.credit_total = 0
         self.boss_sign_total = 0
+        self.date_from = date_from
         self.time_from = time_from
+        self.date_to = date_to
         self.time_to = time_to
         del self.li_sales[0:len(self.li_sales)]
-        result = get_sales_info(time_from, time_to)
+        result = get_sales_info(date_from, time_from, date_to, time_to)
         if len(result) > 0:
             for info in result:
                 free_price = info.price - info.real_price if info.real_price is not None else 0

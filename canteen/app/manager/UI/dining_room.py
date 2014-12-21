@@ -950,8 +950,6 @@ class WgtDiningTable (wx.Panel):
             self.dataViewList.GetModel().ItemAdded(wx.dataview.NullDataViewItem, item)
                     
         self.model.Cleared()
-        self.btnNew.Refresh()
-        self.Refresh()
     
     # Virtual event handlers, override them in your derived class
     def on_paint(self, event):
@@ -970,7 +968,18 @@ class WgtDiningTable (wx.Panel):
                 bg_bmp.GetWidth(), bg_bmp.GetHeight(),
                 mem_dc, 0, 0, wx.COPY, True)
 
-        #self.btnExit.Show()
+        self._refresh_btns()
+
+    def _refresh_btns(self):
+        self.btnNew.Refresh()
+        self.btnModify.Refresh()
+        self.btnDelete.Refresh()
+        self.btnBatAdd.Refresh()
+        self.btnTableType.Refresh()
+        self.btnArea.Refresh()
+        self.btnMinExpense.Refresh()
+        self.btnRefresh.Refresh()
+        self.btnExit.Refresh()
 
     def on_size(self, event):
         event.Skip()

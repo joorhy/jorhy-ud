@@ -64,6 +64,7 @@ class ModeDishPublish():
             self.recommend = obj.num_recommend
             self.enable = obj.ch_disabled
             self.is_print = obj.ch_is_print
+            self.command = obj.vch_dish_intro
 
             self.category_name = obj.dish_category.vch_name
             self.print_scheme_name = obj.num_printer_scheme.vch_name if obj.num_printer_scheme is not None else ''

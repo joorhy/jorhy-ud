@@ -154,7 +154,8 @@ class ModelOrderedDishes(wx.dataview.PyDataViewModel):
                       10: node.dishes_code,
                       11: node.dishes_status,
                       12: node.dishes_spec_id,
-                      13: node.dishes_style_id}
+                      13: node.dishes_style_id,
+                      14: node.dishes_spec_discount}
             return mapper[col]
 
         else:

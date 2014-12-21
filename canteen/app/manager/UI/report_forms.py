@@ -16,6 +16,7 @@ from framework.img_button import ImgButton
 import wx
 import wx.xrc
 import wx.dataview
+import wx.lib.masked as masked
 
 import sys
 import os
@@ -42,6 +43,13 @@ class WgtBusinessInfo (wx.Panel):
         self.dateFrom = wx.DatePickerCtrl(self.topCtrlPanel, size=(120, -1), style=wx.DP_DROPDOWN | wx.DP_SHOWCENTURY)
         sizer.Add(self.dateFrom, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
+        h = self.dateFrom.GetSize().height
+        spin_from = wx.SpinButton(self.topCtrlPanel, -1, wx.DefaultPosition, (-1, h), wx.SP_VERTICAL)
+        self.timeFrom = masked.TimeCtrl(self.topCtrlPanel, -1, size=(-1, h), style=wx.TE_PROCESS_TAB,
+                                        name="24 hour control", fmt24hr=True, spinButton=spin_from)
+        sizer.Add(self.timeFrom, 0, wx.ALIGN_CENTER, 5)
+        sizer.Add(spin_from, 0, wx.ALIGN_CENTER | wx.RIGHT, 5)
+
         s_txt_line = wx.StaticText(self.topCtrlPanel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize,
                                    wx.ALIGN_RIGHT)
         s_txt_line.SetBackgroundColour(wx.Colour(235, 107, 72))
@@ -51,6 +59,14 @@ class WgtBusinessInfo (wx.Panel):
 
         self.dateTo = wx.DatePickerCtrl(self.topCtrlPanel, size=(120, -1), style=wx.DP_DROPDOWN | wx.DP_SHOWCENTURY)
         sizer.Add(self.dateTo, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        h = self.dateTo.GetSize().height
+        spin_to = wx.SpinButton(self.topCtrlPanel, -1, wx.DefaultPosition, (-1, h), wx.SP_VERTICAL)
+        self.timeTo = masked.TimeCtrl(self.topCtrlPanel, -1, size=(-1, h), style=wx.TE_PROCESS_TAB,
+                                      name="24 hour control", fmt24hr=True, spinButton=spin_to)
+        sizer.Add(self.timeTo, 0, wx.ALIGN_CENTER, 5)
+        sizer.Add(spin_to, 0, wx.ALIGN_CENTER | wx.RIGHT, 5)
+
         # Add spacer
         sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
         # Add query button
@@ -323,11 +339,15 @@ class WgtBusinessInfo (wx.Panel):
         pass
 
     def initialize(self):
-        time_from, time_to = CtrlBusinessInfo.get_instance().get_query_time()
+        date_from, time_from, date_to, time_to = CtrlBusinessInfo.get_instance().get_query_time()
+        if date_from is not None:
+            self.dateFrom.SetValue(date_from)
         if time_from is not None:
-            self.dateFrom.SetValue(time_from)
+            self.timeFrom.SetValue(time_from)
+        if date_to is not None:
+            self.dateTo.SetValue(date_to)
         if time_to is not None:
-            self.dateTo.SetValue(time_to)
+            self.timeTo.SetValue(time_to)
 
         # Create an instance of our model...
         self.model = ModelBusinessInfo(CtrlBusinessInfo.get_instance().get_business_items())
@@ -378,7 +398,8 @@ class WgtBusinessInfo (wx.Panel):
             dlg = wx.MessageDialog(self, u"日期输入有误", caption=u"消费查询")
             dlg.ShowModal()
         else:
-            CtrlBusinessInfo.get_instance().query_business(self.dateFrom.GetValue(), self.dateTo.GetValue())
+            CtrlBusinessInfo.get_instance().query_business(self.dateFrom.GetValue(), self.timeFrom.GetValue(),
+                                                           self.dateTo.GetValue(), self.timeTo.GetValue())
 
     def on_btn_export(self, event):
         event.Skip()
@@ -447,6 +468,13 @@ class WgtSalesInfo (wx.Panel):
         self.dateFrom = wx.DatePickerCtrl(self.topCtrlPanel, size=(120, -1), style=wx.DP_DROPDOWN | wx.DP_SHOWCENTURY)
         sizer.Add(self.dateFrom, 0, wx.ALIGN_CENTER | wx.ALL, 5)
 
+        h = self.dateFrom.GetSize().height
+        spin_from = wx.SpinButton(self.topCtrlPanel, -1, wx.DefaultPosition, (-1, h), wx.SP_VERTICAL)
+        self.timeFrom = masked.TimeCtrl(self.topCtrlPanel, -1, size=(-1, h), style=wx.TE_PROCESS_TAB,
+                                        name="24 hour control", fmt24hr=True, spinButton=spin_from)
+        sizer.Add(self.timeFrom, 0, wx.ALIGN_CENTER, 5)
+        sizer.Add(spin_from, 0, wx.ALIGN_CENTER | wx.RIGHT, 5)
+
         s_txt_line = wx.StaticText(self.topCtrlPanel, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize,
                                    wx.ALIGN_RIGHT)
         s_txt_line.SetBackgroundColour(wx.Colour(235, 107, 72))
@@ -456,6 +484,14 @@ class WgtSalesInfo (wx.Panel):
 
         self.dateTo = wx.DatePickerCtrl(self.topCtrlPanel, size=(120, -1), style=wx.DP_DROPDOWN | wx.DP_SHOWCENTURY)
         sizer.Add(self.dateTo, 0, wx.ALIGN_CENTER | wx.ALL, 5)
+
+        h = self.dateTo.GetSize().height
+        spin_to = wx.SpinButton(self.topCtrlPanel, -1, wx.DefaultPosition, (-1, h), wx.SP_VERTICAL)
+        self.timeTo = masked.TimeCtrl(self.topCtrlPanel, -1, size=(-1, h), style=wx.TE_PROCESS_TAB,
+                                      name="24 hour control", fmt24hr=True, spinButton=spin_to)
+        sizer.Add(self.timeTo, 0, wx.ALIGN_CENTER, 5)
+        sizer.Add(spin_to, 0, wx.ALIGN_CENTER | wx.RIGHT, 5)
+
         # Add spacer
         sizer.AddSpacer((0, 0), 1, wx.EXPAND, 5)
         # Add query button
@@ -728,11 +764,15 @@ class WgtSalesInfo (wx.Panel):
         pass
 
     def initialize(self):
-        time_from, time_to = CtrlSalesInfo.get_instance().get_query_time()
+        date_from, time_from, date_to, time_to = CtrlSalesInfo.get_instance().get_query_time()
+        if date_from is not None:
+            self.dateFrom.SetValue(date_from)
         if time_from is not None:
-            self.dateFrom.SetValue(time_from)
+            self.timeFrom.SetValue(time_from)
+        if date_to is not None:
+            self.dateTo.SetValue(date_to)
         if time_to is not None:
-            self.dateTo.SetValue(time_to)
+            self.timeTo.SetValue(time_to)
 
         # Create an instance of our model...
         self.model = ModelSalesInfo(CtrlSalesInfo.get_instance().get_sales_items())
@@ -783,7 +823,8 @@ class WgtSalesInfo (wx.Panel):
             dlg = wx.MessageDialog(self, u"日期输入有误", caption=u"消费流水查询")
             dlg.ShowModal()
         else:
-            CtrlSalesInfo.get_instance().query_sales(self.dateFrom.GetValue(), self.dateTo.GetValue())
+            CtrlSalesInfo.get_instance().query_sales(self.dateFrom.GetValue(), self.timeFrom.GetValue(),
+                                                     self.dateTo.GetValue(), self.timeTo.GetValue())
 
     def on_btn_export(self, event):
         event.Skip()

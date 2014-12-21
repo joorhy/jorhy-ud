@@ -198,12 +198,12 @@ class PopDishesInfo (wx.Dialog):
         sizer = wx.BoxSizer(wx.VERTICAL)
         
         # Add data view panel
-        panel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(500, 200), wx.STATIC_BORDER | wx.TAB_TRAVERSAL)
-        panel.SetMaxSize(wx.Size(-1, 200))
+        panel = wx.Panel(self, wx.ID_ANY, wx.DefaultPosition, wx.Size(500, 140), wx.STATIC_BORDER | wx.TAB_TRAVERSAL)
+        panel.SetMaxSize(wx.Size(-1, 140))
         
         # Add data view panel sizer
         panel_sizer = wx.BoxSizer(wx.HORIZONTAL)
-        panel_sizer.SetMinSize(wx.Size(500, 200))
+        panel_sizer.SetMinSize(wx.Size(500, 140))
 
         self._init_data_view_left_column_sizer(panel, panel_sizer)
         self._init_data_view_right_column_sizer(panel, panel_sizer)
@@ -211,13 +211,19 @@ class PopDishesInfo (wx.Dialog):
         panel.SetSizer(panel_sizer)
         panel.Layout()
         sizer.Add(panel, 1, wx.EXPAND | wx.ALL, 5)
-        
+
+        command_sizer = wx.StaticBoxSizer(wx.StaticBox(self, wx.ID_ANY, u"菜品描述"), wx.HORIZONTAL)
+        self.txtCommand = wx.TextCtrl(self, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize,
+                                      wx.TE_MULTILINE)
+        command_sizer.Add(self.txtCommand, 1, wx.EXPAND, 5)
+
+        sizer.Add(command_sizer, 1, wx.EXPAND | wx.ALL, 5)
         # Layout data view sizer
         parent.Add(sizer, 1, wx.EXPAND, 5)        
         
     def _init_data_view_left_column_sizer(self, container, parent):
         # Add grid sizer with 6 rows and 2 columns
-        g_sizer = wx.GridSizer(6, 2, 0, 0)
+        g_sizer = wx.GridSizer(5, 2, 0, 0)
         # Add label for dishes code
         s_txt_code = wx.StaticText(container, wx.ID_ANY, u"品码：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_code.Wrap(-1)
@@ -248,27 +254,20 @@ class PopDishesInfo (wx.Dialog):
         # Add label for dishes commission
         self.txtCommission = wx.TextCtrl(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.DefaultSize, 0)
         g_sizer.Add(self.txtCommission, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for on sale dishes
-        s_txt_on_sale = wx.StaticText(container, wx.ID_ANY, u"特价菜品：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_on_sale.Wrap(-1)
-        g_sizer.Add(s_txt_on_sale, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add check box for on sale dishes
-        self.cbxOnSale = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
-        g_sizer.Add(self.cbxOnSale, 0, wx.ALIGN_CENTER, 5)
-        # Add label for dishes status
-        s_txt_status = wx.StaticText(container, wx.ID_ANY, u"停用：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_status.Wrap(-1)
-        g_sizer.Add(s_txt_status, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
+        self.cbxOnSale = wx.CheckBox(container, wx.ID_ANY,  u"特价菜品", wx.DefaultPosition,
+                                     wx.Size(-1, -1), wx.ALIGN_RIGHT)
+        g_sizer.Add(self.cbxOnSale, 0, wx.ALIGN_RIGHT, 5)
         # Add check box for dishes state
-        self.cbxStop = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
-        g_sizer.Add(self.cbxStop, 0, wx.ALIGN_CENTER, 5)
+        self.cbxStop = wx.CheckBox(container, wx.ID_ANY, u"停用", wx.DefaultPosition, wx.Size(-1, -1), wx.ALIGN_RIGHT)
+        g_sizer.Add(self.cbxStop, 0, wx.ALIGN_RIGHT, 5)
 
         # Layout 
         parent.Add(g_sizer, 1, wx.EXPAND, 5)
         
     def _init_data_view_right_column_sizer(self, container, parent):
         # Add grid sizer with 6 rows and 2 columns
-        g_sizer = wx.GridSizer(6, 2, 0, 0)
+        g_sizer = wx.GridSizer(5, 2, 0, 0)
         # Add label for dishes name
         s_txt_name = wx.StaticText(container, wx.ID_ANY, u"菜品名称：", wx.DefaultPosition, wx.DefaultSize, 0)
         s_txt_name.Wrap(-1)
@@ -302,13 +301,10 @@ class PopDishesInfo (wx.Dialog):
         self.cbxDefaultSpec = wx.ComboBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition,
                                           wx.Size(110,  -1), cbx_default_spec_choices, 0)
         g_sizer.Add(self.cbxDefaultSpec, 0, wx.ALIGN_CENTER | wx.ALL, 5)
-        # Add label for recommend dishes
-        s_txt_recommend = wx.StaticText(container, wx.ID_ANY, u"推荐菜品：", wx.DefaultPosition, wx.DefaultSize, 0)
-        s_txt_recommend.Wrap(-1)
-        g_sizer.Add(s_txt_recommend, 0, wx.ALIGN_RIGHT | wx.ALL, 5)
         # Add check box for recommend dishes
-        self.cbxRecommend = wx.CheckBox(container, wx.ID_ANY, wx.EmptyString, wx.DefaultPosition, wx.Size(-1, -1), 0)
-        g_sizer.Add(self.cbxRecommend, 0, wx.ALIGN_CENTER, 5)
+        self.cbxRecommend = wx.CheckBox(container, wx.ID_ANY, u"推荐菜品", wx.DefaultPosition,
+                                        wx.Size(-1, -1), wx.ALIGN_RIGHT)
+        g_sizer.Add(self.cbxRecommend, 0, wx.ALIGN_RIGHT, 5)
 
         # Layout 
         parent.Add(g_sizer, 1, wx.EXPAND, 5)
@@ -406,7 +402,7 @@ class PopDishesInfo (wx.Dialog):
 
     def __init__(self, parent, type_="add"):
         wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title=u"菜品资料维护", pos=wx.DefaultPosition,
-                           size=wx.Size(700, 500), style=wx.CAPTION)
+                           size=wx.Size(700, 600), style=wx.CAPTION)
 
         self.SetSizeHintsSz(wx.DefaultSize, wx.DefaultSize)
 
@@ -509,6 +505,7 @@ class PopDishesInfo (wx.Dialog):
         # Tell the DVC to use the style model
         self.dataViewListStyle.AssociateModel(self.model_style)
 
+        self.txtDishCode.Enable(False)
         self.item_id = data.key
         self.txtDishCode.SetValue(data.code)
         self.txtDishName.SetValue(data.name)
@@ -519,6 +516,8 @@ class PopDishesInfo (wx.Dialog):
         self.cbxRecommend.SetValue(True if data.recommend == 1 else False)
         self.cbxStop.SetValue(True if data.stop == u'1' else False)
         self.txtTrack.SetLabel(("%d / %d" % (self.index+1, len(items))))
+        if data.command is not None:
+            self.txtCommand.SetValue(data.command)
         if data.image_url == "":
             self.bmpImage.SetBitmap(wx.NullBitmap)
         else:
@@ -549,6 +548,24 @@ class PopDishesInfo (wx.Dialog):
             self.cbxDefaultSpec.Append(spec.name, spec)
             if spec.key == data.spec_id:
                 self.cbxDefaultSpec.SetSelection(li_spec.index(spec))
+
+    def _reset_ui(self):
+        self.txtDishCode.SetValue("")
+        self.txtDishName.SetValue("")
+        self.txtBrevityCode.SetValue("")
+        self.cbxDefaultSpec.SetSelection(wx.NOT_FOUND)
+        self.cbxDefaultSpec.SetValue("")
+        self.txtCommission.SetValue("")
+        self.txtDiscount.SetValue("")
+        self.cbxOnSale.SetValue(False)
+        self.cbxRecommend.SetValue(False)
+        self.cbxStop.SetValue(False)
+        self.image_url = ""
+        self.bmpImage.SetBitmap(wx.NullBitmap)
+        del self.model_spec.data[0:len(self.model_spec.data)]
+        self.model_spec.Cleared()
+        del self.model_style.data[0:len(self.model_style.data)]
+        self.model_style.Cleared()
 
     # Virtual event handlers, override them in your derived class
     def on_btn_prev(self, event):
@@ -582,7 +599,7 @@ class PopDishesInfo (wx.Dialog):
                                  self.cbxOnSale.GetValue(),
                                  self.cbxRecommend.GetValue(),
                                  self.cbxStop.GetValue(),
-                                 self.image_url, "")
+                                 self.image_url, "", self.txtCommand.GetValue())
         if self.type == "add":
             for spec_data in self.model_spec.data:
                 data = DataSpec(dish_code=self.txtDishCode.GetValue(), name=spec_data.name, price=spec_data.price)
@@ -595,6 +612,7 @@ class PopDishesInfo (wx.Dialog):
                 CtrlStyle.get_instance().add_item(data)
 
             CtrlDishes.get_instance().add_item(dishes_data)
+            self._reset_ui()
         elif self.type == "mod":
             for spec_data in self.model_spec.data:
                 data = DataSpec(key=spec_data.key, dish_code=self.txtDishCode.GetValue(), name=spec_data.name,
@@ -687,7 +705,8 @@ class PopDishesInfo (wx.Dialog):
             self.model_style.data.remove(data)
             self.dataViewListStyle.GetModel().ItemDeleted(wx.dataview.NullDataViewItem, item)
             CtrlStyle.get_instance().delete_item(data)
-        except:
+        except Exception, ex:
+            print Exception, ":", ex
             print 'PopDishesInfo on_btn_delete_style error'
 
     def on_dish_name_text(self, event):
@@ -922,6 +941,7 @@ class WgtDishesPublish (wx.Panel):
         # define variable
         self.model = None
         self.tree_data = None
+        self.is_need_refresh_top = True
     
     def __del__(self):
         pass
@@ -1007,6 +1027,7 @@ class WgtDishesPublish (wx.Panel):
     
     # Virtual event handlers, override them in your derived class
     def on_paint(self, event):
+        event.Skip()
         dc = wx.ClientDC(self.topPanel)
         dc.Clear()
 
@@ -1019,6 +1040,17 @@ class WgtDishesPublish (wx.Panel):
         dc.Blit(0, 0,
                 bg_bmp.GetWidth(), bg_bmp.GetHeight(),
                 mem_dc, 0, 0, wx.COPY, True)
+
+        self._refresh_btns()
+
+    def _refresh_btns(self):
+        self.btnNew.Refresh()
+        self.btnModify.Refresh()
+        self.btnDelete.Refresh()
+        self.btnType.Refresh()
+        self.btnUnit.Refresh()
+        self.btnRefresh.Refresh()
+        self.btnExit.Refresh()
 
     def on_size(self, event):
         event.Skip()

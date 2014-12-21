@@ -203,15 +203,25 @@ class HttpService():
         return None
 
     def check_out(self, table_id, order_id, all_discount, free_price, checkout_person, check_type, cash, coupon,
-                  membership, pos, group, credit, boss_sign, bill_num):
+                  membership, pos, group, credit, boss_sign, bill_num, change_num, li_discount):
         try:
+            li_json_str = "["
+            for item in li_discount:
+                if len(li_json_str) > 5:
+                    li_json_str = li_json_str + ","
+                di_json_str = "{\"logDishId\":" + str(item.dishes_id) + ",\"code\":\"" + str(item.dishes_code) \
+                              + "\",\"specialDiscount\":" + str(item.dishes_discount) + "}"
+                li_json_str = li_json_str + di_json_str
+            li_json_str = li_json_str + "]"
+
             check_out_url = "/canteen/order/checkOut?para={\"tableId\":" + str(table_id) + ",\"orderId\":" \
                             + str(order_id) + ",\"checkoutType\":" + str(check_type) + ",\"cashier\":\"" \
                             + checkout_person + "\",\"discountRate\":" + str(all_discount) + ",\"discountAmount\":" \
                             + str(free_price) + ",\"payYhq\":" + str(coupon) + ",\"payHyk\":" + str(membership) \
                             + ",\"payXj\":" + str(cash) + ",\"payPos\":" + str(pos) + ",\"payTg\":" + str(group) \
                             + ",\"payGz\":" + str(credit) + ",\"payQd\":" + str(boss_sign) + ",\"payFp\":" \
-                            + str(bill_num) + "}"
+                            + str(bill_num) + ",\"payZl\":" + str(change_num) + ",\"dishes\":" + li_json_str + "}"
+            print check_out_url
             self.conn = httplib.HTTPConnection(self.ip_address, self.port)
             self.conn.request("GET", check_out_url)
             response = self.conn.getresponse()
@@ -234,7 +244,7 @@ class HttpService():
                             + str(free_price) + ",\"payYhq\":" + str(coupon) + ",\"payHyk\":" + str(membership) \
                             + ",\"payXj\":" + str(cash) + ",\"payPos\":" + str(pos) + ",\"payTg\":" + str(group) \
                             + ",\"payGz\":" + str(credit) + ",\"payQd\":" + str(boss_sign) + ",\"payFp\":" \
-                            + '0' + "}"
+                            + '0' + ",\"payZl\":" + '0' + "}"
             print check_out_url
             self.conn = httplib.HTTPConnection(self.ip_address, self.port)
             self.conn.request("GET", check_out_url)
@@ -251,7 +261,7 @@ class HttpService():
 
     def get_order_info(self, order_num):
         try:
-            order_info_url = "/canteen/order/consumption?para={\"orderCode\":" + order_num + "}"
+            order_info_url = "/canteen/order/consumption?para={\"orderCode\":\"" + str(order_num) + "\"}"
             self.conn = httplib.HTTPConnection(self.ip_address, self.port)
             self.conn.request("GET", order_info_url)
             response = self.conn.getresponse()

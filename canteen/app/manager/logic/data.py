@@ -53,7 +53,7 @@ class DataCategory(object):
 
 class DataDishes(object):
     def __init__(self, line, key, code, name, spell, category, unit, spec_id, commission, discount,
-                 on_sale, recommend, stop, image_url, printer_scheme, is_print='0'):
+                 on_sale, recommend, stop, image_url, printer_scheme, command, is_print='0'):
         self.line = line
         self.key = key
         self.code = code
@@ -68,6 +68,7 @@ class DataDishes(object):
         self.recommend = recommend
         self.stop = stop
         self.image_url = image_url
+        self.command = command
         self.printer_scheme = printer_scheme
         self.is_print = is_print
 

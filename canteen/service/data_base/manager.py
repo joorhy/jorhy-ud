@@ -243,6 +243,7 @@ def add_item(type_, data):
         item.num_recommend = 1 if data.recommend else 0
         item.ch_disabled = "1" if data.stop else "0"
         item.vch_picname = data.image_url
+        item.vch_dish_intro = data.command
     elif type_ == 'PrintSchemeInfo':
         result = session.query(PrinterScheme).filter(PrinterScheme.vch_name == data.name).all()
         if len(result) > 0:
@@ -405,7 +406,8 @@ def update_item(type_, data):
                      DishPublish.num_onsale: 1 if data.on_sale else 0,
                      DishPublish.num_recommend: 1 if data.recommend else 0,
                      DishPublish.ch_disabled: '1' if data.stop else '0',
-                     DishPublish.vch_picname: data.image_url})
+                     DishPublish.vch_picname: data.image_url,
+                     DishPublish.vch_dish_intro: data.command})
     elif type_ == 'PrintSchemeInfo':
         session.query(PrinterScheme).filter(PrinterScheme.id == data.key).\
             update({PrinterScheme.vch_name: data.name,
@@ -641,11 +643,11 @@ def get_password_by_user_name(user_name):
     return pass_word[0]
 
 
-def get_business_info(from_date, to_date):
+def get_business_info(data_from, time_from, date_to, time_to):
     session = SqlManager.get_instance().session
     result = session.query(TableOrder).filter(TableOrder.dt_checkout >=
-                                              from_date.Format("%Y-%m-%d %H:%M:%S")).\
-        filter(TableOrder.dt_checkout <= (to_date.Format("%Y-%m-%d ") + "23:59:59")).all()
+                                              (data_from.Format("%Y-%m-%d ") + time_from)).\
+        filter(TableOrder.dt_checkout <= (date_to.Format("%Y-%m-%d ") + time_to)).all()
 
     di_business_info = dict()
     for item in result:
@@ -686,11 +688,11 @@ def get_business_info(from_date, to_date):
     return di_business_info
 
 
-def get_sales_info(from_date, to_date):
+def get_sales_info(date_from, time_from, date_to, time_to):
     session = SqlManager.get_instance().session
     result = session.query(TableOrder).filter(TableOrder.dt_checkout >=
-                                              from_date.Format("%Y-%m-%d %H:%M:%S")).\
-        filter(TableOrder.dt_checkout <= (to_date.Format("%Y-%m-%d ") + "23:59:59")).all()
+                                              (date_from.Format("%Y-%m-%d ") + time_from)).\
+        filter(TableOrder.dt_checkout <= (date_to.Format("%Y-%m-%d ") + time_to)).all()
 
     li_business_info = list()
     for item in result:
@@ -736,8 +738,8 @@ def get_billboard_info(from_date, to_date, category_id):
         bill_board.category = dish_category.vch_name
         bill_board.dishes_count = int(dish_log.num_dish_num)
         bill_board.total_money = dish_money * int(dish_log.num_dish_num)
-        if dish_log.num_dish_withdraw_id != 0:
-            bill_board.retreat_count = dish_log.num_dish_num
+        if dish_log.num_dish_withdraw_id != 0 and dish_log.num_dish_withdraw_id is not None:
+            bill_board.retreat_count = int(dish_log.num_dish_num)
             bill_board.retreat_money = dish_money
 
         if bill_board.dishes_code in di_billboard_info:

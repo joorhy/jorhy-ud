@@ -17,7 +17,7 @@ class ImgButton(wx.Button):
             self.SetBackgroundColour(back_ground)
 
         self.Bind(wx.EVT_SIZE, self.on_size)
-        #self.Bind(wx.EVT_PAINT, self.on_paint)
+        self.Bind(wx.EVT_PAINT, self.on_paint)
 
     def on_size(self, event):
         event.Skip()
@@ -37,15 +37,16 @@ class ImgButton(wx.Button):
 
     def on_paint(self, event):
         event.Skip()
-        dc = wx.ClientDC(self)
-        dc.Clear()
+        x, y = self.GetClientSize()
+        try:
+            self.normal_img.Scale(x, y)
+            self.select_img.Scale(x, y)
 
-        sz = self.GetClientSize()
-        bg_img = wx.Image(sys.path[0] + "\\..\\image\\top_bg.png", wx.BITMAP_TYPE_PNG).Scale(sz.x, 82)
-        bg_bmp = bg_img.ConvertToBitmap()
-
-        mem_dc = wx.MemoryDC()
-        mem_dc.SelectObject(bg_bmp)
-        dc.Blit(0, 0,
-                bg_bmp.GetWidth(), bg_bmp.GetHeight(),
-                mem_dc, 0, 0, wx.COPY, True)
+            self.SetBitmap(self.normal_img.ConvertToBitmap())
+            self.SetBitmapPressed(self.select_img.ConvertToBitmap())
+            if self.disable_img is not None:
+                self.SetBitmapDisabled(self.disable_img.ConvertToBitmap())
+            else:
+                self.SetBitmapDisabled(self.normal_img.ConvertToBitmap())
+        except Exception, ex:
+            print Exception, ":", ex

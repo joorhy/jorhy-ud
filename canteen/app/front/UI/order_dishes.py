@@ -815,6 +815,14 @@ class WgtOrderDishes (wx.Panel):
                 bg_bmp.GetWidth(), bg_bmp.GetHeight(),
                 mem_dc, 0, 0, wx.COPY, True)
 
+        self._refresh_btns()
+
+    def _refresh_btns(self):
+        self.btnDeleteDishes.Refresh()
+        self.btnSeat.Refresh()
+        self.btnPlaceOrder.Refresh()
+        self.btnExit.Refresh()
+
     def on_size(self, event):
         event.Skip()
         x, y = self.GetClientSize()

@@ -239,12 +239,19 @@ class CtrlDishesInfo():
         self.li_dishes_items = list()
         self.cur_dishes_type = None
 
-    def get_code_by_di(self, dishes_id):
+    def get_code_by_id(self, dishes_id):
         for item in self.li_dishes_items:
             if item.dishes_id == dishes_id:
                 return item.dishes_code
 
         return None
+
+    def get_id_by_code(self, dishes_code):
+        for item in self.li_dishes_items:
+            if item.dishes_code == dishes_code:
+                return item.dishes_id
+
+        return 0
 
     def get_type_items(self):
         if len(self.li_type_items) == 0:
@@ -355,16 +362,20 @@ class CtrlOrderInfo():
                             for spec in dishes_details.dishes_spec:
                                 if spec["id"] == spec_id:
                                     dishes_item.dishes_spec = spec
+                                    dishes_item.dishes_price = spec['num_price']
                             if dishes_details.dishes_style is not None:
                                 for style in dishes_details.dishes_style:
                                     if style["id"] == style_id:
                                         dishes_item.dishes_style = style
+                                        if dishes_item['ch_mountadd'] == 1:
+                                            dishes_item.dishes_price += style['num_priceadd']
 
                         if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
                             dishes_item.dishes_count = info["num_dish_num"]
                         else:
                             dishes_item.dishes_retreat_count = 1
 
+                        dishes_item.dishes_spec_discount = info["num_special_discount"]
                         dishes_item.dishes_demand = info["vch_customized_style"]
                         dishes_key = str(dishes_item.dishes_code) + str(spec_id) + str(style_id)
                         if dishes_key in item.di_place_dishes_items:
@@ -393,9 +404,11 @@ class CtrlOrderInfo():
 
     def update_order(self):
         for order_num, order_item in self.di_order_item.items():
+            # print order_num
             result = HttpService.get_instance().get_order_info(order_num)
             if result is not None:
-                order_item.di_place_dishes_items.clear()
+                di_place_dishes_items = dict()
+                #order_item.di_place_dishes_items.clear()
                 for info in result:
                     dishes_item = DataOrderDishesItem()
                     dishes_item.dishes_code = info["vch_dish_code"]
@@ -406,33 +419,41 @@ class CtrlOrderInfo():
                         for spec in dishes_details.dishes_spec:
                             if spec["id"] == spec_id:
                                 dishes_item.dishes_spec = spec
+                                dishes_item.dishes_price = spec['num_price']
                         if dishes_details.dishes_style is not None:
                             for style in dishes_details.dishes_style:
                                 if style["id"] == style_id:
                                     dishes_item.dishes_style = style
+                                    if dishes_item['ch_mountadd'] == 1:
+                                        dishes_item.dishes_price += style['num_priceadd']
                     if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
                         dishes_item.dishes_count = info["num_dish_num"]
                     else:
                         dishes_item.dishes_retreat_count = 1
 
+                    # dishes_item.dishes_spec_discount = info["num_special_discount"]
                     dishes_item.dishes_demand = info["vch_customized_style"]
                     dishes_key = str(dishes_item.dishes_code) + str(spec_id) + str(style_id)
                     if dishes_key in order_item.di_place_dishes_items:
-                        order_item.di_place_dishes_items[dishes_key].dishes_count = \
-                            order_item.di_place_dishes_items[dishes_key].dishes_count + dishes_item.dishes_count
-                        order_item.di_place_dishes_items[dishes_key].dishes_retreat_count = \
-                            order_item.di_place_dishes_items[dishes_key].dishes_retreat_count + \
+                        di_place_dishes_items[dishes_key].dishes_spec_discount = \
+                            order_item.di_place_dishes_items[dishes_key].dishes_spec_discount
+
+                    if dishes_key in di_place_dishes_items:
+                        di_place_dishes_items[dishes_key].dishes_count = \
+                            di_place_dishes_items[dishes_key].dishes_count + dishes_item.dishes_count
+                        di_place_dishes_items[dishes_key].dishes_retreat_count = \
+                            di_place_dishes_items[dishes_key].dishes_retreat_count + \
                             dishes_item.dishes_retreat_count
 
                         if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
-                            order_item.di_place_dishes_items[dishes_key].li_dishes_log_id.append(info["dishId"])
+                            di_place_dishes_items[dishes_key].li_dishes_log_id.append(info["dishId"])
                     else:
                         if info["num_dish_withdraw_id"] is None or info["num_dish_withdraw_id"] == 0:
                             dishes_item.li_dishes_log_id.append(info["dishId"])
-
                         order_dishes_item_tmp = {dishes_key: dishes_item}
-                        order_item.di_place_dishes_items.update(order_dishes_item_tmp)
+                        di_place_dishes_items.update(order_dishes_item_tmp)
 
+                order_item.di_place_dishes_items = di_place_dishes_items
                 for (dishes_key, dishes_item) in order_item.di_place_dishes_items.items():
                     if dishes_item.dishes_count == 0:
                         del order_item.di_place_dishes_items[dishes_key]
@@ -599,6 +620,7 @@ class CtrlOrderInfo():
             cur_order_item = self.di_order_item[order_num]
             cur_order_item.order_money = 0
             cur_order_item.place_money = 0
+            cur_order_item.real_money = 0
             for (key, item) in cur_order_item.di_order_dishes_items.items():
                 ordered_item = DataOrderedDishesItem()
                 dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(str(item.dishes_code))
@@ -612,18 +634,22 @@ class CtrlOrderInfo():
                 ordered_item.dishes_unit = dishes_item.dishes_unit
                 ordered_item.dishes_count = item.dishes_count
                 ordered_item.dishes_retreat_count = item.dishes_retreat_count
+                ordered_item.dishes_spec_discount = item.dishes_spec_discount
                 ordered_item.dishes_amount = item.dishes_spec['num_price']
                 add_price = 0
                 if item.dishes_style is not None:
                     if len(item.dishes_style) > 0 and item.dishes_style['ch_mountadd'] == 1:
                         add_price = item.dishes_style['num_priceadd']
 
+                ordered_item.dishes_recive_amount = item.dishes_spec['num_price'] + add_price
+                ordered_item.dishes_recive_amount = ordered_item.dishes_recive_amount * ordered_item.dishes_count
                 ordered_item.dishes_real_amount = item.dishes_spec['num_price'] + add_price
-                ordered_item.dishes_real_amount = ordered_item.dishes_real_amount * ordered_item.dishes_count
+                ordered_item.dishes_real_amount = (ordered_item.dishes_real_amount * item.dishes_spec_discount) * \
+                                                   ordered_item.dishes_count
                 ordered_item.dishes_status = u"新增"
 
                 li_ordered_items.append(ordered_item)
-                cur_order_item.order_money = cur_order_item.order_money + ordered_item.dishes_real_amount
+                cur_order_item.order_money = cur_order_item.order_money + ordered_item.dishes_recive_amount
             for (key, item) in cur_order_item.di_place_dishes_items.items():
                 ordered_item = DataOrderedDishesItem()
                 dishes_item = CtrlDishesInfo.get_instance().get_dishes_item(str(item.dishes_code))
@@ -637,18 +663,23 @@ class CtrlOrderInfo():
                 ordered_item.dishes_unit = dishes_item.dishes_unit
                 ordered_item.dishes_count = item.dishes_count
                 ordered_item.dishes_retreat_count = item.dishes_retreat_count
+                ordered_item.dishes_spec_discount = item.dishes_spec_discount
                 ordered_item.dishes_amount = item.dishes_spec['num_price']
                 add_price = 0
                 if item.dishes_style is not None:
                     if len(item.dishes_style) > 0 and item.dishes_style['ch_mountadd'] == 1:
                         add_price = item.dishes_style['num_priceadd']
 
+                ordered_item.dishes_recive_amount = item.dishes_spec['num_price'] + add_price
+                ordered_item.dishes_recive_amount = ordered_item.dishes_recive_amount * ordered_item.dishes_count
                 ordered_item.dishes_real_amount = item.dishes_spec['num_price'] + add_price
-                ordered_item.dishes_real_amount = ordered_item.dishes_real_amount * ordered_item.dishes_count
+                ordered_item.dishes_real_amount = (ordered_item.dishes_real_amount * item.dishes_spec_discount) * \
+                                                   ordered_item.dishes_count
                 ordered_item.dishes_status = u"已落单"
 
                 li_ordered_items.append(ordered_item)
-                cur_order_item.place_money = cur_order_item.place_money + ordered_item.dishes_real_amount
+                cur_order_item.place_money = cur_order_item.place_money + ordered_item.dishes_recive_amount
+                cur_order_item.real_money = cur_order_item.real_money + ordered_item.dishes_real_amount
         except Exception, ex:
             Log.info("get_order_dishes_items error")
             print Exception, ":", ex
@@ -662,6 +693,7 @@ class CtrlOrderInfo():
             cur_order_item = self.di_order_item[order_num]
             cur_order_item.order_money = 0
             cur_order_item.place_money = 0
+            #cur_order_item.real_money = 0
             if len(cur_order_item.di_place_dishes_items) > 0:
                 is_place_order = False
 
@@ -678,18 +710,22 @@ class CtrlOrderInfo():
                 ordered_item.dishes_unit = dishes_item.dishes_unit
                 ordered_item.dishes_count = item.dishes_count
                 ordered_item.dishes_retreat_count = item.dishes_retreat_count
+                ordered_item.dishes_spec_discount = item.dishes_spec_discount
                 ordered_item.dishes_amount = item.dishes_spec['num_price']
                 add_price = 0
                 if item.dishes_style is not None:
                     if len(item.dishes_style) > 0 and item.dishes_style['ch_mountadd'] == 1:
                         add_price = item.dishes_style['num_priceadd']
 
+                ordered_item.dishes_recive_amount = item.dishes_spec['num_price'] + add_price
+                ordered_item.dishes_recive_amount = ordered_item.dishes_recive_amount * ordered_item.dishes_count
                 ordered_item.dishes_real_amount = item.dishes_spec['num_price'] + add_price
-                ordered_item.dishes_real_amount = ordered_item.dishes_real_amount * ordered_item.dishes_count
+                ordered_item.dishes_real_amount = (ordered_item.dishes_real_amount * item.dishes_spec_discount) * \
+                                                  ordered_item.dishes_count
                 ordered_item.dishes_status = u"新增"
 
                 li_ordered_items.append(ordered_item)
-                cur_order_item.order_money = cur_order_item.order_money + ordered_item.dishes_real_amount
+                cur_order_item.order_money = cur_order_item.order_money + ordered_item.dishes_recive_amount
         except Exception, ex:
             print Exception, ":", ex
 
@@ -749,6 +785,7 @@ class CtrlOrderInfo():
         ordered_item.dishes_unit = dishes_item.dishes_unit
         ordered_item.dishes_count = item.dishes_count
         ordered_item.dishes_retreat_count = item.dishes_retreat_count
+        ordered_item.dishes_spec_discount = item.dishes_spec_discount
         ordered_item.dishes_amount = item.dishes_spec['num_price']
         add_price = 0
         if item.dishes_style is not None:
@@ -776,31 +813,35 @@ class CtrlOrderInfo():
     def check_out(self, table_id, order_id, order_code, bill_num):
         order_item = CtrlOrderInfo.get_instance().get_order_item(order_code)
         if order_item is not None:
+            li_dishes_discount = list()
+            di_place_dishes_items = order_item.di_place_dishes_items
+            for (key, item) in di_place_dishes_items.items():
+                dishes_id = CtrlDishesInfo.get_instance().get_id_by_code(item.dishes_code)
+                dishes_discount = DataDishesDiscount(dishes_id, item.dishes_code, item.dishes_spec_discount)
+                li_dishes_discount.append(dishes_discount)
+
             order_item.bill_num = bill_num
             '''calculate the real pay of bill'''
-            order_item.order_money = (order_item.place_money * order_item.all_discount) - order_item.free_price
+            order_item.order_money = (order_item.real_money * order_item.all_discount) - order_item.free_price
             '''send request to remote service'''
             HttpService.get_instance().check_out(table_id, order_id, order_item.all_discount, order_item.free_price,
                                                  CtrlFrontLogin.get_instance().get_user(), 1, order_item.cashier_cash,
                                                  order_item.cashier_coupon, order_item.cashier_membership,
                                                  order_item.cashier_pos, order_item.cashier_group,
                                                  order_item.cashier_credit, order_item.cashier_boss_sign,
-                                                 order_item.bill_num)
+                                                 order_item.bill_num, order_item.change_num, li_dishes_discount)
 
             '''change table status to waiting clean state'''
             CtrlTableInfo.get_instance().change_table_status(table_id, 3)
 
-    def prev_print(self, table_id, order_id, order_code):
+    def prev_print(self, table_id, order_id, order_code, all_discount, free_price, cash, coupon, membership, pos,
+                   group, credit, boss_sign):
         order_item = CtrlOrderInfo.get_instance().get_order_item(order_code)
         if order_item is not None:
-            '''calculate the real pay of bill'''
-            order_item.order_money = (order_item.place_money * order_item.all_discount) - order_item.free_price
             '''send request to remote service'''
-            HttpService.get_instance().prev_print(table_id, order_id, order_item.all_discount, order_item.free_price,
-                                                  CtrlFrontLogin.get_instance().get_user(), 1, order_item.cashier_cash,
-                                                  order_item.cashier_coupon, order_item.cashier_membership,
-                                                  order_item.cashier_pos, order_item.cashier_group,
-                                                  order_item.cashier_credit, order_item.cashier_boss_sign)
+            HttpService.get_instance().prev_print(table_id, order_id, all_discount, free_price,
+                                                  CtrlFrontLogin.get_instance().get_user(), 1, cash, coupon, membership,
+                                                  pos, group, credit, boss_sign)
 
 
 @Singleton
@@ -819,5 +860,8 @@ class CtrlWorker():
 
     def on_timer(self):
         while self.is_run:
-            CtrlOrderInfo.get_instance().update_order()
-            time.sleep(2)
+            try:
+                CtrlOrderInfo.get_instance().update_order()
+            except Exception, ex:
+                print Exception, ":", ex
+            time.sleep(3)
